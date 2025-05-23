@@ -1,0 +1,444 @@
+--[[
+Xenolib UI Library
+Features:
+- Movable menu with professional Tween animations
+- Small toggle button to show/hide menu
+- Player avatar circle image
+- Left side tabs
+- Close button (X)
+- Follows player with smooth Tween animations
+]]
+
+local Xenolib = {}
+Xenolib.__index = Xenolib
+
+-- Example usage comments
+--[[
+    xenolib make window "MainMenu"  -- Creates a new window named MainMenu
+    xenolib make togglebutton  -- Creates the toggle button
+    xenolib make tabs {"Home", "Settings", "Profile"}  -- Creates tabs
+    xenolib make closebutton  -- Adds close button
+    xenolib make avatar  -- Adds player avatar
+]]
+
+-- Tween service for smooth animations
+local TweenService = game:GetService("TweenService")
+local Players = game:GetService("Players")
+local LocalPlayer = Players.LocalPlayer
+local UserInputService = game:GetService("UserInputService")
+
+function Xenolib.new(windowName)
+    local self = setmetatable({}, Xenolib)
+    
+    -- Window properties
+    self.windowName = windowName or "XenolibWindow"
+    self.isVisible = false
+    self.tabs = {}
+    self.currentTab = nil
+    
+    -- Create main screen gui
+    self.gui = Instance.new("ScreenGui")
+    self.gui.Name = "XenolibUI"
+    self.gui.ResetOnSpawn = false
+    self.gui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+    self.gui.Parent = LocalPlayer:WaitForChild("PlayerGui")
+    
+    -- Create main frame
+    self.mainFrame = Instance.new("Frame")
+    self.mainFrame.Name = "MainFrame"
+    self.mainFrame.Size = UDim2.new(0, 300, 0, 400)
+    self.mainFrame.Position = UDim2.new(0.5, -150, 0.5, -200)
+    self.mainFrame.AnchorPoint = Vector2.new(0.5, 0.5)
+    self.mainFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 40)
+    self.mainFrame.BorderSizePixel = 0
+    self.mainFrame.ClipsDescendants = true
+    self.mainFrame.Visible = false
+    self.mainFrame.Parent = self.gui
+    
+    -- Add corner
+    local corner = Instance.new("UICorner")
+    corner.CornerRadius = UDim.new(0, 8)
+    corner.Parent = self.mainFrame
+    
+    -- Add shadow
+    local shadow = Instance.new("ImageLabel")
+    shadow.Name = "Shadow"
+    shadow.Image = "rbxassetid://1316045217"
+    shadow.ImageColor3 = Color3.fromRGB(0, 0, 0)
+    shadow.ImageTransparency = 0.8
+    shadow.ScaleType = Enum.ScaleType.Slice
+    shadow.SliceCenter = Rect.new(10, 10, 118, 118)
+    shadow.Size = UDim2.new(1, 10, 1, 10)
+    shadow.Position = UDim2.new(0, -5, 0, -5)
+    shadow.BackgroundTransparency = 1
+    shadow.Parent = self.mainFrame
+    shadow.ZIndex = -1
+    
+    -- Create header
+    self.header = Instance.new("Frame")
+    self.header.Name = "Header"
+    self.header.Size = UDim2.new(1, 0, 0, 40)
+    self.header.Position = UDim2.new(0, 0, 0, 0)
+    self.header.BackgroundColor3 = Color3.fromRGB(40, 40, 50)
+    self.header.BorderSizePixel = 0
+    self.header.Parent = self.mainFrame
+    
+    -- Header corner
+    local headerCorner = Instance.new("UICorner")
+    headerCorner.CornerRadius = UDim.new(0, 8)
+    headerCorner.Parent = self.header
+    
+    -- Window title
+    self.title = Instance.new("TextLabel")
+    self.title.Name = "Title"
+    self.title.Size = UDim2.new(0, 200, 1, 0)
+    self.title.Position = UDim2.new(0, 50, 0, 0)
+    self.title.BackgroundTransparency = 1
+    self.title.Text = self.windowName
+    self.title.TextColor3 = Color3.fromRGB(255, 255, 255)
+    self.title.TextSize = 18
+    self.title.Font = Enum.Font.GothamBold
+    self.title.TextXAlignment = Enum.TextXAlignment.Left
+    self.title.Parent = self.header
+    
+    -- Create toggle button (small square)
+    self.toggleButton = Instance.new("ImageButton")
+    self.toggleButton.Name = "ToggleButton"
+    self.toggleButton.Size = UDim2.new(0, 30, 0, 30)
+    self.toggleButton.Position = UDim2.new(0, 10, 0.5, -15)
+    self.toggleButton.AnchorPoint = Vector2.new(0, 0.5)
+    self.toggleButton.BackgroundColor3 = Color3.fromRGB(70, 70, 80)
+    self.toggleButton.AutoButtonColor = false
+    self.toggleButton.Parent = self.gui
+    
+    -- Toggle button corner
+    local toggleCorner = Instance.new("UICorner")
+    toggleCorner.CornerRadius = UDim.new(0, 6)
+    toggleCorner.Parent = self.toggleButton
+    
+    -- Toggle button icon
+    local toggleIcon = Instance.new("ImageLabel")
+    toggleIcon.Name = "Icon"
+    toggleIcon.Size = UDim2.new(0, 20, 0, 20)
+    toggleIcon.Position = UDim2.new(0.5, -10, 0.5, -10)
+    toggleIcon.BackgroundTransparency = 1
+    toggleIcon.Image = "rbxassetid://3926305904"
+    toggleIcon.ImageRectOffset = Vector2.new(124, 204)
+    toggleIcon.ImageRectSize = Vector2.new(36, 36)
+    toggleIcon.ImageColor3 = Color3.fromRGB(255, 255, 255)
+    toggleIcon.Parent = self.toggleButton
+    
+    -- Toggle button click event
+    self.toggleButton.MouseButton1Click:Connect(function()
+        self:ToggleVisibility()
+    end)
+    
+    -- Make toggle button draggable
+    self:MakeDraggable(self.toggleButton)
+    
+    -- Create tabs container
+    self.tabsContainer = Instance.new("Frame")
+    self.tabsContainer.Name = "TabsContainer"
+    self.tabsContainer.Size = UDim2.new(0, 80, 1, -40)
+    self.tabsContainer.Position = UDim2.new(0, 0, 0, 40)
+    self.tabsContainer.BackgroundColor3 = Color3.fromRGB(35, 35, 45)
+    self.tabsContainer.BorderSizePixel = 0
+    self.tabsContainer.Parent = self.mainFrame
+    
+    -- Create content container
+    self.contentContainer = Instance.new("Frame")
+    self.contentContainer.Name = "ContentContainer"
+    self.contentContainer.Size = UDim2.new(1, -80, 1, -40)
+    self.contentContainer.Position = UDim2.new(0, 80, 0, 40)
+    self.contentContainer.BackgroundColor3 = Color3.fromRGB(30, 30, 40)
+    self.contentContainer.BorderSizePixel = 0
+    self.contentContainer.Parent = self.mainFrame
+    
+    -- Initialize tweens
+    self:InitializeTweens()
+    
+    -- Follow player
+    self:FollowPlayer()
+    
+    return self
+end
+
+function Xenolib:InitializeTweens()
+    -- Tween info for smooth animations
+    self.tweenInfo = TweenInfo.new(
+        0.3, -- Time
+        Enum.EasingStyle.Quad, -- EasingStyle
+        Enum.EasingDirection.Out -- EasingDirection
+    )
+    
+    -- Show tween
+    self.showTween = TweenService:Create(
+        self.mainFrame,
+        self.tweenInfo,
+        {Position = UDim2.new(0.5, -150, 0.5, -200)}
+    )
+    
+    -- Hide tween
+    self.hideTween = TweenService:Create(
+        self.mainFrame,
+        self.tweenInfo,
+        {Position = UDim2.new(0.5, -150, 0, -450)}
+    )
+    
+    -- Toggle button show tween
+    self.toggleShowTween = TweenService:Create(
+        self.toggleButton,
+        self.tweenInfo,
+        {Position = UDim2.new(0, 10, 0.5, -15)}
+    )
+    
+    -- Toggle button hide tween
+    self.toggleHideTween = TweenService:Create(
+        self.toggleButton,
+        self.tweenInfo,
+        {Position = UDim2.new(0, -40, 0.5, -15)}
+    )
+end
+
+function Xenolib:FollowPlayer()
+    -- Follow player's camera with smooth tweening
+    local function updatePosition()
+        if not self.mainFrame or not self.mainFrame.Parent then return end
+        
+        local camera = workspace.CurrentCamera
+        if not camera then return end
+        
+        -- Calculate screen position
+        local headPos = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("Head")
+        if headPos then
+            local screenPos, onScreen = camera:WorldToScreenPoint(headPos.Position)
+            
+            if onScreen then
+                -- Update toggle button position
+                local tween = TweenService:Create(
+                    self.toggleButton,
+                    self.tweenInfo,
+                    {
+                        Position = UDim2.new(
+                            0, 
+                            math.clamp(screenPos.X - 20, 10, camera.ViewportSize.X - 40), 
+                            0.5, 
+                            -15
+                        )
+                    }
+                )
+                tween:Play()
+                
+                -- Update window position if visible
+                if self.isVisible then
+                    local windowTween = TweenService:Create(
+                        self.mainFrame,
+                        self.tweenInfo,
+                        {
+                            Position = UDim2.new(
+                                0.5, 
+                                -150, 
+                                0.5, 
+                                math.clamp(screenPos.Y - 200, -180, camera.ViewportSize.Y - 420)
+                            )
+                        }
+                    )
+                    windowTween:Play()
+                end
+            end
+        end
+    end
+    
+    -- Run on render stepped for smooth following
+    game:GetService("RunService").RenderStepped:Connect(updatePosition)
+end
+
+function Xenolib:MakeDraggable(frame)
+    -- Make a frame draggable
+    local dragging
+    local dragInput
+    local dragStart
+    local startPos
+    
+    local function update(input)
+        local delta = input.Position - dragStart
+        frame.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
+    end
+    
+    frame.InputBegan:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+            dragging = true
+            dragStart = input.Position
+            startPos = frame.Position
+            
+            input.Changed:Connect(function()
+                if input.UserInputState == Enum.UserInputState.End then
+                    dragging = false
+                end
+            end)
+        end
+    end)
+    
+    frame.InputChanged:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
+            dragInput = input
+        end
+    end)
+    
+    UserInputService.InputChanged:Connect(function(input)
+        if input == dragInput and dragging then
+            update(input)
+        end
+    end)
+end
+
+function Xenolib:ToggleVisibility()
+    self.isVisible = not self.isVisible
+    
+    if self.isVisible then
+        self.mainFrame.Visible = true
+        self.showTween:Play()
+        self.toggleShowTween:Play()
+    else
+        self.hideTween:Play()
+        self.toggleHideTween:Play()
+        self.hideTween.Completed:Wait()
+        self.mainFrame.Visible = false
+    end
+end
+
+function Xenolib:AddCloseButton()
+    -- Add close button (X)
+    self.closeButton = Instance.new("TextButton")
+    self.closeButton.Name = "CloseButton"
+    self.closeButton.Size = UDim2.new(0, 30, 0, 30)
+    self.closeButton.Position = UDim2.new(1, -40, 0, 5)
+    self.closeButton.AnchorPoint = Vector2.new(1, 0)
+    self.closeButton.BackgroundColor3 = Color3.fromRGB(200, 60, 60)
+    self.closeButton.Text = "X"
+    self.closeButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+    self.closeButton.TextSize = 18
+    self.closeButton.Font = Enum.Font.GothamBold
+    self.closeButton.Parent = self.header
+    
+    -- Close button corner
+    local closeCorner = Instance.new("UICorner")
+    closeCorner.CornerRadius = UDim.new(0, 6)
+    closeCorner.Parent = self.closeButton
+    
+    -- Close button click event
+    self.closeButton.MouseButton1Click:Connect(function()
+        self:ToggleVisibility()
+    end)
+end
+
+function Xenolib:AddPlayerAvatar()
+    -- Add player avatar circle image
+    self.avatarFrame = Instance.new("Frame")
+    self.avatarFrame.Name = "AvatarFrame"
+    self.avatarFrame.Size = UDim2.new(0, 32, 0, 32)
+    self.avatarFrame.Position = UDim2.new(0, 10, 0, 4)
+    self.avatarFrame.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+    self.avatarFrame.Parent = self.header
+    
+    -- Make it a circle
+    local avatarCorner = Instance.new("UICorner")
+    avatarCorner.CornerRadius = UDim.new(1, 0)
+    avatarCorner.Parent = self.avatarFrame
+    
+    -- Add player thumbnail
+    local avatarImage = Instance.new("ImageLabel")
+    avatarImage.Name = "AvatarImage"
+    avatarImage.Size = UDim2.new(1, 0, 1, 0)
+    avatarImage.BackgroundTransparency = 1
+    avatarImage.Image = Players:GetUserThumbnailAsync(
+        LocalPlayer.UserId,
+        Enum.ThumbnailType.HeadShot,
+        Enum.ThumbnailSize.Size420x420
+    )
+    avatarImage.Parent = self.avatarFrame
+    
+    -- Add border
+    local avatarBorder = Instance.new("UIStroke")
+    avatarBorder.Name = "AvatarBorder"
+    avatarBorder.Color = Color3.fromRGB(100, 100, 120)
+    avatarBorder.Thickness = 2
+    avatarBorder.Parent = self.avatarFrame
+end
+
+function Xenolib:AddTabs(tabNames)
+    -- Add tabs to the left side
+    for i, tabName in ipairs(tabNames) do
+        local tabButton = Instance.new("TextButton")
+        tabButton.Name = tabName
+        tabButton.Size = UDim2.new(1, 0, 0, 40)
+        tabButton.Position = UDim2.new(0, 0, 0, (i-1)*40)
+        tabButton.BackgroundColor3 = i == 1 and Color3.fromRGB(50, 50, 60) or Color3.fromRGB(35, 35, 45)
+        tabButton.BorderSizePixel = 0
+        tabButton.Text = tabName
+        tabButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+        tabButton.TextSize = 14
+        tabButton.Font = Enum.Font.Gotham
+        tabButton.Parent = self.tabsContainer
+        
+        -- Tab content frame
+        local tabContent = Instance.new("Frame")
+        tabContent.Name = tabName.."Content"
+        tabContent.Size = UDim2.new(1, 0, 1, 0)
+        tabContent.BackgroundTransparency = 1
+        tabContent.Visible = i == 1
+        tabContent.Parent = self.contentContainer
+        
+        -- Store references
+        self.tabs[tabName] = {
+            button = tabButton,
+            content = tabContent
+        }
+        
+        -- Tab click event
+        tabButton.MouseButton1Click:Connect(function()
+            self:SwitchTab(tabName)
+        end)
+    end
+    
+    -- Set first tab as active
+    if #tabNames > 0 then
+        self.currentTab = tabNames[1]
+    end
+end
+
+function Xenolib:SwitchTab(tabName)
+    if self.currentTab == tabName then return end
+    
+    -- Update button colors
+    for name, tab in pairs(self.tabs) do
+        tab.button.BackgroundColor3 = name == tabName and Color3.fromRGB(50, 50, 60) or Color3.fromRGB(35, 35, 45)
+        tab.content.Visible = name == tabName
+    end
+    
+    self.currentTab = tabName
+end
+
+-- Example usage functions
+function Xenolib.MakeWindow(name)
+    return Xenolib.new(name)
+end
+
+function Xenolib.MakeToggleButton()
+    -- Already created in the constructor
+end
+
+function Xenolib.MakeTabs(tabNames)
+    return Xenolib:AddTabs(tabNames)
+end
+
+function Xenolib.MakeCloseButton()
+    return Xenolib:AddCloseButton()
+end
+
+function Xenolib.MakeAvatar()
+    return Xenolib:AddPlayerAvatar()
+end
+
+-- Return the library
+return Xenolib
