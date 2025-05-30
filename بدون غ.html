@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>XENOPaste - مشاركة النصوص بسهولة</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        header {
+            background-color: #2c3e50;
+            color: white;
+            padding: 20px 0;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        h1 {
+            margin: 0;
+            font-size: 2.5em;
+        }
+        .logo {
+            font-weight: bold;
+            color: #3498db;
+        }
+        .paste-area {
+            background-color: white;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        textarea {
+            width: 100%;
+            height: 300px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 10px;
+            font-family: monospace;
+            font-size: 14px;
+            resize: vertical;
+        }
+        .controls {
+            margin-top: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #2980b9;
+        }
+        .view-paste {
+            display: none;
+        }
+        .paste-content {
+            background-color: #f8f9fa;
+            border: 1px solid #ddd;
+            padding: 15px;
+            border-radius: 4px;
+            font-family: monospace;
+            white-space: pre-wrap;
+            overflow-x: auto;
+        }
+        .raw-link {
+            display: inline-block;
+            margin-bottom: 15px;
+            color: #3498db;
+            text-decoration: none;
+        }
+        .raw-link:hover {
+            text-decoration: underline;
+        }
+        .home-link {
+            display: inline-block;
+            margin-bottom: 20px;
+            color: #3498db;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1><span class="logo">XENO</span>Paste</h1>
+            <p>مشاركة النصوص والكود بسهولة</p>
+        </div>
+    </header>
+
+    <div class="container">
+        <div id="create-paste" class="paste-area">
+            <h2>إنشاء لصقة جديدة</h2>
+            <textarea id="paste-content" placeholder="الصق النص أو الكود هنا..."></textarea>
+            <div class="controls">
+                <button id="upload-btn">رفع</button>
+            </div>
+        </div>
+
+        <div id="view-paste" class="view-paste paste-area">
+            <a href="#" id="home-link" class="home-link">← العودة إلى الصفحة الرئيسية</a>
+            <h2>لصقتك</h2>
+            <a href="#" id="raw-link" class="raw-link">رابط RAW</a>
+            <div id="paste-display" class="paste-content"></div>
+        </div>
+    </div>
+
+    <script>
+        // تخزين اللصقات (في تطبيق حقيقي سيتم استخدام قاعدة بيانات)
+        const pastes = {};
+        
+        // عناصر DOM
+        const createPasteSection = document.getElementById('create-paste');
+        const viewPasteSection = document.getElementById('view-paste');
+        const pasteContent = document.getElementById('paste-content');
+        const pasteDisplay = document.getElementById('paste-display');
+        const uploadBtn = document.getElementById('upload-btn');
+        const rawLink = document.getElementById('raw-link');
+        const homeLink = document.getElementById('home-link');
+        
+        // توليد معرف عشوائي للصقة
+        function generateRandomId() {
+            return Math.random().toString(36).substring(2, 10);
+        }
+        
+        // تحميل اللصقة
+        uploadBtn.addEventListener('click', function() {
+            const content = pasteContent.value.trim();
+            
+            if (content) {
+                const pasteId = generateRandomId();
+                pastes[pasteId] = content;
+                
+                // عرض اللصقة
+                pasteDisplay.textContent = content;
+                rawLink.href = `/${pasteId}/raw`;
+                
+                // تغيير عنوان URL بدون إعادة تحميل الصفحة
+                history.pushState({pasteId}, '', `/${pasteId}`);
+                
+                // تبديل الواجهات
+                createPasteSection.style.display = 'none';
+                viewPasteSection.style.display = 'block';
+                
+                // مسح حقل الإدخال
+                pasteContent.value = '';
+            } else {
+                alert('الرجاء إدخال نص أو كود أولاً!');
+            }
+        });
+        
+        // العودة إلى الصفحة الرئيسية
+        homeLink.addEventListener('click', function(e) {
+            e.preventDefault();
+            history.pushState({}, '', '/');
+            createPasteSection.style.display = 'block';
+            viewPasteSection.style.display = 'none';
+        });
+        
+        // معالجة تغيير عنوان URL
+        window.addEventListener('popstate', function(e) {
+            if (location.pathname === '/') {
+                createPasteSection.style.display = 'block';
+                viewPasteSection.style.display = 'none';
+            } else {
+                const pasteId = location.pathname.split('/')[1];
+                if (pastes[pasteId]) {
+                    pasteDisplay.textContent = pastes[pasteId];
+                    rawLink.href = `/${pasteId}/raw`;
+                    createPasteSection.style.display = 'none';
+                    viewPasteSection.style.display = 'block';
+                }
+            }
+        });
+        
+        // معالجة طلبات RAW
+        window.addEventListener('load', function() {
+            const path = window.location.pathname;
+            
+            // إذا كان رابط raw
+            if (path.endsWith('/raw')) {
+                const pasteId = path.split('/')[1];
+                if (pastes[pasteId]) {
+                    document.body.innerHTML = `<pre>${pastes[pasteId]}</pre>`;
+                } else {
+                    document.body.innerHTML = '<h1>اللصقة غير موجودة</h1>';
+                }
+            } 
+            // إذا كان رابط عرض عادي
+            else if (path !== '/') {
+                const pasteId = path.split('/')[1];
+                if (pastes[pasteId]) {
+                    pasteDisplay.textContent = pastes[pasteId];
+                    rawLink.href = `/${pasteId}/raw`;
+                    createPasteSection.style.display = 'none';
+                    viewPasteSection.style.display = 'block';
+                }
+            }
+        });
+    </script>
+</body>
+</html>
