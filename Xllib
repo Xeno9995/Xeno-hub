@@ -1,0 +1,417 @@
+--[[
+    Xenolib - A premium anime-inspired UI library
+    Designed specifically for [Your Project Name]
+    Created by [Your Name]
+--]]
+
+local Xenolib = {}
+Xenolib.__index = Xenolib
+Xenolib.Version = "1.0.0"
+
+-- Animation library for smooth transitions
+local TweenService = game:GetService("TweenService")
+local UserInputService = game:GetService("UserInputService")
+
+-- Custom anime color palette
+local ColorPalette = {
+    Primary = Color3.fromRGB(255, 85, 127),  -- Vibrant pink
+    Secondary = Color3.fromRGB(85, 170, 255), -- Sky blue
+    Dark = Color3.fromRGB(30, 30, 40),        -- Dark background
+    Light = Color3.fromRGB(240, 240, 245),    -- Light text
+    Accent = Color3.fromRGB(255, 215, 100)    -- Golden accent
+}
+
+-- Utility functions
+local function CreateInstance(className, properties)
+    local instance = Instance.new(className)
+    for property, value in pairs(properties) do
+        instance[property] = value
+    end
+    return instance
+end
+
+local function ApplyAnimation(gui, animationType)
+    if animationType == "FadeIn" then
+        gui.Visible = true
+        gui.BackgroundTransparency = 1
+        local tween = TweenService:Create(gui, TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
+            BackgroundTransparency = 0.2
+        })
+        tween:Play()
+    elseif animationType == "SlideIn" then
+        -- Slide animation implementation
+    end
+end
+
+-- Window class
+function Xenolib:CreateWindow(options)
+    local window = setmetatable({}, Xenolib)
+    window.Title = options.Title or "Xenolib Window"
+    window.Size = options.Size or UDim2.fromOffset(600, 500)
+    window.Theme = options.Theme or "Dark"
+    window.Acrylic = options.Acrylic or false
+    window.MinimizeKey = options.MinimizeKey or Enum.KeyCode.RightControl
+    
+    -- Main window frame
+    window.MainFrame = CreateInstance("Frame", {
+        Name = "XenolibWindow",
+        Size = window.Size,
+        Position = UDim2.fromScale(0.5, 0.5),
+        AnchorPoint = Vector2.new(0.5, 0.5),
+        BackgroundColor3 = ColorPalette.Dark,
+        BackgroundTransparency = window.Acrylic and 0.2 or 0,
+        BorderSizePixel = 0,
+        ClipsDescendants = true,
+        Parent = options.Parent or game:GetService("CoreGui")
+    })
+    
+    -- Apply acrylic effect if enabled
+    if window.Acrylic then
+        local blur = CreateInstance("BlurEffect", {
+            Name = "AcrylicBlur",
+            Size = 12,
+            Parent = window.MainFrame
+        })
+    end
+    
+    -- Title bar
+    window.TitleBar = CreateInstance("Frame", {
+        Name = "TitleBar",
+        Size = UDim2.new(1, 0, 0, 40),
+        BackgroundColor3 = ColorPalette.Primary,
+        BorderSizePixel = 0,
+        Parent = window.MainFrame
+    })
+    
+    -- Title text
+    window.TitleLabel = CreateInstance("TextLabel", {
+        Name = "Title",
+        Size = UDim2.new(1, -40, 1, 0),
+        Position = UDim2.new(0, 10, 0, 0),
+        BackgroundTransparency = 1,
+        Text = window.Title,
+        TextColor3 = ColorPalette.Light,
+        TextXAlignment = Enum.TextXAlignment.Left,
+        Font = Enum.Font.GothamBold,
+        TextSize = 18,
+        Parent = window.TitleBar
+    })
+    
+    -- Close button
+    window.CloseButton = CreateInstance("TextButton", {
+        Name = "CloseButton",
+        Size = UDim2.new(0, 40, 1, 0),
+        Position = UDim2.new(1, -40, 0, 0),
+        BackgroundColor3 = Color3.fromRGB(255, 85, 85),
+        BorderSizePixel = 0,
+        Text = "×",
+        TextColor3 = ColorPalette.Light,
+        Font = Enum.Font.GothamBold,
+        TextSize = 24,
+        Parent = window.TitleBar
+    })
+    
+    -- Tab container
+    window.TabContainer = CreateInstance("Frame", {
+        Name = "TabContainer",
+        Size = UDim2.new(1, 0, 0, 50),
+        Position = UDim2.new(0, 0, 0, 40),
+        BackgroundColor3 = Color3.fromRGB(40, 40, 50),
+        BorderSizePixel = 0,
+        Parent = window.MainFrame
+    })
+    
+    -- Tab list layout
+    CreateInstance("UIListLayout", {
+        Name = "TabListLayout",
+        FillDirection = Enum.FillDirection.Horizontal,
+        SortOrder = Enum.SortOrder.LayoutOrder,
+        Parent = window.TabContainer
+    })
+    
+    -- Content frame
+    window.ContentFrame = CreateInstance("Frame", {
+        Name = "ContentFrame",
+        Size = UDim2.new(1, 0, 1, -90),
+        Position = UDim2.new(0, 0, 0, 90),
+        BackgroundTransparency = 1,
+        Parent = window.MainFrame
+    })
+    
+    -- Initialize tabs table
+    window.Tabs = {}
+    
+    -- Close button functionality
+    window.CloseButton.MouseButton1Click:Connect(function()
+        window:Destroy()
+    end)
+    
+    -- Dragging functionality
+    local dragging
+    local dragInput
+    local dragStart
+    local startPos
+    
+    window.TitleBar.InputBegan:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 then
+            dragging = true
+            dragStart = input.Position
+            startPos = window.MainFrame.Position
+            
+            input.Changed:Connect(function()
+                if input.UserInputState == Enum.UserInputState.End then
+                    dragging = false
+                end
+            end)
+        end
+    end)
+    
+    window.TitleBar.InputChanged:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseMovement then
+            dragInput = input
+        end
+    end)
+    
+    UserInputService.InputChanged:Connect(function(input)
+        if input == dragInput and dragging then
+            local delta = input.Position - dragStart
+            window.MainFrame.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
+        end
+    end)
+    
+    -- Minimize functionality
+    UserInputService.InputBegan:Connect(function(input, processed)
+        if not processed and input.KeyCode == window.MinimizeKey then
+            window.MainFrame.Visible = not window.MainFrame.Visible
+        end
+    end)
+    
+    -- Apply fade-in animation
+    ApplyAnimation(window.MainFrame, "FadeIn")
+    
+    return window
+end
+
+-- Tab class
+function Xenolib.Window:AddTab(options)
+    local tab = {
+        Title = options.Title or "New Tab",
+        Icon = options.Icon or ""
+    }
+    
+    -- Tab button
+    tab.Button = CreateInstance("TextButton", {
+        Name = "TabButton_"..options.Title,
+        Size = UDim2.new(0, 120, 1, 0),
+        BackgroundColor3 = Color3.fromRGB(50, 50, 60),
+        BorderSizePixel = 0,
+        AutoButtonColor = false,
+        Text = tab.Title,
+        TextColor3 = ColorPalette.Light,
+        Font = Enum.Font.Gotham,
+        TextSize = 14,
+        Parent = self.TabContainer
+    })
+    
+    -- Tab content frame
+    tab.ContentFrame = CreateInstance("ScrollingFrame", {
+        Name = "TabContent_"..options.Title,
+        Size = UDim2.new(1, 0, 1, 0),
+        Position = UDim2.new(0, 0, 0, 0),
+        BackgroundTransparency = 1,
+        ScrollBarThickness = 3,
+        ScrollBarImageColor3 = ColorPalette.Primary,
+        Visible = false,
+        Parent = self.ContentFrame
+    })
+    
+    -- Content layout
+    CreateInstance("UIListLayout", {
+        Name = "ContentLayout",
+        Padding = UDim.new(0, 10),
+        SortOrder = Enum.SortOrder.LayoutOrder,
+        Parent = tab.ContentFrame
+    })
+    
+    -- Add to window's tabs table
+    table.insert(self.Tabs, tab)
+    
+    -- Set first tab as active by default
+    if #self.Tabs == 1 then
+        self:SelectTab(1)
+    end
+    
+    -- Tab button click event
+    tab.Button.MouseButton1Click:Connect(function()
+        self:SelectTab(#self.Tabs)
+    end)
+    
+    -- Hover effects
+    tab.Button.MouseEnter:Connect(function()
+        if not tab.Active then
+            TweenService:Create(tab.Button, TweenInfo.new(0.2), {
+                BackgroundColor3 = Color3.fromRGB(60, 60, 70)
+            }):Play()
+        end
+    end)
+    
+    tab.Button.MouseLeave:Connect(function()
+        if not tab.Active then
+            TweenService:Create(tab.Button, TweenInfo.new(0.2), {
+                BackgroundColor3 = Color3.fromRGB(50, 50, 60)
+            }):Play()
+        end
+    end)
+    
+    -- Add methods to the tab
+    function tab:AddButton(options) -- Button element
+        local button = {
+            Title = options.Title or "Button",
+            Description = options.Description or "",
+            Callback = options.Callback or function() end
+        }
+        
+        -- Button container
+        button.Container = CreateInstance("Frame", {
+            Name = "Button_"..button.Title,
+            Size = UDim2.new(1, -20, 0, 60),
+            BackgroundColor3 = Color3.fromRGB(45, 45, 55),
+            BorderSizePixel = 0,
+            Parent = tab.ContentFrame
+        })
+        
+        -- Corner rounding
+        CreateInstance("UICorner", {
+            CornerRadius = UDim.new(0, 6),
+            Parent = button.Container
+        })
+        
+        -- Button title
+        button.TitleLabel = CreateInstance("TextLabel", {
+            Name = "Title",
+            Size = UDim2.new(1, -20, 0, 24),
+            Position = UDim2.new(0, 10, 0, 8),
+            BackgroundTransparency = 1,
+            Text = button.Title,
+            TextColor3 = ColorPalette.Light,
+            TextXAlignment = Enum.TextXAlignment.Left,
+            Font = Enum.Font.GothamBold,
+            TextSize = 16,
+            Parent = button.Container
+        })
+        
+        -- Button description
+        button.DescLabel = CreateInstance("TextLabel", {
+            Name = "Description",
+            Size = UDim2.new(1, -20, 0, 16),
+            Position = UDim2.new(0, 10, 0, 32),
+            BackgroundTransparency = 1,
+            Text = button.Description,
+            TextColor3 = Color3.fromRGB(180, 180, 190),
+            TextXAlignment = Enum.TextXAlignment.Left,
+            Font = Enum.Font.Gotham,
+            TextSize = 12,
+            Parent = button.Container
+        })
+        
+        -- Button highlight
+        button.Highlight = CreateInstance("Frame", {
+            Name = "Highlight",
+            Size = UDim2.new(0, 0, 1, 0),
+            BackgroundColor3 = ColorPalette.Primary,
+            BorderSizePixel = 0,
+            Parent = button.Container
+        })
+        
+        -- Button click area
+        button.ClickArea = CreateInstance("TextButton", {
+            Name = "ClickArea",
+            Size = UDim2.new(1, 0, 1, 0),
+            BackgroundTransparency = 1,
+            Text = "",
+            Parent = button.Container
+        })
+        
+        -- Click animation and callback
+        button.ClickArea.MouseButton1Click:Connect(function()
+            -- Animate highlight
+            button.Highlight.Size = UDim2.new(0, 0, 1, 0)
+            button.Highlight.Visible = true
+            TweenService:Create(button.Highlight, TweenInfo.new(0.3), {
+                Size = UDim2.new(1, 0, 1, 0),
+                BackgroundTransparency = 0.7
+            }):Play()
+            
+            -- Execute callback
+            button.Callback()
+        end)
+        
+        -- Hover effects
+        button.ClickArea.MouseEnter:Connect(function()
+            TweenService:Create(button.Container, TweenInfo.new(0.2), {
+                BackgroundColor3 = Color3.fromRGB(55, 55, 65)
+            }):Play()
+        end)
+        
+        button.ClickArea.MouseLeave:Connect(function()
+            TweenService:Create(button.Container, TweenInfo.new(0.2), {
+                BackgroundColor3 = Color3.fromRGB(45, 45, 55)
+            }):Play()
+        end)
+        
+        return button
+    end
+    
+    -- Add other UI elements similarly (Toggle, Slider, Dropdown, etc.)
+    
+    return tab
+end
+
+-- Select tab method
+function Xenolib.Window:SelectTab(index)
+    for i, tab in ipairs(self.Tabs) do
+        tab.Active = (i == index)
+        tab.ContentFrame.Visible = (i == index)
+        
+        TweenService:Create(tab.Button, TweenInfo.new(0.2), {
+            BackgroundColor3 = (i == index) and ColorPalette.Primary or Color3.fromRGB(50, 50, 60)
+        }):Play()
+    end
+end
+
+-- Destroy window method
+function Xenolib.Window:Destroy()
+    self.MainFrame:Destroy()
+    Xenolib.Unloaded = true
+end
+
+-- Notification system
+function Xenolib:Notify(options)
+    -- Notification implementation with anime-style animations
+end
+
+-- Example usage:
+local XenolibUI = Xenolib:CreateWindow({
+    Title = "Xenolib " .. Xenolib.Version,
+    SubTitle = "by [Your Name]",
+    Size = UDim2.fromOffset(600, 500),
+    Acrylic = true,
+    Theme = "Dark",
+    MinimizeKey = Enum.KeyCode.RightControl
+})
+
+local MainTab = XenolibUI:AddTab({Title = "Main", Icon = "home"})
+local SettingsTab = XenolibUI:AddTab({Title = "Settings", Icon = "settings"})
+
+-- Add elements to tabs
+local TestButton = MainTab:AddButton({
+    Title = "Test Button",
+    Description = "Click me to see magic happen!",
+    Callback = function()
+        print("Button clicked!")
+    end
+})
+
+-- More elements can be added similarly
+
+return Xenolib
