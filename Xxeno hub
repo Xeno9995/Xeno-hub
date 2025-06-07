@@ -1,0 +1,2388 @@
+-- إعداد اسم ورول بلاي للمستخدم
+local args1 = {
+    [1] = "RolePlayName",
+    [2] = "XENO V1 سكربت"
+}
+game:GetService("ReplicatedStorage").RE:FindFirstChild("1RPNam1eTex1t"):FireServer(unpack(args1))
+
+local args2 = {
+    [1] = "RolePlayBio",
+    [2] = "مطور السكربت نيبرو/XENO"
+}
+game:GetService("ReplicatedStorage").RE:FindFirstChild("1RPNam1eTex1t"):FireServer(unpack(args2))
+
+
+wait()
+
+game.Players.LocalPlayer.Character:FindFirstChild("Head"):Destroy()
+local xenolib = loadstring(game:HttpGet("https://raw.githubusercontent.com/Xeno9995/Xeno-hub/refs/heads/main/XENOHUB"))()
+local Window = xenolib:MakeWindow({
+  Title = "XENO HUB | BROOKHAVEN",
+  SubTitle = "by xeno999",
+  SaveFolder = "test | xeno lib v1.json"
+})
+Window:AddMinimizeButton({
+    Button = { Image = "rbxassetid://79769548191", BackgroundTransparency = 0 },
+    Corner = { CornerRadius = UDim.new(15, 1) },
+})
+local Tab1 = Window:MakeTab({"Discord", "Warning"})
+Tab1:AddDiscordInvite({
+    Name = "DARK X COMMUNITY",
+    Description = "Join server",
+    Logo = "rbxassetid://79769548191",
+    Invite = "https://discord.gg/YmAbHk3z",
+})
+local Tab2 = Window:MakeTab({"Information", "Home"})
+local Section = Tab2:AddSection({"Information from this script"})
+Tab2:AddParagraph({
+    Title = "Xeno Hub",
+    Text = "This Script Was Created By Xeno9995"
+})
+Tab2:AddParagraph({
+    Title = "Xeno hub",
+    Text = "Script Have Updates Every 2 Weak"
+})
+Tab2:AddParagraph({
+    Title = "Xeno Hub",
+    Text = "Thank You For Using XENO HUB Script"
+})
+local Tab3 = Window:MakeTab({"Player Info", "info"})
+local Section = Tab3:AddSection({"Information From Player"})
+local player = game.Players.LocalPlayer
+local username = player.Name
+local displayName = player.DisplayName
+local userId = player.UserId
+local accountAge = player.AccountAge
+
+-- Get the current game's name and ID
+local gameName
+local success, result = pcall(function()
+    return game:GetService("MarketplaceService"):GetProductInfo(game.PlaceId).Name
+end)
+if success then
+    gameName = result
+else
+    gameName = "Unknown"
+end
+
+local gameId = game.PlaceId
+
+-- Get the number of players currently in the server
+local playersInServer = #game.Players:GetPlayers()
+
+Tab3:AddParagraph({
+    Title = "Username: " .. username,
+    Text = ""
+})
+Tab3:AddParagraph({
+    Title = "Display Name: " .. displayName,
+    Text = ""
+})
+Tab3:AddParagraph({
+    Title = "User ID: " .. userId,
+    Text = ""
+})
+Tab3:AddParagraph({
+    Title = "Account Age: " .. accountAge .. " days",
+    Text = ""
+})
+Tab3:AddParagraph({
+    Title = "Currently Playing: " .. gameName,
+    Text = ""
+})
+Tab3:AddParagraph({
+    Title = "Game ID: " .. gameId,
+    Text = ""
+})
+Tab3:AddParagraph({
+    Title = "Players in Server: " .. playersInServer,
+    Text = ""
+})
+local Tab4 = Window:MakeTab({"Player", "User"})
+local Section = Tab4:AddSection({"Choose any player to know their information"})
+local Players = game:GetService("Players")
+local LocalPlayer = Players.LocalPlayer
+
+-- المتغيرات
+local selectedPlayer = nil
+local espEnabled = false
+local viewEnabled = false
+local connections = {}
+
+-- تحديث Dropdown تلقائيًا
+local function GetPlayerNames()
+    local names = {}
+    for _, plr in ipairs(Players:GetPlayers()) do
+        if plr ~= LocalPlayer then
+            table.insert(names, plr.Name)
+        end
+    end
+    return names
+end
+
+-- مشاهدة اللاعب
+local function SetView(enabled)
+    if not selectedPlayer then return end
+    viewEnabled = enabled
+    if enabled then
+        local function followCam()
+            while viewEnabled and selectedPlayer and selectedPlayer.Character and selectedPlayer.Character:FindFirstChild("Head") do
+                workspace.CurrentCamera.CameraSubject = selectedPlayer.Character.Head
+                task.wait()
+            end
+        end
+        task.spawn(followCam)
+    else
+        workspace.CurrentCamera.CameraSubject = LocalPlayer.Character:FindFirstChild("Humanoid") or LocalPlayer.Character
+    end
+end
+
+-- ESP
+local function CreateESP(target)
+    if not target.Character or not target.Character:FindFirstChild("Head") then return end
+
+    local billboard = Instance.new("BillboardGui")
+    billboard.Name = "TargetESP"
+    billboard.Adornee = target.Character.Head
+    billboard.Size = UDim2.new(0, 200, 0, 50)
+    billboard.StudsOffset = Vector3.new(0, 3, 0)
+    billboard.AlwaysOnTop = true
+
+    local nameLabel = Instance.new("TextLabel", billboard)
+    nameLabel.Size = UDim2.new(1, 0, 0.5, 0)
+    nameLabel.BackgroundTransparency = 1
+    nameLabel.Text = target.Name
+    nameLabel.TextColor3 = Color3.new(1, 0, 0)
+    nameLabel.TextStrokeTransparency = 0.5
+    nameLabel.TextScaled = true
+
+    local distLabel = Instance.new("TextLabel", billboard)
+    distLabel.Position = UDim2.new(0, 0, 0.5, 0)
+    distLabel.Size = UDim2.new(1, 0, 0.5, 0)
+    distLabel.BackgroundTransparency = 1
+    distLabel.TextColor3 = Color3.new(1, 1, 1)
+    distLabel.TextStrokeTransparency = 0.5
+    distLabel.TextScaled = true
+
+    billboard.Parent = target.Character.Head
+
+    local conn = game:GetService("RunService").RenderStepped:Connect(function()
+        if target and target.Character and target.Character:FindFirstChild("Head") then
+            local distance = math.floor((LocalPlayer.Character.Head.Position - target.Character.Head.Position).Magnitude)
+            distLabel.Text = "Distance: " .. distance
+        end
+    end)
+
+    table.insert(connections, conn)
+end
+
+local function RemoveESP()
+    if selectedPlayer and selectedPlayer.Character and selectedPlayer.Character:FindFirstChild("Head") then
+        for _, v in pairs(selectedPlayer.Character.Head:GetChildren()) do
+            if v:IsA("BillboardGui") and v.Name == "TargetESP" then
+                v:Destroy()
+            end
+        end
+    end
+    for _, conn in ipairs(connections) do
+        conn:Disconnect()
+    end
+    connections = {}
+end
+
+-- Teleport
+local function TeleportToPlayer()
+    if selectedPlayer and selectedPlayer.Character and selectedPlayer.Character:FindFirstChild("Head") then
+        LocalPlayer.Character:MoveTo(selectedPlayer.Character.Head.Position + Vector3.new(2, 0, 2))
+    end
+end
+
+-- Dropdown
+Tab4:AddDropdown({
+    Name = "Select Player",
+    Options = GetPlayerNames(),
+    Default = "",
+    Callback = function(selected)
+        selectedPlayer = Players:FindFirstChild(selected)
+        RemoveESP()
+        if espEnabled and selectedPlayer then
+            CreateESP(selectedPlayer)
+        end
+        if viewEnabled then
+            SetView(true)
+        end
+    end
+})
+
+-- تحديث تلقائي إذا دخل أو خرج لاعب
+Players.PlayerAdded:Connect(function()
+    task.wait(1)
+    -- يُفضّل ربط هذا مع إعادة تعيين خيارات Dropdown إذا كانت مكتبتك تدعم
+end)
+
+Players.PlayerRemoving:Connect(function(plr)
+    if selectedPlayer == plr then
+        selectedPlayer = nil
+        RemoveESP()
+        SetView(false)
+    end
+end)
+
+-- View Toggle
+Tab4:AddToggle({
+    Name = "View",
+    Default = false,
+    Callback = function(V)
+        SetView(V)
+    end
+})
+
+-- ESP Toggle
+Tab4:AddToggle({
+    Name = "Esp",
+    Default = false,
+    Callback = function(V)
+        espEnabled = V
+        if V and selectedPlayer then
+            CreateESP(selectedPlayer)
+        else
+            RemoveESP()
+        end
+    end
+})
+
+-- Teleport Toggle
+Tab4:AddToggle({
+    Name = "Teleport",
+    Default = false,
+    Callback = function(V)
+        if V and selectedPlayer then
+            TeleportToPlayer()
+        end
+    end
+})
+local Section = Tab4:AddSection({"Show Character Player With Animation"})
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+local LocalPlayer = Players.LocalPlayer
+local Camera = workspace.CurrentCamera
+
+local selectedPlayer = nil
+local orbitEnabled = false
+local orbitConnection = nil
+local orbitRadius = 10
+local orbitSpeed = 1
+
+-- تحديث قائمة اللاعبين
+local function GetPlayerNames()
+    local names = {}
+    for _, plr in ipairs(Players:GetPlayers()) do
+        if plr ~= LocalPlayer then
+            table.insert(names, plr.Name)
+        end
+    end
+    return names
+end
+
+-- وظيفة الدوران
+local function StartOrbit()
+    if not selectedPlayer or not selectedPlayer.Character or not selectedPlayer.Character:FindFirstChild("Head") then return end
+
+    local angle = 0
+    orbitConnection = RunService.RenderStepped:Connect(function(dt)
+        if not orbitEnabled or not selectedPlayer or not selectedPlayer.Character or not selectedPlayer.Character:FindFirstChild("Head") then return end
+        angle = angle + orbitSpeed * dt
+        local targetPos = selectedPlayer.Character.Head.Position
+        local offset = Vector3.new(math.cos(angle), 0.3, math.sin(angle)) * orbitRadius
+        local cameraPos = targetPos + offset
+        Camera.CameraType = Enum.CameraType.Scriptable
+        Camera.CFrame = CFrame.new(cameraPos, targetPos)
+    end)
+end
+
+local function StopOrbit()
+    if orbitConnection then
+        orbitConnection:Disconnect()
+        orbitConnection = nil
+    end
+    Camera.CameraType = Enum.CameraType.Custom
+end
+
+-- Dropdown لاختيار اللاعب
+Tab4:AddDropdown({
+    Name = "Select Player",
+    Options = GetPlayerNames(),
+    Default = "",
+    Callback = function(selected)
+        selectedPlayer = Players:FindFirstChild(selected)
+        if orbitEnabled then
+            StopOrbit()
+            StartOrbit()
+        end
+    end
+})
+
+-- زر تفعيل الدوران
+Tab4:AddToggle({
+    Name = "Show Character",
+    Default = false,
+    Callback = function(state)
+        orbitEnabled = state
+        if state then
+            StartOrbit()
+        else
+            StopOrbit()
+        end
+    end
+})
+local Section = Tab4:AddSection({"Walking through the walls"})
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+
+local player = Players.LocalPlayer
+local noclipConnection
+local noclipEnabled = false
+
+Tab4:AddToggle({
+    Name = "Noclip",
+    Default = false,
+    Callback = function(state)
+        noclipEnabled = state
+
+        if noclipEnabled then
+            noclipConnection = RunService.Stepped:Connect(function()
+                if player.Character and player.Character:FindFirstChild("Humanoid") then
+                    for _, part in ipairs(player.Character:GetDescendants()) do
+                        if part:IsA("BasePart") and part.CanCollide == true then
+                            part.CanCollide = false
+                        end
+                    end
+                end
+            end)
+            print("🚀 Noclip Enabled")
+        else
+            if noclipConnection then
+                noclipConnection:Disconnect()
+                noclipConnection = nil
+            end
+
+            -- إعادة التفعيل للتصادم عند إيقاف Noclip
+            if player.Character then
+                for _, part in ipairs(player.Character:GetDescendants()) do
+                    if part:IsA("BasePart") then
+                        part.CanCollide = true
+                    end
+                end
+            end
+            print("🛑 Noclip Disabled")
+        end
+    end
+})
+local Tab5 = Window:MakeTab({"Troll", "Glass"})
+local Section = Tab5:AddSection({"Fun and Damn the players"})
+local Players = game:GetService("Players")
+local LocalPlayer = Players.LocalPlayer
+local CurrentCamera = workspace.CurrentCamera
+
+local selectedPlayer = nil
+local spectateConnection = nil
+
+-- Dropdown: قائمة بأسماء اللاعبين في السيرفر
+Tab5:AddDropdown({
+    Name = "Select Player",
+    Options = (function()
+        local names = {}
+        for _, plr in pairs(Players:GetPlayers()) do
+            if plr ~= LocalPlayer then
+                table.insert(names, plr.Name)
+            end
+        end
+        return names
+    end)(),
+    Default = nil,
+    Callback = function(selected)
+        selectedPlayer = selected
+        print("Selected player:", selected)
+    end
+})
+
+-- تحديث القائمة عند دخول/خروج اللاعبين
+Players.PlayerAdded:Connect(function()
+    Tab5["Elements"]["Select Player"].Dropdown:Refresh(
+        (function()
+            local names = {}
+            for _, plr in pairs(Players:GetPlayers()) do
+                if plr ~= LocalPlayer then
+                    table.insert(names, plr.Name)
+                end
+            end
+            return names
+        end)(),
+        true
+    )
+end)
+Players.PlayerRemoving:Connect(function()
+    Tab5["Elements"]["Select Player"].Dropdown:Refresh(
+        (function()
+            local names = {}
+            for _, plr in pairs(Players:GetPlayers()) do
+                if plr ~= LocalPlayer then
+                    table.insert(names, plr.Name)
+                end
+            end
+            return names
+        end)(),
+        true
+    )
+end)
+
+-- Toggle: تفعيل مشاهدة اللاعب المحدد
+Tab5:AddToggle({
+    Name = "View Player",
+    Default = false,
+    Callback = function(isEnabled)
+        if isEnabled then
+            if selectedPlayer == nil then
+                warn("الرجاء اختيار لاعب من القائمة أولاً")
+                return
+            end
+
+            local targetPlayer = Players:FindFirstChild(selectedPlayer)
+            if targetPlayer and targetPlayer.Character and targetPlayer.Character:FindFirstChild("Humanoid") then
+                CurrentCamera.CameraSubject = targetPlayer.Character:FindFirstChild("Humanoid")
+                print("Started spectating:", selectedPlayer)
+            else
+                warn("اللاعب غير موجود أو لا يملك شخصية")
+            end
+        else
+            -- إرجاع الكاميرا للاعب المحلي
+            if LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("Humanoid") then
+                CurrentCamera.CameraSubject = LocalPlayer.Character:FindFirstChild("Humanoid")
+                print("Stopped spectating")
+            end
+        end
+    end
+})
+local Players = game:GetService("Players")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local LocalPlayer = Players.LocalPlayer
+
+local pickToolRemote = ReplicatedStorage:WaitForChild("RE"):WaitForChild("1Too1l")
+
+Tab5:AddButton({
+    Name = "Get Sofa",
+    Callback = function()
+        local args = {"PickingTools", "Couch"}
+        if pickToolRemote then
+            local success, err = pcall(function()
+                pickToolRemote:InvokeServer(unpack(args))
+            end)
+            if success then
+                print("✅ Received: Sofa")
+            else
+                warn("❌ Error getting Sofa:", err)
+            end
+        else
+            warn("⚠️ RemoteFunction not found!")
+        end
+    end
+})
+local Players         = game:GetService("Players")
+local ReplicatedStore = game:GetService("ReplicatedStorage")
+local RunService      = game:GetService("RunService")
+
+local localPlayer     = Players.LocalPlayer
+local selectedPlayer  = nil
+local isBanging       = false
+local bangTrack       = nil
+local loopConn        = nil
+local autoKillRunning = false
+
+local character = localPlayer.Character or localPlayer.CharacterAdded:Wait()
+local humanoid = character:WaitForChild("Humanoid")
+local hrp = character:WaitForChild("HumanoidRootPart")
+
+-- انيميشن البانق
+local function playBang()
+    local anim = Instance.new("Animation")
+    anim.AnimationId = "rbxassetid://148840371"
+    bangTrack = humanoid:LoadAnimation(anim)
+    bangTrack.Looped = true
+    bangTrack:Play()
+end
+
+local function stopBang()
+    isBanging = false
+    if bangTrack then bangTrack:Stop() end
+end
+
+-- Bang From Behind
+local function smartBangBehind(args)
+    local step = 0
+    while isBanging and selectedPlayer do
+        local target = Players:FindFirstChild(selectedPlayer)
+        local targetHRP = target and target.Character and target.Character:FindFirstChild("HumanoidRootPart")
+        if targetHRP and hrp then
+            local dist = (targetHRP.Position - hrp.Position).Magnitude
+            local speed = dist > 10 and args.FastSpeed or args.SlowSpeed
+            local behind = targetHRP.Position - targetHRP.CFrame.LookVector * args.Distance
+            local offset = Vector3.new(0, math.sin(step) * 0.5, 0)
+            local final = behind + offset
+
+            local dir = (final - hrp.Position).Unit
+            local newPos = hrp.Position + dir * speed * args.Delay
+            newPos = Vector3.new(newPos.X, final.Y, newPos.Z)
+            newPos = newPos:Lerp(final, 0.5)
+
+            RunService.Heartbeat:Wait()
+            localPlayer.Character:SetPrimaryPartCFrame(CFrame.new(final, targetHRP.Position))
+            step += args.Step
+            wait(args.Delay)
+        else
+            break
+        end
+    end
+    stopBang()
+end
+
+-- Bang Face
+local function smartBangFace(args)
+    local step = 0
+    while isBanging and selectedPlayer do
+        local target = Players:FindFirstChild(selectedPlayer)
+        local targetHRP = target and target.Character and target.Character:FindFirstChild("HumanoidRootPart")
+        if targetHRP and hrp then
+            local dist = (targetHRP.Position - hrp.Position).Magnitude
+            local speed = dist > 10 and args.FastSpeed or args.SlowSpeed
+            local inFront = targetHRP.Position + targetHRP.CFrame.LookVector * args.Distance
+            local offset = Vector3.new(0, math.sin(step) * args.BobHeight, 0)
+            local final = inFront + offset
+
+            local dir = (final - hrp.Position).Unit
+            local newPos = hrp.Position + dir * speed * args.Delay
+            newPos = Vector3.new(newPos.X, final.Y, newPos.Z)
+            newPos = newPos:Lerp(final, 0.5)
+
+            RunService.Heartbeat:Wait()
+            localPlayer.Character:SetPrimaryPartCFrame(CFrame.new(final, targetHRP.Position))
+            step += args.Step
+            wait(args.Delay)
+        else
+            break
+        end
+    end
+    stopBang()
+end
+
+-- تحديث أسماء اللاعبين
+local function getOtherPlayerNames()
+    local names = {}
+    for _, pl in ipairs(Players:GetPlayers()) do
+        if pl ~= localPlayer then table.insert(names, pl.Name) end
+    end
+    return names
+end
+
+-- اختيار اللاعب من Dropdown
+Tab5:AddDropdown({
+    Name = "Select Player",
+    Options = getOtherPlayerNames(),
+    Default = nil,
+    Callback = function(choice)
+        selectedPlayer = choice
+        print(">> Selected target:", choice)
+    end
+})
+
+Players.PlayerAdded:Connect(function(pl)
+    if pl ~= localPlayer then
+        Tab5["Elements"]["Select Player"].Dropdown:Refresh(getOtherPlayerNames(), true)
+    end
+end)
+Players.PlayerRemoving:Connect(function()
+    Tab5["Elements"]["Select Player"].Dropdown:Refresh(getOtherPlayerNames(), true)
+end)
+
+-- Toggle: Bang Face
+Tab5:AddToggle({
+    Name = "Bang Face",
+    Default = false,
+    Callback = function(state)
+        if not selectedPlayer then
+            warn(">> اختر لاعبًا أولاً.")
+            return
+        end
+        if state then
+            isBanging = true
+            playBang()
+            local args = {
+                Distance = 2.2,
+                FastSpeed = 10,
+                SlowSpeed = 2,
+                Step = 0.2,
+                Delay = 0.1,
+                BobHeight = 0.2
+            }
+            task.spawn(function() smartBangFace(args) end)
+        else
+            stopBang()
+        end
+    end
+})
+
+-- Toggle: Bang From Behind
+Tab5:AddToggle({
+    Name = "Bang From Behind",
+    Default = false,
+    Callback = function(state)
+        if not selectedPlayer then
+            warn(">> اختر لاعبًا أولاً.")
+            return
+        end
+        if state then
+            isBanging = true
+            playBang()
+            local args = {
+                Distance = 2.2,
+                FastSpeed = 10,
+                SlowSpeed = 2,
+                Step = 0.2,
+                Delay = 0.1
+            }
+            task.spawn(function() smartBangBehind(args) end)
+        else
+            stopBang()
+        end
+    end
+})
+
+-- زر قتل اللاعب + تفجير الحافلة
+Tab5:AddToggle({
+    Name = "Kill Player",
+    Default = false,
+    Callback = function(enabled)
+        autoKillRunning = enabled
+
+        if enabled then
+            local spawnRemote = ReplicatedStore:FindFirstChild("SpawnRemote")
+            if spawnRemote then
+                spawnRemote:FireServer({ VehicleName = "School Bus" })
+                print(">> Spawned School Bus")
+            else
+                warn("SpawnRemote not found")
+            end
+
+            loopConn = RunService.Heartbeat:Connect(function()
+                if not autoKillRunning or not selectedPlayer then return end
+
+                local target = Players:FindFirstChild(selectedPlayer)
+                if target and target.Character and target.Character:FindFirstChild("HumanoidRootPart")
+                   and localPlayer.Character and localPlayer.Character:FindFirstChild("HumanoidRootPart") then
+
+                    local targetHRP = target.Character.HumanoidRootPart
+                    local myHRP = localPlayer.Character.HumanoidRootPart
+                    myHRP.CFrame = targetHRP.CFrame * CFrame.new(0, 0, 3)
+
+                    for _, seat in pairs(workspace:GetDescendants()) do
+                        if (seat:IsA("VehicleSeat") or seat:IsA("Seat"))
+                           and seat.Occupant and seat.Occupant.Parent == target.Character then
+
+                            local mdl = seat:FindFirstAncestorOfClass("Model")
+                            if mdl then
+                                for _, part in pairs(mdl:GetDescendants()) do
+                                    if part:IsA("BasePart") then
+                                        part.CFrame = part.CFrame - Vector3.new(0, 500, 0)
+                                        part.Velocity = Vector3.new(0, -100, 0)
+                                        part.Anchored = false
+                                    end
+                                end
+                                local humanoid = target.Character:FindFirstChildOfClass("Humanoid")
+                                if humanoid then humanoid.Health = 0 end
+                                print(">> Vehicle and player moved to void and killed.")
+                                autoKillRunning = false
+                            end
+                            return
+                        end
+                    end
+                end
+            end)
+        else
+            if loopConn then
+                loopConn:Disconnect()
+                loopConn = nil
+            end
+            print(">> Auto Kill disabled.")
+        end
+    end
+})
+local Tab6 = Window:MakeTab({"Tools", "Tool"})
+local Section = Tab6:AddSection({"Get All Tools You Want"})
+local Players = game:GetService("Players")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local LocalPlayer = Players.LocalPlayer
+
+local pickToolRemote = ReplicatedStorage:WaitForChild("RE"):WaitForChild("1Too1l")
+
+Tab6:AddButton({
+    Name = "Get Shopping Cart",
+    Callback = function()
+        local args = {"PickingTools", "ShoppingCart"} -- هذا هو الاسم الداخلي الصحيح للأداة
+        if pickToolRemote then
+            local success, err = pcall(function()
+                pickToolRemote:InvokeServer(unpack(args))
+            end)
+            if success then
+                print("✅ Received: Shopping Cart")
+            else
+                warn("❌ Error getting Shopping Cart:", err)
+            end
+        else
+            warn("⚠️ RemoteFunction not found!")
+        end
+    end
+})
+local Players = game:GetService("Players")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local LocalPlayer = Players.LocalPlayer
+
+local pickToolRemote = ReplicatedStorage:WaitForChild("RE"):WaitForChild("1Too1l")
+
+Tab6:AddButton({
+    Name = "Get Laptop",
+    Callback = function()
+        local args = {"PickingTools", "Laptop"}
+        if pickToolRemote then
+            local success, err = pcall(function()
+                pickToolRemote:InvokeServer(unpack(args))
+            end)
+            if success then
+                print("✅ Received: Laptop")
+            else
+                warn("❌ Error getting Laptop:", err)
+            end
+        else
+            warn("⚠️ RemoteFunction not found!")
+        end
+    end
+})
+local Players = game:GetService("Players")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local LocalPlayer = Players.LocalPlayer
+
+local pickToolRemote = ReplicatedStorage:WaitForChild("RE"):WaitForChild("1Too1l")
+
+Tab6:AddButton({
+    Name = "Get Sofa",
+    Callback = function()
+        local args = {"PickingTools", "Couch"}
+        if pickToolRemote then
+            local success, err = pcall(function()
+                pickToolRemote:InvokeServer(unpack(args))
+            end)
+            if success then
+                print("✅ Received: Sofa")
+            else
+                warn("❌ Error getting Sofa:", err)
+            end
+        else
+            warn("⚠️ RemoteFunction not found!")
+        end
+    end
+})
+local Players = game:GetService("Players")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local LocalPlayer = Players.LocalPlayer
+
+local pickToolRemote = ReplicatedStorage:WaitForChild("RE"):WaitForChild("1Too1l")
+
+Tab6:AddButton({
+    Name = "Get Crystal",
+    Callback = function()
+        local args = {"PickingTools", "Crystal"} -- اسم الأداة الداخلي
+        if pickToolRemote then
+            local success, err = pcall(function()
+                pickToolRemote:InvokeServer(unpack(args))
+            end)
+            if success then
+                print("✅ Received: Crystal")
+            else
+                warn("❌ Error getting Crystal:", err)
+            end
+        else
+            warn("⚠️ RemoteFunction not found!")
+        end
+    end
+})
+local Players = game:GetService("Players")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local LocalPlayer = Players.LocalPlayer
+
+local pickToolRemote = ReplicatedStorage:WaitForChild("RE"):WaitForChild("1Too1l")
+
+Tab6:AddButton({
+    Name = "Get iPad",
+    Callback = function()
+        local args = {"PickingTools", "Ipad"} -- الاسم الداخلي في Brookhaven
+        if pickToolRemote then
+            local success, err = pcall(function()
+                pickToolRemote:InvokeServer(unpack(args))
+            end)
+            if success then
+                print("✅ Received: iPad (Tablet)")
+            else
+                warn("❌ Error getting iPad:", err)
+            end
+        else
+            warn("⚠️ RemoteFunction not found!")
+        end
+    end
+})
+local Players = game:GetService("Players")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local LocalPlayer = Players.LocalPlayer
+
+local pickToolRemote = ReplicatedStorage:WaitForChild("RE"):WaitForChild("1Too1l")
+
+Tab6:AddButton({
+    Name = "Get Sign",
+    Callback = function()
+        local args = {"PickingTools", "Sign"}  -- تأكد من الاسم الداخلي الصحيح (بدلاً من "Sign" قد يكون "StreetSign")
+        if pickToolRemote then
+            local success, err = pcall(function()
+                pickToolRemote:InvokeServer(unpack(args))
+            end)
+            if success then
+                print("✅ Received: Sign")
+            else
+                warn("❌ Error getting Sign:", err)
+            end
+        else
+            warn("⚠️ RemoteFunction not found!")
+        end
+    end
+})
+local Players = game:GetService("Players")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local LocalPlayer = Players.LocalPlayer
+
+-- RemoteFunction المسئول عن جلب الأدوات
+local pickToolRemote = ReplicatedStorage:WaitForChild("RE"):WaitForChild("1Too1l")
+
+Tab6:AddButton({
+    Name = "Get Shotgun",
+    Callback = function()
+        local args = {"PickingTools", "Shotgun"}  -- اسم Shotgun الداخلي في اللعبة
+        if pickToolRemote then
+            local success, err = pcall(function()
+                pickToolRemote:InvokeServer(unpack(args))
+            end)
+            if success then
+                print("✅ Received: Shotgun")
+            else
+                warn("❌ Error getting Shotgun:", err)
+            end
+        else
+            warn("⚠️ RemoteFunction not found!")
+        end
+    end
+})
+local Players = game:GetService("Players")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local LocalPlayer = Players.LocalPlayer
+
+local pickToolRemote = ReplicatedStorage:WaitForChild("RE"):WaitForChild("1Too1l")
+
+Tab6:AddButton({
+    Name = "Get Sniper",
+    Callback = function()
+        local args = {"PickingTools", "Sniper"}  -- اسم Sniper الداخلي في Brookhaven
+        if pickToolRemote then
+            local success, err = pcall(function()
+                pickToolRemote:InvokeServer(unpack(args))
+            end)
+            if success then
+                print("✅ Received: Sniper")
+            else
+                warn("❌ Error getting Sniper:", err)
+            end
+        else
+            warn("⚠️ RemoteFunction not found!")
+        end
+    end
+})
+local Players = game:GetService("Players")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local LocalPlayer = Players.LocalPlayer
+
+-- الريموت المسؤول عن إعطاء الأدوات
+local pickToolRemote = ReplicatedStorage:WaitForChild("RE"):WaitForChild("1Too1l")
+
+-- زر لجلب Baby Bottle
+Tab6:AddButton({
+    Name = "Get Baby Bottle",
+    Callback = function()
+        local args = {"PickingTools", "BabyBottle"}
+        if pickToolRemote then
+            local success, err = pcall(function()
+                pickToolRemote:InvokeServer(unpack(args))
+            end)
+            if success then
+                print("✅ Received: Baby Bottle")
+            else
+                warn("❌ Error getting Baby Bottle:", err)
+            end
+        else
+            warn("⚠️ RemoteFunction not found!")
+        end
+    end
+})
+local Players = game:GetService("Players")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local LocalPlayer = Players.LocalPlayer
+
+-- الريموت المسؤول عن إعطاء الأدوات
+local pickToolRemote = ReplicatedStorage:WaitForChild("RE"):WaitForChild("1Too1l")
+
+-- زر لجلب Milk
+Tab6:AddButton({
+    Name = "Get Milk",
+    Callback = function()
+        local args = {"PickingTools", "Milk"}
+        if pickToolRemote then
+            local success, err = pcall(function()
+                pickToolRemote:InvokeServer(unpack(args))
+            end)
+            if success then
+                print("✅ Received: Milk")
+            else
+                warn("❌ Error getting Milk:", err)
+            end
+        else
+            warn("⚠️ RemoteFunction not found!")
+        end
+    end
+})
+local Players = game:GetService("Players")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local LocalPlayer = Players.LocalPlayer
+
+-- الريموت المسؤول عن إعطاء الأدوات
+local pickToolRemote = ReplicatedStorage:WaitForChild("RE"):WaitForChild("1Too1l")
+
+-- زر لجلب Hammer
+Tab6:AddButton({
+    Name = "Get Hammer",
+    Callback = function()
+        local args = {"PickingTools", "Hammer"}
+        if pickToolRemote then
+            local success, err = pcall(function()
+                pickToolRemote:InvokeServer(unpack(args))
+            end)
+            if success then
+                print("✅ Received: Hammer")
+            else
+                warn("❌ Error getting Hammer:", err)
+            end
+        else
+            warn("⚠️ RemoteFunction not found!")
+        end
+    end
+})
+local Players = game:GetService("Players")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+
+-- تأكد من وجود RemoteFunction الصحيح
+local pickToolRemote = ReplicatedStorage:WaitForChild("RE"):WaitForChild("1Too1l")
+
+Tab6:AddButton({
+    Name = "Get Baby Monkey",
+    Callback = function()
+        -- جرب تغيّر الاسم بين هذه الاحتمالات حسب المشكلة
+        local possibleNames = {"BabyMonkey", "Baby_Monkey", "BabyBaby", "MonkeyBaby"}
+        for _, name in ipairs(possibleNames) do
+            local args = {"PickingTools", name}
+            local ok, err = pcall(function()
+                pickToolRemote:InvokeServer(unpack(args))
+            end)
+            if ok then
+                print("✅ Received Baby Monkey with name:", name)
+                return
+            end
+        end
+        warn("❌ Failed to get Baby Monkey. Tried: " .. table.concat(possibleNames, ", "))
+    end
+})
+local Players = game:GetService("Players")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local pickToolRemote = ReplicatedStorage:WaitForChild("RE"):WaitForChild("1Too1l")
+
+Tab6:AddButton({
+    Name = "Get Swat Shield",
+    Callback = function()
+        local possibleNames = {"SWATShield", "SwatShield", "Shield", "RiotShield"}
+        for _, name in ipairs(possibleNames) do
+            local args = {"PickingTools", name}
+            local success, err = pcall(function()
+                pickToolRemote:InvokeServer(unpack(args))
+            end)
+            if success then
+                print("✅ Received SWAT Shield with name:", name)
+                return
+            end
+        end
+        warn("❌ Failed to get SWAT Shield. Tried: " .. table.concat(possibleNames, ", "))
+    end
+})
+local Players = game:GetService("Players")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local pickToolRemote = ReplicatedStorage:WaitForChild("RE"):WaitForChild("1Too1l")
+
+Tab6:AddButton({
+    Name = "Get Taser",
+    Callback = function()
+        local args = {"PickingTools", "Taser"}
+        local success, err = pcall(function()
+            pickToolRemote:InvokeServer(unpack(args))
+        end)
+        if success then
+            print("✅ Taser received!")
+        else
+            warn("❌ Failed to get Taser:", err)
+        end
+    end
+})
+local Players = game:GetService("Players")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local pickToolRemote = ReplicatedStorage:WaitForChild("RE"):WaitForChild("1Too1l")
+
+Tab6:AddButton({
+    Name = "Get Baby Boy",
+    Callback = function()
+        local args = {"PickingTools", "BabyBoy"}  -- الاسم الافتراضي المتوقع
+        local success, err = pcall(function()
+            pickToolRemote:InvokeServer(unpack(args))
+        end)
+        if success then
+            print("✅ Baby Boy received!")
+        else
+            warn("❌ Error getting Baby Boy:", err)
+        end
+    end
+})
+local Players = game:GetService("Players")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local pickToolRemote = ReplicatedStorage:WaitForChild("RE"):WaitForChild("1Too1l")
+
+Tab6:AddButton({
+    Name = "Get Baby Girl",
+    Callback = function()
+        -- أسماء محتملة للأداة
+        local possibleNames = {"BabyGirl", "Baby_Girl", "GirlBaby", "BabyGirlTool"}
+        for _, name in ipairs(possibleNames) do
+            local args = {"PickingTools", name}
+            local ok, _ = pcall(function()
+                pickToolRemote:InvokeServer(unpack(args))
+            end)
+            if ok then
+                print("✅ Received Baby Girl with name:", name)
+                return
+            end
+        end
+        warn("❌ Failed to get Baby Girl. Tried: " .. table.concat(possibleNames, ", "))
+    end
+})
+local Players = game:GetService("Players")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local pickToolRemote = ReplicatedStorage:WaitForChild("RE"):WaitForChild("1Too1l")
+
+Tab6:AddButton({
+    Name = "Get Sleeping Bag",
+    Callback = function()
+        local args = {"PickingTools", "SleepingBag"}
+        local success, err = pcall(function()
+            pickToolRemote:InvokeServer(unpack(args))
+        end)
+        if success then
+            print("✅ Received: Sleeping Bag")
+        else
+            warn("❌ Error:", err)
+        end
+    end
+})
+local Players = game:GetService("Players")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local pickToolRemote = ReplicatedStorage:WaitForChild("RE"):WaitForChild("1Too1l")
+
+Tab6:AddButton({
+    Name = "Get Money",
+    Callback = function()
+        local args = {"PickingTools", "Money"}
+        local success, err = pcall(function()
+            pickToolRemote:InvokeServer(unpack(args))
+        end)
+        if success then
+            print("✅ Received: Money")
+        else
+            warn("❌ Error:", err)
+        end
+    end
+})
+local Players = game:GetService("Players")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local pickToolRemote = ReplicatedStorage:WaitForChild("RE"):WaitForChild("1Too1l")
+
+Tab6:AddButton({
+    Name = "Get Bomb",
+    Callback = function()
+        -- جرب أسماء محتملة للأداة
+        local possibleNames = {"Bomb", "BombTool", "Explosive", "Grenade"}
+        for _, name in ipairs(possibleNames) do
+            local args = {"PickingTools", name}
+            local ok, _ = pcall(function()
+                pickToolRemote:InvokeServer(unpack(args))
+            end)
+            if ok then
+                print("✅ Received Bomb with name:", name)
+                return
+            end
+        end
+        warn("❌ Failed to get Bomb. Tried:", table.concat(possibleNames, ", "))
+    end
+})
+local Tab7 = Window:MakeTab({"Animations", "Run"})
+local Section = Tab7:AddSection({"All You Want Animations Pick Your Favourite"})
+Tab7:AddButton({
+    Name = "Adidas Animation",
+    Callback = function()
+        -- Define the animation IDs for the Adidas Sports Animation Pack
+        local animations = {
+            idle = "rbxassetid://18537376492",    -- Primary idle animation
+            idleAlt = "rbxassetid://18537371272", -- Alternate idle animation
+            walk = "rbxassetid://18537392113",    -- Walk animation
+            run = "rbxassetid://18537384940",     -- Run animation
+            jump = "rbxassetid://18537380791",    -- Jump animation
+            fall = "rbxassetid://18537367238",    -- Fall animation
+            swim = "rbxassetid://18537389531",    -- Swim animation
+            swimIdle = "rbxassetid://18537387180",-- Swim idle animation
+            climb = "rbxassetid://18537378510"    -- Climb animation
+        }
+
+        -- Function to replace the default animations
+        local function replaceAnimations()
+            local player = game.Players.LocalPlayer
+            local character = player.Character or player.CharacterAdded:Wait()
+
+            -- Wait for the Animate script to load
+            local animateScript = character:WaitForChild("Animate")
+
+            -- Replace each animation
+            for animationType, animationId in pairs(animations) do
+                if animateScript:FindFirstChild(animationType) then
+                    for _, anim in ipairs(animateScript[animationType]:GetChildren()) do
+                        if anim:IsA("Animation") then
+                            anim.AnimationId = animationId
+                        end
+                    end
+                end
+            end
+
+            -- Handle alternate idle animation separately
+            local idle = animateScript:FindFirstChild("idle")
+            if idle then
+                local animAlt = idle:FindFirstChild("Animation2")
+                if animAlt then
+                    animAlt.AnimationId = animations.idleAlt
+                end
+            end
+        end
+
+        -- Function to ensure animations loop
+        local function ensureAnimationsLoop()
+            local player = game.Players.LocalPlayer
+            local character = player.Character or player.CharacterAdded:Wait()
+
+            -- Wait for the Humanoid to load
+            local humanoid = character:WaitForChild("Humanoid")
+
+            -- Connect to the AnimationPlayed event
+            humanoid.AnimationPlayed:Connect(function(animationTrack)
+                animationTrack.Looped = true
+            end)
+        end
+
+        -- Optional debug function for SwimIdle
+        local function debugSwimIdle()
+            local player = game.Players.LocalPlayer
+            local character = player.Character or player.CharacterAdded:Wait()
+            local animateScript = character:WaitForChild("Animate")
+            local swimIdle = animateScript:FindFirstChild("swimIdle")
+
+            if swimIdle then
+                for _, anim in ipairs(swimIdle:GetChildren()) do
+                    if anim:IsA("Animation") then
+                        print("SwimIdle Animation ID:", anim.AnimationId)
+                        anim.AnimationId = animations.swimIdle
+                        print("Updated SwimIdle Animation ID:", anim.AnimationId)
+                    end
+                end
+            else
+                print("swimIdle animation not found in Animate script.")
+            end
+        end
+
+        -- Run everything
+        replaceAnimations()
+        ensureAnimationsLoop()
+        debugSwimIdle()
+
+        print("✅ تم تفعيل Adidas Animation بنجاح.")
+    end
+})
+Tab7:AddButton({
+    Name = "Vampire Animation",
+    Callback = function()
+        local plr = game.Players.LocalPlayer
+
+        -- دالة لتفعيل الأنيميشنات
+        local function applyVampireAnimation(char)
+            local humanoid = char:WaitForChild("Humanoid")
+            local animate = char:WaitForChild("Animate")
+
+            animate.Disabled = true
+
+            -- إيقاف الأنيميشنات الحالية
+            for _, track in ipairs(humanoid:GetPlayingAnimationTracks()) do
+                track:Stop()
+            end
+
+            -- تعيين معرفات أنيميشن Vampire
+            animate.idle.Animation1.AnimationId = "http://www.roblox.com/asset/?id=1083445855"
+            animate.idle.Animation2.AnimationId = "http://www.roblox.com/asset/?id=1083450166"
+            animate.walk.WalkAnim.AnimationId = "http://www.roblox.com/asset/?id=1083473930"
+            animate.run.RunAnim.AnimationId = "http://www.roblox.com/asset/?id=1083462077"
+            animate.jump.JumpAnim.AnimationId = "http://www.roblox.com/asset/?id=1083455352"
+            animate.climb.ClimbAnim.AnimationId = "http://www.roblox.com/asset/?id=1083439238"
+            animate.fall.FallAnim.AnimationId = "http://www.roblox.com/asset/?id=1083443587"
+
+            humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
+            animate.Disabled = false
+            print("✅ تم تطبيق Vampire Animation.")
+        end
+
+        -- تطبيق الأنيميشن فورًا الآن
+        if plr.Character then
+            applyVampireAnimation(plr.Character)
+        end
+
+        -- ربط الحدث عند الـ Respawn تلقائيًا
+        plr.CharacterAdded:Connect(function(char)
+            char:WaitForChild("Humanoid")
+            char:WaitForChild("Animate")
+            task.wait(0.5) -- انتظار خفيف لضمان تجهيز الشخصية
+            applyVampireAnimation(char)
+        end)
+
+        print("🔁 تم تفعيل حفظ الأنيميشن بعد الموت.")
+    end
+})
+Tab7:AddButton({
+    Name = "Hero Animation",
+    Callback = function()
+        local plr = game.Players.LocalPlayer
+
+        local function applyHeroAnimation(char)
+            local humanoid = char:WaitForChild("Humanoid")
+            local animate = char:WaitForChild("Animate")
+
+            animate.Disabled = true
+
+            -- إيقاف الأنيميشنات الحالية
+            for _, track in ipairs(humanoid:GetPlayingAnimationTracks()) do
+                track:Stop()
+            end
+
+            -- تعيين معرفات أنيميشن Hero
+            animate.idle.Animation1.AnimationId = "http://www.roblox.com/asset/?id=616111295"
+            animate.idle.Animation2.AnimationId = "http://www.roblox.com/asset/?id=616113536"
+            animate.walk.WalkAnim.AnimationId = "http://www.roblox.com/asset/?id=616122287"
+            animate.run.RunAnim.AnimationId = "http://www.roblox.com/asset/?id=616117076"
+            animate.jump.JumpAnim.AnimationId = "http://www.roblox.com/asset/?id=616115533"
+            animate.climb.ClimbAnim.AnimationId = "http://www.roblox.com/asset/?id=616104706"
+            animate.fall.FallAnim.AnimationId = "http://www.roblox.com/asset/?id=616108001"
+
+            humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
+            animate.Disabled = false
+
+            print("✅ تم تطبيق Hero Animation.")
+        end
+
+        -- تفعيل الآن
+        if plr.Character then
+            applyHeroAnimation(plr.Character)
+        end
+
+        -- تفعيل تلقائي بعد الموت (Respawn)
+        plr.CharacterAdded:Connect(function(char)
+            char:WaitForChild("Humanoid")
+            char:WaitForChild("Animate")
+            task.wait(0.5)
+            applyHeroAnimation(char)
+        end)
+
+        print("🔁 تم تفعيل حفظ الأنيميشن بعد الموت.")
+    end
+})
+Tab7:AddButton({
+    Name = "Zombie Animation",
+    Callback = function()
+        local plr = game.Players.LocalPlayer
+
+        local function applyZombieClassicAnim(char)
+            local humanoid = char:WaitForChild("Humanoid")
+            local animate = char:WaitForChild("Animate")
+
+            animate.Disabled = true
+
+            -- إيقاف جميع الأنيميشنات الحالية
+            for _, track in ipairs(humanoid:GetPlayingAnimationTracks()) do
+                track:Stop()
+            end
+
+            -- تعيين معرفات Zombie Classic
+            animate.idle.Animation1.AnimationId = "http://www.roblox.com/asset/?id=616158929"
+            animate.idle.Animation2.AnimationId = "http://www.roblox.com/asset/?id=616160636"
+            animate.walk.WalkAnim.AnimationId = "http://www.roblox.com/asset/?id=616168032"
+            animate.run.RunAnim.AnimationId = "http://www.roblox.com/asset/?id=616163682"
+            animate.jump.JumpAnim.AnimationId = "http://www.roblox.com/asset/?id=616161997"
+            animate.climb.ClimbAnim.AnimationId = "http://www.roblox.com/asset/?id=616156119"
+            animate.fall.FallAnim.AnimationId = "http://www.roblox.com/asset/?id=616157476"
+
+            humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
+            animate.Disabled = false
+
+            print("✅ تم تفعيل Zombie Classic Animation.")
+        end
+
+        -- تفعيل الآن
+        if plr.Character then
+            applyZombieClassicAnim(plr.Character)
+        end
+
+        -- تفعيل تلقائي بعد الموت (Respawn)
+        plr.CharacterAdded:Connect(function(char)
+            char:WaitForChild("Humanoid")
+            char:WaitForChild("Animate")
+            task.wait(0.5)
+            applyZombieClassicAnim(char)
+        end)
+
+        print("🔁 تم تفعيل حفظ Zombie Animation بعد الموت.")
+    end
+})
+Tab7:AddButton({
+    Name = "Mage Animation",
+    Callback = function()
+        local plr = game.Players.LocalPlayer
+
+        local function applyMageAnim(char)
+            local humanoid = char:WaitForChild("Humanoid")
+            local animate = char:WaitForChild("Animate")
+
+            animate.Disabled = true
+
+            -- إيقاف جميع الأنيميشنات الحالية
+            for _, track in ipairs(humanoid:GetPlayingAnimationTracks()) do
+                track:Stop()
+            end
+
+            -- تعيين معرفات Mage Animation
+            animate.idle.Animation1.AnimationId = "http://www.roblox.com/asset/?id=707742142"
+            animate.idle.Animation2.AnimationId = "http://www.roblox.com/asset/?id=707855907"
+            animate.walk.WalkAnim.AnimationId = "http://www.roblox.com/asset/?id=707897309"
+            animate.run.RunAnim.AnimationId = "http://www.roblox.com/asset/?id=707861613"
+            animate.jump.JumpAnim.AnimationId = "http://www.roblox.com/asset/?id=707853694"
+            animate.climb.ClimbAnim.AnimationId = "http://www.roblox.com/asset/?id=707826056"
+            animate.fall.FallAnim.AnimationId = "http://www.roblox.com/asset/?id=707829716"
+
+            humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
+            animate.Disabled = false
+
+            print("✅ تم تفعيل Mage Animation.")
+        end
+
+        -- تفعيل الآن
+        if plr.Character then
+            applyMageAnim(plr.Character)
+        end
+
+        -- تفعيل تلقائي بعد الموت (Respawn)
+        plr.CharacterAdded:Connect(function(char)
+            char:WaitForChild("Humanoid")
+            char:WaitForChild("Animate")
+            task.wait(0.5)
+            applyMageAnim(char)
+        end)
+
+        print("🔁 تم تفعيل حفظ Mage Animation بعد الموت.")
+    end
+})
+Tab7:AddButton({
+    Name = "Ghost Animation",
+    Callback = function()
+        local plr = game.Players.LocalPlayer
+
+        local function applyGhostAnim(char)
+            local humanoid = char:WaitForChild("Humanoid")
+            local animate = char:WaitForChild("Animate")
+
+            animate.Disabled = true
+
+            -- إيقاف كل الأنيمشنات الحالية
+            for _, track in ipairs(humanoid:GetPlayingAnimationTracks()) do
+                track:Stop()
+            end
+
+            -- تعيين أنيميشن Ghost
+            animate.idle.Animation1.AnimationId = "http://www.roblox.com/asset/?id=616006778"
+            animate.idle.Animation2.AnimationId = "http://www.roblox.com/asset/?id=616008087"
+            animate.walk.WalkAnim.AnimationId = "http://www.roblox.com/asset/?id=616010382"
+            animate.run.RunAnim.AnimationId = "http://www.roblox.com/asset/?id=616013216"
+            animate.jump.JumpAnim.AnimationId = "http://www.roblox.com/asset/?id=616008936"
+            animate.climb.ClimbAnim.AnimationId = "http://www.roblox.com/asset/?id=616003713"
+            animate.fall.FallAnim.AnimationId = "http://www.roblox.com/asset/?id=616005863"
+
+            humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
+            animate.Disabled = false
+
+            print("✅ تم تفعيل Ghost Animation.")
+        end
+
+        -- تفعيل الآن
+        if plr.Character then
+            applyGhostAnim(plr.Character)
+        end
+
+        -- تفعيل بعد الموت تلقائياً
+        plr.CharacterAdded:Connect(function(char)
+            char:WaitForChild("Humanoid")
+            char:WaitForChild("Animate")
+            task.wait(0.5)
+            applyGhostAnim(char)
+        end)
+
+        print("🔁 سيتم تفعيل Ghost Animation تلقائيًا بعد الموت.")
+    end
+})
+Tab7:AddButton({
+    Name = "Elder Animation",
+    Callback = function()
+        local plr = game.Players.LocalPlayer
+
+        local function applyElderAnim(char)
+            local humanoid = char:WaitForChild("Humanoid")
+            local animate = char:WaitForChild("Animate")
+
+            animate.Disabled = true
+
+            for _, track in ipairs(humanoid:GetPlayingAnimationTracks()) do
+                track:Stop()
+            end
+
+            animate.idle.Animation1.AnimationId = "http://www.roblox.com/asset/?id=845397899"
+            animate.idle.Animation2.AnimationId = "http://www.roblox.com/asset/?id=845400520"
+            animate.walk.WalkAnim.AnimationId = "http://www.roblox.com/asset/?id=845403856"
+            animate.run.RunAnim.AnimationId = "http://www.roblox.com/asset/?id=845386501"
+            animate.jump.JumpAnim.AnimationId = "http://www.roblox.com/asset/?id=845398858"
+            animate.climb.ClimbAnim.AnimationId = "http://www.roblox.com/asset/?id=845392038"
+            animate.fall.FallAnim.AnimationId = "http://www.roblox.com/asset/?id=845396048"
+
+            humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
+            animate.Disabled = false
+        end
+
+        if plr.Character then
+            applyElderAnim(plr.Character)
+        end
+
+        plr.CharacterAdded:Connect(function(char)
+            char:WaitForChild("Humanoid")
+            char:WaitForChild("Animate")
+            task.wait(0.5)
+            applyElderAnim(char)
+        end)
+    end
+})
+Tab7:AddButton({
+    Name = "Levitation Animation",
+    Callback = function()
+        local plr = game.Players.LocalPlayer
+
+        local function applyLevitationAnim(char)
+            local humanoid = char:WaitForChild("Humanoid")
+            local animate = char:WaitForChild("Animate")
+
+            animate.Disabled = true
+
+            for _, track in ipairs(humanoid:GetPlayingAnimationTracks()) do
+                track:Stop()
+            end
+
+            animate.idle.Animation1.AnimationId = "http://www.roblox.com/asset/?id=616006778"
+            animate.idle.Animation2.AnimationId = "http://www.roblox.com/asset/?id=616008087"
+            animate.walk.WalkAnim.AnimationId = "http://www.roblox.com/asset/?id=616013216"
+            animate.run.RunAnim.AnimationId = "http://www.roblox.com/asset/?id=616010382"
+            animate.jump.JumpAnim.AnimationId = "http://www.roblox.com/asset/?id=616008936"
+            animate.climb.ClimbAnim.AnimationId = "http://www.roblox.com/asset/?id=616003713"
+            animate.fall.FallAnim.AnimationId = "http://www.roblox.com/asset/?id=616005863"
+
+            humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
+            animate.Disabled = false
+        end
+
+        if plr.Character then
+            applyLevitationAnim(plr.Character)
+        end
+
+        plr.CharacterAdded:Connect(function(char)
+            char:WaitForChild("Humanoid")
+            char:WaitForChild("Animate")
+            task.wait(0.5)
+            applyLevitationAnim(char)
+        end)
+    end
+})
+Tab7:AddButton({
+    Name = "Toy Animation",
+    Callback = function()
+        local plr = game.Players.LocalPlayer
+
+        local function applyToyAnim(char)
+            local humanoid = char:WaitForChild("Humanoid")
+            local animate = char:WaitForChild("Animate")
+
+            animate.Disabled = true
+
+            for _, track in ipairs(humanoid:GetPlayingAnimationTracks()) do
+                track:Stop()
+            end
+
+            animate.idle.Animation1.AnimationId = "http://www.roblox.com/asset/?id=782841498"
+            animate.idle.Animation2.AnimationId = "http://www.roblox.com/asset/?id=782845736"
+            animate.walk.WalkAnim.AnimationId = "http://www.roblox.com/asset/?id=782843345"
+            animate.run.RunAnim.AnimationId = "http://www.roblox.com/asset/?id=782842708"
+            animate.jump.JumpAnim.AnimationId = "http://www.roblox.com/asset/?id=782847020"
+            animate.climb.ClimbAnim.AnimationId = "http://www.roblox.com/asset/?id=782843869"
+            animate.fall.FallAnim.AnimationId = "http://www.roblox.com/asset/?id=782846423"
+
+            humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
+            animate.Disabled = false
+        end
+
+        if plr.Character then
+            applyToyAnim(plr.Character)
+        end
+
+        plr.CharacterAdded:Connect(function(char)
+            char:WaitForChild("Humanoid")
+            char:WaitForChild("Animate")
+            task.wait(0.5)
+            applyToyAnim(char)
+        end)
+    end
+})
+Tab7:AddButton({
+    Name = "Ninja Animation",
+    Callback = function()
+        local plr = game.Players.LocalPlayer
+
+        local function applyNinjaAnim(char)
+            local humanoid = char:WaitForChild("Humanoid")
+            local animate = char:WaitForChild("Animate")
+
+            animate.Disabled = true
+
+            for _, track in ipairs(humanoid:GetPlayingAnimationTracks()) do
+                track:Stop()
+            end
+
+            animate.idle.Animation1.AnimationId = "http://www.roblox.com/asset/?id=656117400"
+            animate.idle.Animation2.AnimationId = "http://www.roblox.com/asset/?id=656118341"
+            animate.walk.WalkAnim.AnimationId = "http://www.roblox.com/asset/?id=656121766"
+            animate.run.RunAnim.AnimationId = "http://www.roblox.com/asset/?id=656118852"
+            animate.jump.JumpAnim.AnimationId = "http://www.roblox.com/asset/?id=656117878"
+            animate.climb.ClimbAnim.AnimationId = "http://www.roblox.com/asset/?id=656114359"
+            animate.fall.FallAnim.AnimationId = "http://www.roblox.com/asset/?id=656115606"
+
+            humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
+            animate.Disabled = false
+        end
+
+        if plr.Character then
+            applyNinjaAnim(plr.Character)
+        end
+
+        plr.CharacterAdded:Connect(function(char)
+            char:WaitForChild("Humanoid")
+            char:WaitForChild("Animate")
+            task.wait(0.5)
+            applyNinjaAnim(char)
+        end)
+    end
+})
+Tab7:AddButton({
+    Name = "Cartoon Animation",
+    Callback = function()
+        local plr = game.Players.LocalPlayer
+
+        local function applyCartoonAnim(char)
+            local humanoid = char:WaitForChild("Humanoid")
+            local animate = char:WaitForChild("Animate")
+
+            animate.Disabled = true
+
+            for _, track in ipairs(humanoid:GetPlayingAnimationTracks()) do
+                track:Stop()
+            end
+
+            animate.idle.Animation1.AnimationId = "http://www.roblox.com/asset/?id=742637544"
+            animate.idle.Animation2.AnimationId = "http://www.roblox.com/asset/?id=742638445"
+            animate.walk.WalkAnim.AnimationId = "http://www.roblox.com/asset/?id=742640026"
+            animate.run.RunAnim.AnimationId = "http://www.roblox.com/asset/?id=742638842"
+            animate.jump.JumpAnim.AnimationId = "http://www.roblox.com/asset/?id=742637942"
+            animate.climb.ClimbAnim.AnimationId = "http://www.roblox.com/asset/?id=742636889"
+            animate.fall.FallAnim.AnimationId = "http://www.roblox.com/asset/?id=742637151"
+
+            humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
+            animate.Disabled = false
+        end
+
+        if plr.Character then
+            applyCartoonAnim(plr.Character)
+        end
+
+        plr.CharacterAdded:Connect(function(char)
+            char:WaitForChild("Humanoid")
+            char:WaitForChild("Animate")
+            task.wait(0.5)
+            applyCartoonAnim(char)
+        end)
+    end
+})
+Tab7:AddButton({
+    Name = "Pirate Animation",
+    Callback = function()
+        local plr = game.Players.LocalPlayer
+
+        local function applyPirateAnim(char)
+            local humanoid = char:WaitForChild("Humanoid")
+            local animate = char:WaitForChild("Animate")
+
+            animate.Disabled = true
+
+            for _, track in ipairs(humanoid:GetPlayingAnimationTracks()) do
+                track:Stop()
+            end
+
+            animate.idle.Animation1.AnimationId = "http://www.roblox.com/asset/?id=750781874"
+            animate.idle.Animation2.AnimationId = "http://www.roblox.com/asset/?id=750782770"
+            animate.walk.WalkAnim.AnimationId = "http://www.roblox.com/asset/?id=750785693"
+            animate.run.RunAnim.AnimationId = "http://www.roblox.com/asset/?id=750783738"
+            animate.jump.JumpAnim.AnimationId = "http://www.roblox.com/asset/?id=750782230"
+            animate.climb.ClimbAnim.AnimationId = "http://www.roblox.com/asset/?id=750779899"
+            animate.fall.FallAnim.AnimationId = "http://www.roblox.com/asset/?id=750780242"
+
+            humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
+            animate.Disabled = false
+        end
+
+        if plr.Character then
+            applyPirateAnim(plr.Character)
+        end
+
+        plr.CharacterAdded:Connect(function(char)
+            char:WaitForChild("Humanoid")
+            char:WaitForChild("Animate")
+            task.wait(0.5)
+            applyPirateAnim(char)
+        end)
+    end
+})
+Tab7:AddButton({
+    Name = "Knight Animation",
+    Callback = function()
+        local plr = game.Players.LocalPlayer
+
+        local function applyKnightAnim(char)
+            local humanoid = char:WaitForChild("Humanoid")
+            local animate = char:WaitForChild("Animate")
+
+            animate.Disabled = true
+
+            for _, track in ipairs(humanoid:GetPlayingAnimationTracks()) do
+                track:Stop()
+            end
+
+            animate.idle.Animation1.AnimationId = "http://www.roblox.com/asset/?id=657595757"
+            animate.idle.Animation2.AnimationId = "http://www.roblox.com/asset/?id=657568135"
+            animate.walk.WalkAnim.AnimationId = "http://www.roblox.com/asset/?id=657552124"
+            animate.run.RunAnim.AnimationId = "http://www.roblox.com/asset/?id=657564596"
+            animate.jump.JumpAnim.AnimationId = "http://www.roblox.com/asset/?id=658409194"
+            animate.climb.ClimbAnim.AnimationId = "http://www.roblox.com/asset/?id=658360781"
+            animate.fall.FallAnim.AnimationId = "http://www.roblox.com/asset/?id=657600338"
+
+            humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
+            animate.Disabled = false
+        end
+
+        if plr.Character then
+            applyKnightAnim(plr.Character)
+        end
+
+        plr.CharacterAdded:Connect(function(char)
+            char:WaitForChild("Humanoid")
+            char:WaitForChild("Animate")
+            task.wait(0.5)
+            applyKnightAnim(char)
+        end)
+    end
+})
+local Tab8 = Window:MakeTab({"Teleport", "Door"})
+local Section = Tab8:AddSection({"Teleport To Any Where Ypu Want"})
+Tab8:AddButton({
+	Name = "Tp Tool",
+	Callback = function(value)
+mouse = game.Players.LocalPlayer:GetMouse()
+tool = Instance.new("Tool")
+tool.RequiresHandle = false
+tool.Name = "Click To Tp By Xeno"
+tool.Activated:connect(function()
+local pos = mouse.Hit+Vector3.new(0,2.5,0)
+pos = CFrame.new(pos.X,pos.Y,pos.Z)
+game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = pos
+end)
+tool.Parent = game.Players.LocalPlayer.Backpack
+end
+})
+
+Tab8:AddButton({
+	Name = "Hiding Spot",
+	Callback = function()
+        local you = game.Players.LocalPlayer.Character.HumanoidRootPart
+		local location = CFrame.new(299.237854, 208.056396, 3610.72754, 0.99927485, 5.90756777e-10, 0.038076099, -5.77617731e-10, 1, -3.56074586e-10, -0.038076099, 3.33822942e-10, 0.99927485)
+		
+		you.CFrame = location
+  	end    
+})
+
+
+Tab8:AddButton({
+	Name = "Under Bridge",
+	Callback = function()
+        local you = game.Players.LocalPlayer.Character.HumanoidRootPart
+		local location = CFrame.new(-70.1040802, 11.0993261, 1321.80713, -0.803904712, -3.27944205e-09, -0.594758093, -2.33716602e-09, 1, -2.35487874e-09, 0.594758093, -5.03049602e-10, -0.803904712)
+		
+		you.CFrame = location
+  	end    
+})
+
+Tab8:AddButton({
+	Name = "Criminal Base",
+	Callback = function()
+        local you = game.Players.LocalPlayer.Character.HumanoidRootPart
+		local location = CFrame.new(-889, 121, 2074)
+		
+		you.CFrame = location
+  	end    
+})
+
+Tab8:AddButton({
+	Name = "Police Station",
+	Callback = function()
+        local you = game.Players.LocalPlayer.Character.HumanoidRootPart
+		local location = CFrame.new(827, 99, 2260)
+		
+		you.CFrame = location
+  	end    
+})
+
+Tab8:AddButton({
+	Name = "Cells",
+	Callback = function()
+        local you = game.Players.LocalPlayer.Character.HumanoidRootPart
+		local location = CFrame.new(915, 99, 2421)
+		
+		you.CFrame = location
+  	end    
+})
+
+Tab8:AddButton({
+	Name = "Yard",
+	Callback = function()
+        local you = game.Players.LocalPlayer.Character.HumanoidRootPart
+		local location = CFrame.new(817, 97, 2437)
+		
+		you.CFrame = location
+  	end    
+})
+
+Tab8:AddButton({
+	Name = "Cop",
+	Callback = function()
+		workspace.Remote.TeamEvent:FireServer("Bright blue")
+  	end    
+})
+
+Tab8:AddButton({
+	Name = "Prisoner",
+	Callback = function()
+        workspace.Remote.TeamEvent:FireServer("Bright orange")
+  	end    
+})
+
+Tab8:AddButton({
+	Name = "Criminal",
+	Callback = function()
+		local location =  CFrame.new(-920.399963, 96.8095779, 2138.25317, 0.00718167285, -0.0073257396, -0.999947369, -1.25340976e-05, 0.999973178, -0.00732601853, 0.999974191, 6.51548107e-05, 0.00718138926)
+
+		game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = location
+  	end
+})
+
+Tab8:AddButton({
+	Name = "Cop",
+	Callback = function()
+		local currentCframe = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame
+		
+		workspace.Remote.TeamEvent:FireServer("Bright blue")
+		wait(1.5)
+		game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = currentCframe
+  	end    
+})
+
+Tab8:AddButton({
+	Name = "Prisoner",
+	Callback = function()
+		local currentCframe = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame
+
+        workspace.Remote.TeamEvent:FireServer("Bright orange")
+		wait(1.5)
+		game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = currentCframe
+  	end    
+})
+
+Tab8:AddButton({
+	Name = "Criminal",
+	Callback = function()
+		local currentCframe = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame
+		local location =  CFrame.new(-920.399963, 96.8095779, 2138.25317, 0.00718167285, -0.0073257396, -0.999947369, -1.25340976e-05, 0.999973178, -0.00732601853, 0.999974191, 6.51548107e-05, 0.00718138926)
+
+		game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = location
+		wait(1)
+		game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = currentCframe
+  	end
+})
+
+Tab8:AddButton({
+	Name = "Neutral Spawn Locations",
+	Callback = function()
+        local you = game.Players.LocalPlayer.Character.HumanoidRootPart
+		local location = CFrame.new(877.398315, 27.7899818, 2352.80005, -0.000709146087, -2.35237468e-10, -0.999999762, -1.38322492e-10, 1, -2.35139436e-10, 0.999999762, 1.38155709e-10, -0.000709146087)
+		
+		you.CFrame = location
+  	end    
+})
+
+Tab8:AddButton({
+	Name = "Cafeteria",
+	Callback = function()
+        local you = game.Players.LocalPlayer.Character.HumanoidRootPart
+		local location = CFrame.new(931.542542, 99.9899368, 2294.22583, -0.999999285, 4.91239653e-08, 0.00120098412, 4.91538081e-08, 1, 2.48178331e-08, -0.00120098412, 2.4876849e-08, -0.999999285)
+		
+		you.CFrame = location
+  	end    
+})
+
+Tab8:AddButton({
+	Name = "Kitchen",
+	Callback = function()
+        local you = game.Players.LocalPlayer.Character.HumanoidRootPart
+		local location = CFrame.new(692.41095, 101.476959, 2356.29834, -0.00726743788, 0.00668678479, 0.999951243, -1.0504421e-05, 0.999977648, -0.00668703718, -0.999973595, -5.90996169e-05, -0.00726720458)
+		
+		you.CFrame = location
+  	end    
+})
+
+Tab8:AddButton({
+	Name = "Glitch Room",
+	Callback = function()
+        local you = game.Players.LocalPlayer.Character.HumanoidRootPart
+		local location = CFrame.new(919.5354, 99.9899368, 2233.21289, -0.999982774, -1.91831422e-08, 0.00587368105, -1.87098905e-08, 1, 8.06266911e-08, -0.00587368105, 8.05154059e-08, -0.999982774)
+		
+		you.CFrame = location
+  	end    
+})
+local Section = Tab8:AddSection({"Teleport To The Houses"})
+Tab8:AddButton({
+Name = "House 1",
+Callback = function()
+local player = game.Players.LocalPlayer
+player.Character.HumanoidRootPart.CFrame = CFrame.new(262, 8, 134)
+end
+})
+
+Tab8:AddButton({
+Name = "House 2",
+Callback = function()
+local player = game.Players.LocalPlayer
+player.Character.HumanoidRootPart.CFrame = CFrame.new(242, 10, 149)
+end
+})
+
+Tab8:AddButton({
+Name = "House 3",
+Callback = function()
+local player = game.Players.LocalPlayer
+player.Character.HumanoidRootPart.CFrame = CFrame.new(220, 8, 180)
+end
+})
+
+Tab8:AddButton({
+Name = "House 4",
+Callback = function()
+local player = game.Players.LocalPlayer
+player.Character.HumanoidRootPart.CFrame = CFrame.new(197, 9, 191)
+end
+})
+
+Tab8:AddButton({
+Name = "House 5",
+Callback = function()
+local player = game.Players.LocalPlayer
+player.Character.HumanoidRootPart.CFrame = CFrame.new(172, 6, 221)
+end
+})
+
+Tab8:AddButton({
+Name = "House 6",
+Callback = function()
+local player = game.Players.LocalPlayer
+player.Character.HumanoidRootPart.CFrame = CFrame.new(-43, 21, -137)
+end
+})
+
+Tab8:AddButton({
+Name = "House 7",
+Callback = function()
+local player = game.Players.LocalPlayer
+player.Character.HumanoidRootPart.CFrame = CFrame.new(-40, 36, -137)
+end
+})
+
+Tab8:AddButton({
+Name = "House 11",
+Callback = function()
+local player = game.Players.LocalPlayer
+player.Character.HumanoidRootPart.CFrame = CFrame.new(-21, 40, 436)
+end
+})
+
+Tab8:AddButton({
+Name = "House 12",
+Callback = function()
+local player = game.Players.LocalPlayer
+player.Character.HumanoidRootPart.CFrame = CFrame.new(155, 37, 433)
+end
+})
+
+Tab8:AddButton({
+Name = "House 13",
+Callback = function()
+local player = game.Players.LocalPlayer
+player.Character.HumanoidRootPart.CFrame = CFrame.new(255, 35, 431)
+end
+})
+
+Tab8:AddButton({
+Name = "House 14",
+Callback = function()
+local player = game.Players.LocalPlayer
+player.Character.HumanoidRootPart.CFrame = CFrame.new(254, 38, 394)
+end
+})
+
+Tab8:AddButton({
+Name = "House 15",
+Callback = function()
+local player = game.Players.LocalPlayer
+player.Character.HumanoidRootPart.CFrame = CFrame.new(148, 39, 387)
+end
+})
+
+Tab8:AddButton({
+Name = "House 16",
+Callback = function()
+local player = game.Players.LocalPlayer
+player.Character.HumanoidRootPart.CFrame = CFrame.new(-17, 42, 395)
+end
+})
+
+Tab8:AddButton({
+Name = "House 17",
+Callback = function()
+local player = game.Players.LocalPlayer
+player.Character.HumanoidRootPart.CFrame = CFrame.new(-189, 37, -247)
+end
+})
+
+Tab8:AddButton({
+Name = "House 18",
+Callback = function()
+local player = game.Players.LocalPlayer
+player.Character.HumanoidRootPart.CFrame = CFrame.new(-354, 37, -244)
+end
+})
+
+Tab8:AddButton({
+Name = "House 19",
+Callback = function()
+local player = game.Players.LocalPlayer
+player.Character.HumanoidRootPart.CFrame = CFrame.new(-456, 36, -245)
+end
+})
+
+Tab8:AddButton({
+Name = "House 20",
+Callback = function()
+local player = game.Players.LocalPlayer
+player.Character.HumanoidRootPart.CFrame = CFrame.new(-453, 38, -295)
+end
+})
+
+Tab8:AddButton({
+Name = "House 21",
+Callback = function()
+local player = game.Players.LocalPlayer
+player.Character.HumanoidRootPart.CFrame = CFrame.new(-356, 38, -294)
+end
+})
+
+Tab8:AddButton({
+Name = "House 22",
+Callback = function()
+local player = game.Players.LocalPlayer
+player.Character.HumanoidRootPart.CFrame = CFrame.new(-187, 37, -295)
+end
+})
+
+Tab8:AddButton({
+Name = "House 23",
+Callback = function()
+local player = game.Players.LocalPlayer
+player.Character.HumanoidRootPart.CFrame = CFrame.new(-410, 68, -447)
+end
+})
+
+Tab8:AddButton({
+Name = "House 24",
+Callback = function()
+local player = game.Players.LocalPlayer
+player.Character.HumanoidRootPart.CFrame = CFrame.new(-348, 69, -496)
+end
+})
+
+Tab8:AddButton({
+Name = "House 28",
+Callback = function()
+local player = game.Players.LocalPlayer
+player.Character.HumanoidRootPart.CFrame = CFrame.new(-103, 12, 1087)
+end
+})
+
+Tab8:AddButton({
+Name = "House 29",
+Callback = function()
+local player = game.Players.LocalPlayer
+player.Character.HumanoidRootPart.CFrame = CFrame.new(-730, 6, 808)
+end
+})
+
+Tab8:AddButton({
+Name = "House 30",
+Callback = function()
+local player = game.Players.LocalPlayer
+player.Character.HumanoidRootPart.CFrame = CFrame.new(-245, 7, 822)
+end
+})
+
+Tab8:AddButton({
+Name = "House 31",
+Callback = function()
+local player = game.Players.LocalPlayer
+player.Character.HumanoidRootPart.CFrame = CFrame.new(639, 76, -361)
+end
+})
+
+Tab8:AddButton({
+Name = "House 32",
+Callback = function()
+local player = game.Players.LocalPlayer
+player.Character.HumanoidRootPart.CFrame = CFrame.new(-908, 6, -361)
+end
+})
+
+Tab8:AddButton({
+Name = "House 33",
+Callback = function()
+local player = game.Players.LocalPlayer
+player.Character.HumanoidRootPart.CFrame = CFrame.new(-111, 70, -417)
+end
+})
+
+Tab8:AddButton({
+Name = "House 34",
+Callback = function()
+local player = game.Players.LocalPlayer
+player.Character.HumanoidRootPart.CFrame = CFrame.new(230, 38, 569)
+end
+})
+
+Tab8:AddButton({
+Name = "House 35",
+Callback = function()
+local player = game.Players.LocalPlayer
+player.Character.HumanoidRootPart.CFrame = CFrame.new(-30, 13, 2209)
+end
+})
+
+Tab8:AddButton({
+Name = "House 36",
+Callback = function()
+local player = game.Players.LocalPlayer
+player.Character.HumanoidRootPart.CFrame = CFrame.new(248, 17, -2324)
+end
+})
+
+Tab8:AddButton({
+Name = "House 37",
+Callback = function()
+local player = game.Players.LocalPlayer
+player.Character.HumanoidRootPart.CFrame = CFrame.new(-1946, 38, 327)
+end
+})
+
+local Tab9 = Window:MakeTab({"Settings", "settings"})
+local Section = Tab9:AddSection({"Equip Protections To protect against players"})
+Tab9:AddToggle({
+ Name = "Anti bang",
+ Default = false,
+ Callback = function(Value)
+  kiudi = Value
+     while kiudi and task.wait() do
+       for _, player in next, game.Players:GetPlayers() do
+         if player ~= game.Players.LocalPlayer and game.Workspace:FindFirstChild(player.Name) and player.Character:FindFirstChild("Humanoid") and player.Character:FindFirstChild("HumanoidRootPart") and (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - player.Character.HumanoidRootPart.Position).Magnitude <= 10 then
+           for _, anim in next, player.Character.Humanoid:GetPlayingAnimationTracks() do
+              if anim.Animation.AnimationId == "rbxassetid://148840371" or anim.Animation.AnimationId == "rbxassetid://5918726674" then
+    game:GetService("RunService").Heartbeat:Wait()
+    last_pick_sin_mrazy = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame 
+    game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(9e8, workspace.FallenPartsDestroyHeight + 1, 9e8) 
+    game:GetService("RunService").Heartbeat:Wait()
+    game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = last_pick_sin_mrazy
+              end
+           end
+         end
+       end
+     end
+   end    
+})
+Tab9:AddToggle({
+ Name = "Anti Fling",
+ Default = false,
+ Callback = function(Value)
+jhg = Value
+     while jhg and task.wait() do
+       for _, plr in next, game:GetService("Players"):GetPlayers() do
+         if plr ~= game:GetService("Players").LocalPlayer and plr.Character and plr.Character:FindFirstChild("HumanoidRootPart") then
+for _, part in next, plr.Character:GetChildren() do
+  if part:IsA("BasePart") then
+ part.CanCollide = not jhg
+ part.CanTouch = not jhg
+ part.AssemblyLinearVelocity = Vector3.zero
+ part.AssemblyAngularVelocity = Vector3.zero
+ part.Velocity = Vector3.zero
+ part.CustomPhysicalProperties = PhysicalProperties.new(0, 0, 0)
+  end
+end
+         end
+       end
+     end
+   end    
+})
+Tab9:AddToggle({
+ Name = "Anti Void",
+ Default = false,
+ Callback = function(Value)
+      local function getrespawn(): Instance
+  for _, part in next, workspace:GetDescendants() do
+    if part:IsA("SpawnLocation") then
+      return part
+   end
+  end
+end
+
+local thnei = Value
+local char = game.Players.LocalPlayer.Character or game.Players.LocalPlayer.CharacterAdded:Wait()
+
+while thnei and task.wait() do
+char = game.Players.LocalPlayer.Character or game.Players.LocalPlayer.CharacterAdded:Wait()
+  if char:FindFirstChild("HumanoidRootPart") and char.HumanoidRootPart.CFrame.Y <= workspace.FallenPartsDestroyHeight + 10 then
+    if getrespawn() then
+ char.HumanoidRootPart.CFrame = getrespawn().CFrame
+ char.HumanoidRootPart.Velocity = Vector3.zero
+     else
+ char.HumanoidRootPart.CFrame = CFrame.new(0, 0, 0)
+ char.HumanoidRootPart.Velocity = Vector3.zero
+    end
+  end
+end
+   end    
+})
+Tab9:AddToggle({
+ Name = "Anti sit",
+ Default = false,
+ Callback = function(Value)
+         game.Players.LocalPlayer.Character.Humanoid:SetStateEnabled("Seated", not Value)
+   end    
+})
+local VirtualUser = game:GetService("VirtualUser")
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+
+local LocalPlayer = Players.LocalPlayer
+
+local antiAfkConnection = nil
+local heartbeatConnection = nil
+local afkRemote = ReplicatedStorage:FindFirstChild("AFKRemote") -- غيّر الاسم إن وُجد
+local afkFunction = ReplicatedStorage:FindFirstChild("AFKFunction") -- غيّر الاسم إن وُجد
+
+Tab9:AddToggle({
+    Name = "Anti Afk",
+    Default = false,
+    Callback = function(enabled)
+        if enabled then
+            -- VirtualUser لمنع الخروج بسبب عدم النشاط
+            antiAfkConnection = LocalPlayer.Idled:Connect(function()
+                VirtualUser:Button2Down(Vector2.new(0,0), workspace.CurrentCamera.CFrame)
+                task.wait(0.1)
+                VirtualUser:Button2Up(Vector2.new(0,0), workspace.CurrentCamera.CFrame)
+                print(">> Sent VirtualUser to prevent AFK")
+            end)
+
+            -- Heartbeat loop لإرسال إشارات للـ RemoteEvent/Function
+            heartbeatConnection = RunService.Heartbeat:Connect(function()
+                -- Fire RemoteEvent إن وجد
+                if afkRemote and afkRemote:IsA("RemoteEvent") then
+                    pcall(function()
+                        afkRemote:FireServer("anti_afk_ping")
+                        print(">> Fired RemoteEvent")
+                    end)
+                end
+
+                -- Invoke RemoteFunction إن وجد
+                if afkFunction and afkFunction:IsA("RemoteFunction") then
+                    pcall(function()
+                        afkFunction:InvokeServer("anti_afk_check")
+                        print(">> Invoked RemoteFunction")
+                    end)
+                end
+            end)
+
+            print("✅ ANTI-AFK Enabled.")
+        else
+            -- تنظيف الاتصالات عند التعطيل
+            if antiAfkConnection then
+                antiAfkConnection:Disconnect()
+                antiAfkConnection = nil
+            end
+
+            if heartbeatConnection then
+                heartbeatConnection:Disconnect()
+                heartbeatConnection = nil
+            end
+
+            print("❌ ANTI-AFK Disabled.")
+        end
+    end
+})
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local RunService = game:GetService("RunService")
+local Players = game:GetService("Players")
+
+local LocalPlayer = Players.LocalPlayer
+local AntiSpyRemote = ReplicatedStorage:FindFirstChild("AntiSpyAlert") -- غيّر الاسم إن لزم
+
+local spyCheckerConnection = nil
+
+local suspiciousKeywords = {
+    "Spy", "spy", "getgenv", "hookfunction", "metatable", "getrawmetatable",
+    "getgc", "decompiler", "SimpleSpy", "Synapse", "Exploit", "Debug"
+}
+
+local function scanForSpyScripts()
+    local suspicious = {}
+
+    local function scan(obj)
+        if obj:IsA("LocalScript") or obj:IsA("ModuleScript") or obj:IsA("Script") then
+            for _, keyword in ipairs(suspiciousKeywords) do
+                if string.find(obj.Name, keyword) then
+                    table.insert(suspicious, obj:GetFullName())
+                end
+            end
+        end
+
+        for _, child in ipairs(obj:GetChildren()) do
+            scan(child)
+        end
+    end
+
+    scan(game.CoreGui)
+    scan(LocalPlayer:WaitForChild("PlayerGui"))
+    scan(ReplicatedStorage)
+
+    return suspicious
+end
+
+Tab9:AddToggle({
+    Name = "Anti Spy",
+    Default = false,
+    Callback = function(state)
+        if state then
+            spyCheckerConnection = RunService.Heartbeat:Connect(function()
+                local found = scanForSpyScripts()
+                if #found > 0 then
+                    for _, item in ipairs(found) do
+                        warn("🚨 Spy detected:", item)
+                        if AntiSpyRemote and AntiSpyRemote:IsA("RemoteEvent") then
+                            pcall(function()
+                                AntiSpyRemote:FireServer({
+                                    Player = LocalPlayer.Name,
+                                    Suspicious = item
+                                })
+                            end)
+                        end
+                    end
+                end
+            end)
+
+            print("🛡️ ANTI-SPY Enabled.")
+        else
+            if spyCheckerConnection then
+                spyCheckerConnection:Disconnect()
+                spyCheckerConnection = nil
+            end
+            print("🛑 ANTI-SPY Disabled.")
+        end
+    end
+})
+
+local Section = Tab9:AddSection({"More Coming Soon...."})
