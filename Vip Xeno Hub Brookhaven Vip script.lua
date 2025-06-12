@@ -2777,51 +2777,6 @@ Tab9:AddToggle({
 		end
 	end
 })
-local ReplicatedStorage = game:GetService("ReplicatedStorage")
-local RunService = game:GetService("RunService")
-local Players = game:GetService("Players")
-
--- إنشاء RemoteEvent في ReplicatedStorage إذا لم يكن موجودًا
-local lagEvent = ReplicatedStorage:FindFirstChild("LagEvent")
-if not lagEvent then
-    lagEvent = Instance.new("RemoteEvent")
-    lagEvent.Name = "LagEvent"
-    lagEvent.Parent = ReplicatedStorage
-end
-
--- استقبال اللاغ عند الجميع
-lagEvent.OnServerEvent:Connect(function(player)
-    for i = 1, 700 do
-        local part = Instance.new("Part")
-        part.Size = Vector3.new(10,10,10)
-        part.Anchored = true
-        part.Position = Vector3.new(math.random(-9999,9999), math.random(1,1000), math.random(-9999,9999))
-        part.Parent = workspace
-        game.Debris:AddItem(part, 5) -- تنظيف تلقائي بعد 5 ثوانٍ
-    end
-end)
-
--- زر اللاغ داخل تبويب Tab9
-Tab9:AddButton({
-    Name = "Lag Server",
-    Callback = function()
-        -- جمع كل اللاعبين
-        local args = {}
-        for _, plr in pairs(Players:GetPlayers()) do
-            table.insert(args, plr)
-        end
-
-        -- إرسال لاغ لكل اللاعبين باستخدام unpack
-        for _, plr in pairs(unpack({args})) do
-            if plr:IsDescendantOf(Players) then
-                -- Trigger LagEvent من client إلى server
-                lagEvent:FireServer()
-            end
-        end
-
-        print("✅ تم إرسال لاغ إلى جميع اللاعبين")
-    end
-})
 local Tab10 = Window:MakeTab({"Fun", "Game"})
 local Section = Tab10:AddSection({"Jump Player Character"})
 -- تخزين السلايدر لتعديل القيم لاحقًا
