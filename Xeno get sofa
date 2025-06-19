@@ -1,0 +1,13 @@
+        local args = {"PickingTools", "Couch"}
+        if pickToolRemote then
+            local success, err = pcall(function()
+                pickToolRemote:InvokeServer(unpack(args))
+            end)
+            if success then
+                print("✅ Received: Sofa")
+            else
+                warn("❌ Error getting Sofa:", err)
+            end
+        else
+            warn("⚠️ RemoteFunction not found!")
+        end
