@@ -1,0 +1,88 @@
+-- كود واجهة GUI مع أنيميشن و سكربتات
+local player = game.Players.LocalPlayer
+local gui = player:WaitForChild("PlayerGui")
+
+local screenGui = Instance.new("ScreenGui", gui)
+screenGui.Name = "MiniScriptBox"
+screenGui.ResetOnSpawn = false
+screenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+
+-- المربع الصغير جداً
+local mainFrame = Instance.new("Frame", screenGui)
+mainFrame.Size = UDim2.new(0, 200, 0, 120)
+mainFrame.Position = UDim2.new(0.5, -100, 0.5, -60)
+mainFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+mainFrame.AnchorPoint = Vector2.new(0.5, 0.5)
+mainFrame.Active = true
+mainFrame.Draggable = true
+
+-- UICorner للمربع
+local mainCorner = Instance.new("UICorner", mainFrame)
+mainCorner.CornerRadius = UDim.new(0, 8)
+
+-- أنيميشن ظهور
+mainFrame.Size = UDim2.new(0, 0, 0, 0)
+mainFrame:TweenSize(UDim2.new(0, 200, 0, 120), Enum.EasingDirection.Out, Enum.EasingStyle.Sine, 0.5, true)
+
+-- زر X
+local closeBtn = Instance.new("TextButton", mainFrame)
+closeBtn.Size = UDim2.new(0, 25, 0, 25)
+closeBtn.Position = UDim2.new(1, -30, 0, 5)
+closeBtn.Text = "X"
+closeBtn.BackgroundColor3 = Color3.fromRGB(255, 70, 70)
+closeBtn.TextColor3 = Color3.new(1, 1, 1)
+closeBtn.TextScaled = true
+closeBtn.ZIndex = 2
+Instance.new("UICorner", closeBtn)
+
+closeBtn.MouseButton1Click:Connect(function()
+	mainFrame:TweenSize(UDim2.new(0, 0, 0, 0), Enum.EasingDirection.In, Enum.EasingStyle.Sine, 0.4, true)
+	task.wait(0.4)
+	screenGui:Destroy()
+end)
+
+-- العنوان
+local title = Instance.new("TextLabel", mainFrame)
+title.Size = UDim2.new(1, -20, 0, 30)
+title.Position = UDim2.new(0, 10, 0, 5)
+title.BackgroundTransparency = 1
+title.Text = "XENO HUB"
+title.TextColor3 = Color3.new(1, 1, 1)
+title.TextScaled = true
+title.Font = Enum.Font.Gotham
+
+-- زر السكربت الإنجليزي (القديم)
+local oldBtn = Instance.new("TextButton", mainFrame)
+oldBtn.Size = UDim2.new(0.45, 0, 0, 40)
+oldBtn.Position = UDim2.new(0, 10, 1, -50)
+oldBtn.Text = "السكربت الأنجليزي (قديم)"
+oldBtn.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+oldBtn.TextColor3 = Color3.new(1, 1, 1)
+oldBtn.TextScaled = true
+oldBtn.Font = Enum.Font.Gotham
+Instance.new("UICorner", oldBtn)
+
+oldBtn.MouseButton1Click:Connect(function()
+	loadstring("\108\111\97\100\115\116\114\105\110\103\40\103\97\109\101\58\72\116\116\112\71\101\116\40\34\104\116\116\112\115\58\47\47\114\97\119\115\99\114\105\112\116\115\46\110\101\116\47\114\97\119\47\66\114\111\111\107\104\97\118\101\110\45\82\80\45\88\101\110\111\45\72\117\98\45\52\50\55\48\48\34\41\41\40\41")()
+	mainFrame:TweenSize(UDim2.new(0, 0, 0, 0), Enum.EasingDirection.In, Enum.EasingStyle.Sine, 0.4, true)
+	task.wait(0.2)
+	screenGui:Destroy()
+end)
+
+-- زر السكربت العربي (الجديد)
+local newBtn = Instance.new("TextButton", mainFrame)
+newBtn.Size = UDim2.new(0.45, 0, 0, 40)
+newBtn.Position = UDim2.new(1, -10 - (0.45 * 200), 1, -50)
+newBtn.Text = "السكربت العربي (الجديد)"
+newBtn.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+newBtn.TextColor3 = Color3.new(1, 1, 1)
+newBtn.TextScaled = true
+newBtn.Font = Enum.Font.Gotham
+Instance.new("UICorner", newBtn)
+
+newBtn.MouseButton1Click:Connect(function()
+	loadstring("\108\111\97\100\115\116\114\105\110\103\40\103\97\109\101\58\72\116\116\112\71\101\116\40\34\104\116\116\112\115\58\47\47\112\97\115\116\101\102\121\46\97\112\112\47\72\65\72\80\112\101\102\85\47\114\97\119\34\41\41\40\41")()
+	mainFrame:TweenSize(UDim2.new(0, 0, 0, 0), Enum.EasingDirection.In, Enum.EasingStyle.Sine, 0.4, true)
+	task.wait(0.2)
+	screenGui:Destroy()
+end)
