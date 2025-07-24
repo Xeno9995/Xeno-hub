@@ -1,0 +1,126 @@
+local Players = game:GetService("Players")
+local TweenService = game:GetService("TweenService")
+local LocalPlayer = Players.LocalPlayer
+
+-- UI Setup
+local screenGui = Instance.new("ScreenGui", LocalPlayer:WaitForChild("PlayerGui"))
+screenGui.Name = "TeleportGui"
+screenGui.ResetOnSpawn = false
+
+-- Main Frame
+local mainFrame = Instance.new("Frame", screenGui)
+mainFrame.Size = UDim2.new(0, 300, 0, 180)
+mainFrame.Position = UDim2.new(0.5, -150, 0.5, -90)
+mainFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+mainFrame.BorderSizePixel = 0
+mainFrame.AnchorPoint = Vector2.new(0.5, 0.5)
+mainFrame.Visible = false
+mainFrame.Active = true
+mainFrame.Draggable = true
+
+-- Corner + Border
+local corner = Instance.new("UICorner", mainFrame)
+corner.CornerRadius = UDim.new(0, 12)
+
+local border = Instance.new("UIStroke", mainFrame)
+border.Thickness = 2
+border.Color = Color3.fromRGB(0, 120, 255)
+
+-- Title
+local title = Instance.new("TextLabel", mainFrame)
+title.Size = UDim2.new(1, -40, 0, 30)
+title.Position = UDim2.new(0, 10, 0, 5)
+title.BackgroundTransparency = 1
+title.Text = "Teleport To Player"
+title.TextColor3 = Color3.fromRGB(255, 255, 255)
+title.TextSize = 18
+title.Font = Enum.Font.GothamBold
+title.TextXAlignment = Enum.TextXAlignment.Left
+
+-- Close Button
+local closeButton = Instance.new("TextButton", mainFrame)
+closeButton.Size = UDim2.new(0, 30, 0, 30)
+closeButton.Position = UDim2.new(1, -35, 0, 5)
+closeButton.BackgroundTransparency = 1
+closeButton.Text = "X"
+closeButton.TextColor3 = Color3.fromRGB(255, 0, 0)
+closeButton.TextSize = 18
+closeButton.Font = Enum.Font.GothamBold
+
+-- Input Box
+local inputBox = Instance.new("TextBox", mainFrame)
+inputBox.Size = UDim2.new(0.9, 0, 0, 40)
+inputBox.Position = UDim2.new(0.05, 0, 0, 50)
+inputBox.PlaceholderText = "Enter player name"
+inputBox.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+inputBox.TextColor3 = Color3.fromRGB(255, 255, 255)
+inputBox.Font = Enum.Font.Gotham
+inputBox.TextSize = 16
+inputBox.ClearTextOnFocus = false
+
+local inputCorner = Instance.new("UICorner", inputBox)
+inputCorner.CornerRadius = UDim.new(0, 8)
+
+-- Teleport Button
+local teleportBtn = Instance.new("TextButton", mainFrame)
+teleportBtn.Size = UDim2.new(0.9, 0, 0, 40)
+teleportBtn.Position = UDim2.new(0.05, 0, 0, 105)
+teleportBtn.BackgroundColor3 = Color3.fromRGB(0, 120, 255)
+teleportBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+teleportBtn.Text = "Teleport"
+teleportBtn.Font = Enum.Font.GothamBold
+teleportBtn.TextSize = 18
+
+local teleportCorner = Instance.new("UICorner", teleportBtn)
+teleportCorner.CornerRadius = UDim.new(0, 8)
+
+-- Animation In/Out
+local function animateIn()
+	mainFrame.Visible = true
+	mainFrame.Size = UDim2.new(0, 0, 0, 0)
+	mainFrame.Position = UDim2.new(0.5, 0, 0.5, 0)
+	TweenService:Create(mainFrame, TweenInfo.new(0.4, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {
+		Size = UDim2.new(0, 300, 0, 180),
+		Position = UDim2.new(0.5, -150, 0.5, -90)
+	}):Play()
+end
+
+local function animateOut()
+	local tween = TweenService:Create(mainFrame, TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.In), {
+		Size = UDim2.new(0, 0, 0, 0),
+		Position = UDim2.new(0.5, 0, 0.5, 0)
+	})
+	tween:Play()
+	tween.Completed:Connect(function()
+		mainFrame.Visible = false
+	end)
+end
+
+-- Logic: Teleport
+teleportBtn.MouseButton1Click:Connect(function()
+	local inputName = inputBox.Text:lower()
+	if #inputName < 3 then return end
+
+	for _, plr in pairs(Players:GetPlayers()) do
+		if plr ~= LocalPlayer and plr.Name:lower():sub(1, #inputName) == inputName then
+			local char = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
+			local hrp = char:WaitForChild("HumanoidRootPart")
+			local targetChar = plr.Character
+			if targetChar and targetChar:FindFirstChild("HumanoidRootPart") then
+				local goal = {CFrame = targetChar.HumanoidRootPart.CFrame + Vector3.new(0, 3, 0)}
+				local tween = TweenService:Create(hrp, TweenInfo.new(0.5, Enum.EasingStyle.Sine, Enum.EasingDirection.Out), goal)
+				tween:Play()
+				break
+			end
+		end
+	end
+end)
+
+-- Close Action
+closeButton.MouseButton1Click:Connect(function()
+	animateOut()
+end)
+
+-- Start
+wait(1)
+animateIn()
