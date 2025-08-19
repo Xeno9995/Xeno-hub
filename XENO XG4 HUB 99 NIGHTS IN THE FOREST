@@ -1,0 +1,870 @@
+loadstring(game:HttpGet("https://raw.githubusercontent.com/Xeno9995/XENOLIB/refs/heads/main/XG4%20HUB%2099%20NIGHTS%20IN%20THE%20FOREST%20V1"))()
+-- End of XENO HUB FINAL UI
+-------------
+-- MAIN & INTRO API USAGE (example)
+-------------
+makeWindow("XG4 HUB 99 NIGHTS IN THE FOREST", "", "By : XG4 HUB 999")
+makeIntro("XG4 HUB | 1.0")
+
+-- تبويب اليوتيوب
+local dcTab       = createTab("Dis & Tube", "XN") -- Discord logo color
+createSection(dcTab, "Subscribe To My Channel and Join My Discord")
+createExampleBox(dcTab, function(box)
+    box.Size = UDim2.new(1, -20, 0, 120)
+    box.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+    local border = box:FindFirstChildOfClass("UIStroke")
+    if border then border.Color = Color3.fromRGB(255, 0, 0) border.Transparency = 0.15 end
+
+    local logo = Instance.new("Frame", box)
+    logo.Size = UDim2.new(0, 55, 0, 55)
+    logo.Position = UDim2.new(0, 0, 0, 0)
+    logo.BackgroundColor3 = Color3.fromRGB(10, 10, 10)
+    logo.BorderSizePixel = 0
+    Instance.new("UICorner", logo).CornerRadius = UDim.new(0, 0)
+
+    local xnText = Instance.new("TextLabel", logo)
+    xnText.Size = UDim2.new(1, 0, 1, 0)
+    xnText.BackgroundTransparency = 1
+    xnText.Text = "XN"
+    xnText.TextColor3 = Color3.fromRGB(0, 255, 64)
+    xnText.Font = Enum.Font.GothamBlack
+    xnText.TextScaled = true
+
+    local nameLabel = Instance.new("TextLabel", box)
+    nameLabel.Size = UDim2.new(1, -70, 0, 30)
+    nameLabel.Position = UDim2.new(0, 58, 0, 5)
+    nameLabel.BackgroundTransparency = 1
+    nameLabel.Text = "XENO HUB"
+    nameLabel.TextColor3 = Color3.fromRGB(0, 255, 100)
+    nameLabel.Font = Enum.Font.GothamBold
+    nameLabel.TextXAlignment = Enum.TextXAlignment.Left
+    nameLabel.TextScaled = true
+
+    local subBtn = Instance.new("TextButton", box)
+    subBtn.Size = UDim2.new(1, -24, 0, 36)
+    subBtn.Position = UDim2.new(0, 12, 0, 60)
+    subBtn.BackgroundColor3 = Color3.fromRGB(220, 0, 0)
+    subBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+    subBtn.Text = "Subscribe To The Channel"
+    subBtn.Font = Enum.Font.GothamBold
+    subBtn.TextSize = 15
+    subBtn.AutoButtonColor = true
+    Instance.new("UICorner", subBtn).CornerRadius = UDim.new(0, 7)
+
+    local copied = false
+    local ytLink = "https://www.youtube.com/@XENO_SHOTS"
+    local origText = subBtn.Text
+    local origColor = subBtn.BackgroundColor3
+
+    subBtn.MouseButton1Click:Connect(function()
+        if copied then return end
+        copied = true
+        nameLabel.Text = "XENO HUB"
+        subBtn.Text = "Copied!"
+        subBtn.BackgroundColor3 = Color3.fromRGB(130,130,130)
+        if setclipboard then pcall(function() setclipboard(ytLink) end) end
+        wait(2.5)
+        nameLabel.Text = "XENO HUB"
+        subBtn.Text = origText
+        subBtn.BackgroundColor3 = origColor
+        copied = false
+    end)
+end)
+createSection(dcTab, "Join To My Discord Server")
+-- DISCORD INVITE TAB
+
+createExampleBox(dcTab, function(box)
+	box.Size = UDim2.new(1, -20, 0, 120)
+	box.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+	local border = box:FindFirstChildOfClass("UIStroke")
+	if border then 
+		border.Color = Color3.fromRGB(114, 137, 218) -- لون ديسكورد
+		border.Transparency = 0.15 
+	end
+
+	-- Logo
+	local logo = Instance.new("Frame", box)
+	logo.Size = UDim2.new(0, 55, 0, 55)
+	logo.Position = UDim2.new(0, 0, 0, 0)
+	logo.BackgroundColor3 = Color3.fromRGB(10, 10, 10)
+	logo.BorderSizePixel = 0
+	local logocorner = Instance.new("UICorner", logo)
+	logocorner.CornerRadius = UDim.new(1, 0)
+	local xnText = Instance.new("TextLabel", logo)
+	xnText.Size = UDim2.new(1, 0, 1, 0)
+	xnText.BackgroundTransparency = 1
+	xnText.Text = "XN"
+	xnText.TextColor3 = Color3.fromRGB(114, 137, 218)
+	xnText.Font = Enum.Font.GothamBlack
+	xnText.TextScaled = true
+
+	-- XENO HUB Discord
+	local nameLabel = Instance.new("TextLabel", box)
+	nameLabel.Size = UDim2.new(1, -70, 0, 30)
+	nameLabel.Position = UDim2.new(0, 58, 0, 5)
+	nameLabel.BackgroundTransparency = 1
+	nameLabel.Text = "XENO HUB COMMUNITY"
+	nameLabel.TextColor3 = Color3.fromRGB(114, 137, 218)
+	nameLabel.Font = Enum.Font.GothamBold
+	nameLabel.TextXAlignment = Enum.TextXAlignment.Left
+	nameLabel.TextScaled = true
+
+	-- Join Button
+	local joinBtn = Instance.new("TextButton", box)
+	joinBtn.Size = UDim2.new(1, -24, 0, 36)
+	joinBtn.Position = UDim2.new(0, 12, 0, 60)
+	joinBtn.BackgroundColor3 = Color3.fromRGB(114, 137, 218)
+	joinBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+	joinBtn.Text = "Join The Server"
+	joinBtn.Font = Enum.Font.GothamBold
+	joinBtn.TextSize = 15
+	joinBtn.AutoButtonColor = true
+	Instance.new("UICorner", joinBtn).CornerRadius = UDim.new(0, 7)
+
+	local copied = false
+	local dcLink = "https://discord.gg/PxcunF6Z" -- 🔁 عدل الرابط هنا برابط دعوة سيرفرك
+	local origText = joinBtn.Text
+	local origColor = joinBtn.BackgroundColor3
+
+	joinBtn.MouseButton1Click:Connect(function()
+		if copied then return end
+		copied = true
+		nameLabel.Text = "XENO HUB COMMUNITY"
+		joinBtn.Text = "Copied!"
+		joinBtn.BackgroundColor3 = Color3.fromRGB(130,130,130)
+		if setclipboard then pcall(function() setclipboard(dcLink) end) end
+		wait(3)
+		nameLabel.Text = "XENO HUB COMMUNITY"
+		joinBtn.Text = origText
+		joinBtn.BackgroundColor3 = origColor
+		copied = false
+	end)
+end)
+
+local farmTab       = createTab("FARM", "XN")
+createSection(farmTab, "Auto Farm Everythings You Need")
+createToggle(farmTab, "Auto Farm Woods", false, function(state)
+    autoFarmEnabled = state
+    local player = game.Players.LocalPlayer
+    local axeName = "Strong Axe" -- Options: "Old Axe", "Good Axe", "Strong Axe", "Chainsaw"
+    local campfirePos = Vector3.new(0, 0, 0) -- ضع هنا إحداثيات Camp Fire
+
+    local axeHits = {
+        ["Old Axe"] = 13,
+        ["Good Axe"] = 5,
+        ["Strong Axe"] = 1,
+        ["Chainsaw"] = 2
+    }
+
+    local treeLevels = {
+        ["smalltree"] = 1,
+        ["mediumtree"] = 2,
+        ["bigtree"] = 3,
+        ["gianttree"] = 4
+    }
+
+    local axeLevels = {
+        ["Old Axe"] = 1,
+        ["Good Axe"] = 2,
+        ["Strong Axe"] = 3,
+        ["Chainsaw"] = 4
+    }
+
+    -- الحصول على الفأس
+    local function getAxe()
+        for _, tool in ipairs(player.Backpack:GetChildren()) do
+            if tool.Name == axeName then return tool end
+        end
+        for _, tool in ipairs(player.Character:GetChildren()) do
+            if tool.Name == axeName then return tool end
+        end
+        return nil
+    end
+
+    -- الانتقال للأرض أمام الشجرة أو النقطة المحددة
+    local function teleportToGround(pos)
+        local hrp = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
+        local humanoid = player.Character and player.Character:FindFirstChild("Humanoid")
+        if hrp and humanoid then
+            -- البحث عن الأرض تحت النقطة
+            local ray = Ray.new(pos + Vector3.new(0, 50, 0), Vector3.new(0, -100, 0))
+            local hitPos = workspace:FindPartOnRayWithIgnoreList(ray, {player.Character})
+            local groundY = hitPos and hitPos.Position.Y or pos.Y
+            local direction = (pos - hrp.Position).Unit
+            local newPos = Vector3.new(pos.X, groundY, pos.Z) - direction * 3 -- تثبيت أمام الشجرة
+            hrp.CFrame = CFrame.new(newPos, Vector3.new(pos.X, groundY, pos.Z))
+            humanoid.PlatformStand = false
+            humanoid.Sit = false
+        end
+    end
+
+    -- إيجاد أقرب شجرة مناسبة
+    local function getNearestTree()
+        local closestTree, minDist = nil, math.huge
+        local playerPos = player.Character.HumanoidRootPart.Position
+        local maxTreeLevel = axeLevels[axeName] or 1
+
+        for _, obj in ipairs(workspace:GetDescendants()) do
+            if obj:IsA("Model") and obj.Name:lower():find("tree") then
+                local root = obj:FindFirstChild("HumanoidRootPart") or obj:FindFirstChildWhichIsA("BasePart")
+                if root then
+                    local treeName = obj.Name:lower()
+                    local level = treeLevels[treeName] or 1
+                    if level <= maxTreeLevel then
+                        local dist = (playerPos - root.Position).Magnitude
+                        if dist < minDist then
+                            minDist = dist
+                            closestTree = root
+                        end
+                    end
+                end
+            end
+        end
+        return closestTree
+    end
+
+    -- قطع الشجرة
+    local function chopTree(treeRoot)
+        local axe = getAxe()
+        if not axe then warn("Axe not found!") return false end
+        if axe.Parent ~= player.Character then axe.Parent = player.Character end
+
+        -- ثبات اللاعب أمام الشجرة على الأرض
+        teleportToGround(treeRoot.Position)
+
+        local hits = axeHits[axeName] or 5
+        for i = 1, hits do
+            if not autoFarmEnabled then return false end
+            firetouchinterest(axe.Handle, treeRoot, 0)
+            task.wait(0.2)
+            firetouchinterest(axe.Handle, treeRoot, 1)
+            task.wait(0.1)
+        end
+        return true
+    end
+
+    -- جمع الأخشاب
+    local function collectLogs(treeModel)
+        for _, obj in ipairs(treeModel:GetDescendants()) do
+            if obj:IsA("ProximityPrompt") then
+                obj:InputHoldBegin()
+                task.wait(0.1)
+                obj:InputHoldEnd()
+            end
+        end
+    end
+
+    -- تسليم الأخشاب للنار
+    local function deliverLogs()
+        teleportToGround(campfirePos)
+        task.wait(1)
+    end
+
+    -- تشغيل الحلقة الرئيسية للتوغل
+    if autoFarmEnabled then
+        task.spawn(function()
+            while autoFarmEnabled do
+                local tree = getNearestTree()
+                if tree then
+                    local treeModel = tree.Parent
+                    teleportToGround(tree.Position)
+                    task.wait(0.5)
+                    local done = chopTree(tree)
+                    if done then
+                        collectLogs(treeModel)
+                        deliverLogs()
+                    end
+                else
+                    task.wait(1)
+                end
+            end
+        end)
+    end
+end)
+
+local tpTab       = createTab("TELEPORTS", "XN")
+createSection(tpTab, "Teleport To Anywhere And Get Tools")
+
+-- Services
+local Players = game:GetService("Players")
+local player = Players.LocalPlayer
+
+-- أسماء الأطفال بالترتيب
+local KID_ORDER = {"Dino Kid","Kraken Kid","Squid Kid","Koala Kid"}
+local KID_REGISTRY = {}
+local selectedKid = nil -- المتغير اللي يخزن الطفل المختار من الـ Dropdown
+
+-- دالة لإرجاع CFrame لأي موديل/جزء
+local function getAnyPivotCFrame(m)
+    if not m then return nil end
+    if m:IsA("Model") then
+        local hrp = m:FindFirstChild("HumanoidRootPart")
+        if hrp then return hrp.CFrame end
+        if m.PrimaryPart then return m.PrimaryPart.CFrame end
+        local part = m:FindFirstChildWhichIsA("BasePart", true)
+        if part then return part.CFrame end
+    elseif m:IsA("BasePart") then
+        return m.CFrame
+    end
+    return nil
+end
+
+-- تحديث جدول الأطفال
+local function RefreshKidRegistry()
+    KID_REGISTRY = {}
+    local idx = 0
+    for _,obj in ipairs(workspace:GetDescendants()) do
+        if obj:IsA("Model") and (obj.Name:lower():match("kid") or obj.Name:lower():match("child")) then
+            idx += 1
+            local name = KID_ORDER[((idx-1) % #KID_ORDER)+1]
+            KID_REGISTRY[name] = obj
+        end
+    end
+end
+
+-- البحث عن المخيم
+local function findCampCFrame()
+    local candidateNames = {"Camp","Campfire","Base","CampSpot","CampTent"}
+    for _,n in ipairs(candidateNames) do
+        local inst = workspace:FindFirstChild(n, true)
+        if inst then
+            return getAnyPivotCFrame(inst)
+        end
+    end
+    return nil
+end
+
+-- التحقق إذا الطفل انأخذ
+local function isKidCarriedOrGone(kidModel, kidName)
+    if not kidModel or not kidModel.Parent then return true end
+    if player.Character and kidModel:IsDescendantOf(player.Character) then return true end
+    if player.Backpack and player.Backpack:FindFirstChild(kidName) then return true end
+    return false
+end
+
+-- دالة الانتقال للطفل ثم للمخيم
+local function TeleportToKid(kidName)
+    local character = player.Character or player.CharacterAdded:Wait()
+    local hrp = character:WaitForChild("HumanoidRootPart")
+
+    local target = KID_REGISTRY[kidName]
+    if not target or not target.Parent then
+        RefreshKidRegistry()
+        target = KID_REGISTRY[kidName]
+    end
+    if not target then
+        warn("لم يتم العثور على: "..kidName)
+        return
+    end
+
+    local tcf = getAnyPivotCFrame(target)
+    if not tcf then return end
+    hrp.CFrame = tcf + Vector3.new(0,3,0)
+
+    local timeout = 10
+    local dt = 0
+    while dt < timeout do
+        if isKidCarriedOrGone(target, kidName) then
+            local campCF = findCampCFrame()
+            if campCF then
+                hrp.CFrame = campCF + Vector3.new(0,3,0)
+            end
+            return
+        end
+        task.wait(0.25)
+        dt += 0.25
+    end
+end
+
+-- 🟢 Dropdown لاختيار الطفل
+createDropdown(tpTab, KID_ORDER, 1, function(opt)
+    selectedKid = opt
+end)
+
+-- 🟢 زر للانتقال للطفل
+createButton(tpTab, "Tp To Kid", function()
+    if not selectedKid then
+        warn("الرجاء اختيار طفل من الـ Dropdown أولاً!")
+        return
+    end
+    TeleportToKid(selectedKid)
+end)
+
+-- متغير لتخزين اسم اللاعب الذي سيتم التليبورتر إليه
+local targetPlayerName = ""
+
+-- إنشاء TextBox للبحث عن اللاعبين
+createTextBox(tpTab, "Text Player Name Here....", function(txt)
+    targetPlayerName = txt
+end)
+
+-- دالة التليبورتر للاعب
+local function teleportToPlayer(name)
+    local Players = game:GetService("Players")
+    local LocalPlayer = Players.LocalPlayer
+    for _, plr in pairs(Players:GetPlayers()) do
+        if plr ~= LocalPlayer and string.find(string.lower(plr.Name), string.lower(name)) then
+            if plr.Character and plr.Character:FindFirstChild("HumanoidRootPart") then
+                local hrp = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
+                if hrp then
+                    hrp.CFrame = plr.Character.HumanoidRootPart.CFrame * CFrame.new(0, 2, 0)
+                end
+            end
+            return
+        end
+    end
+end
+
+-- زر Teleport
+createButton(tpTab, "Tp To Player", function()
+    if targetPlayerName ~= "" then
+        teleportToPlayer(targetPlayerName)
+    else
+        warn("الرجاء كتابة اسم اللاعب أولاً!")
+    end
+end)
+
+-- تعريف مكان النار (غير الإحداثيات حسب موقعك)
+local campfirePos = Vector3.new(0, 0, 0) -- ضع هنا إحداثيات Camp Fire
+
+createButton(tpTab, "Tp To Camp Fire", function()
+    local player = game.Players.LocalPlayer
+    local character = player.Character or player.CharacterAdded:Wait()
+    local rootpart = character:WaitForChild("HumanoidRootPart")
+    
+    if rootpart then
+        rootpart.CFrame = CFrame.new(campfirePos + Vector3.new(0, 3, 0))
+        print("تم الانتقال إلى Camp Fire!")
+    else
+        warn("لم يتم العثور على HumanoidRootPart!")
+    end
+end)
+local miscTab       = createTab("MISC", "XN")
+createSection(miscTab, "Speed Boost & Jump Power")
+-- إنشاء السلايدر داخل mainTab
+createSlider(miscTab, "Speed Boost", 16, 150, 16, function(value)
+    local player = game.Players.LocalPlayer
+    local character = player.Character or player.CharacterAdded:Wait()
+    local humanoid = character:FindFirstChildOfClass("Humanoid")
+    if humanoid then
+        humanoid.WalkSpeed = value -- ضبط سرعة المشي حسب السلايدر
+    end
+end)
+
+-- إعادة السرعة الافتراضية عند دخول اللعبة أو إعادة السبيشال
+game.Players.LocalPlayer.CharacterAdded:Connect(function(char)
+    local humanoid = char:WaitForChild("Humanoid")
+    humanoid.WalkSpeed = 16 -- القيمة الافتراضية للسلايدر
+end)
+-- إنشاء السلايدر داخل miscTab
+createSlider(miscTab, "Jump Power", 50, 150, 50, function(value)
+    local player = game.Players.LocalPlayer
+    local character = player.Character or player.CharacterAdded:Wait()
+    local humanoid = character:FindFirstChildOfClass("Humanoid")
+    if humanoid then
+        humanoid.JumpPower = value -- ضبط قوة القفز حسب السلايدر
+        humanoid.UseJumpPower = true
+    end
+end)
+
+-- إعادة Jump Power الافتراضية عند دخول اللعبة أو إعادة الشخصية
+game.Players.LocalPlayer.CharacterAdded:Connect(function(char)
+    local humanoid = char:WaitForChild("Humanoid")
+    humanoid.JumpPower = 50 -- القيمة الافتراضية للسلايدر
+    humanoid.UseJumpPower = true
+end)
+
+createSection(miscTab, "Infinite Jump & Fly")
+createToggle(miscTab, "Infinite Jump", false, function(state)
+    local player = game.Players.LocalPlayer
+    local character = player.Character or player.CharacterAdded:Wait()
+    local humanoid = character:FindFirstChildOfClass("Humanoid")
+    local jumping = state
+    local connection
+
+    if state then
+        -- تشغيل Infinite Jump
+        connection = game:GetService("UserInputService").JumpRequest:Connect(function()
+            if jumping and humanoid then
+                humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
+            end
+        end)
+    else
+        -- إيقاف Infinite Jump
+        if connection then
+            connection:Disconnect()
+            connection = nil
+        end
+    end
+
+    -- تحديث الـ Humanoid عند إعادة الشخصية
+    player.CharacterAdded:Connect(function(char)
+        character = char
+        humanoid = char:WaitForChild("Humanoid")
+    end)
+end)
+
+createButton(miscTab, "Fly Script", function()
+loadstring(game:HttpGet("https://raw.githubusercontent.com/Xeno9995/XENOLIB/refs/heads/main/XENO%20HUB%20FLY%20GUI%20SCRIPT"))()
+ print("Hello!")
+ end)
+local bringTab       = createTab("BRING", "XN")
+createSection(bringTab, "Bring Everything In Map")
+-- متغير لتخزين الاختيار من الـ Dropdown
+local selectedFoodItem = nil
+
+-- Dropdown للاختيار بين Steak و Morsel و All
+createDropdown(bringTab, {"Steak", "Morsel", "All"}, 1, function(opt)
+    selectedFoodItem = opt
+end)
+
+-- دالة تجيب جميع البارتات من أي موديل أو مجلد
+local function getAllParts(obj, parts)
+    parts = parts or {}
+    if obj:IsA("BasePart") then
+        table.insert(parts, obj)
+    else
+        for _, child in pairs(obj:GetChildren()) do
+            getAllParts(child, parts)
+        end
+    end
+    return parts
+end
+
+-- دالة سحب الأغراض حول اللاعب
+local function bringItems(filter)
+    local player = game.Players.LocalPlayer
+    local char = player.Character or player.CharacterAdded:Wait()
+    local hrp = char:FindFirstChild("HumanoidRootPart")
+    if not hrp then return end
+
+    local radius = 6
+    local angleStep = math.rad(25)
+    local currentAngle = 0
+
+    for _, obj in pairs(workspace:GetDescendants()) do
+        local name = obj.Name:lower()
+        if filter(name) then
+            local parts = getAllParts(obj)
+            for _, part in pairs(parts) do
+                if part:IsA("BasePart") then
+                    -- جعله قابل للمس و غير مثبت
+                    part.Anchored = false
+                    part.CanCollide = true
+                    if not part.Parent or part.Parent == nil then
+                        part.Parent = workspace
+                    end
+
+                    -- وزعه حوالين اللاعب
+                    local x = math.cos(currentAngle) * radius
+                    local z = math.sin(currentAngle) * radius
+                    part.CFrame = hrp.CFrame * CFrame.new(x, 0, z)
+                    currentAngle = currentAngle + angleStep
+                end
+            end
+        end
+    end
+end
+
+-- زر لجلب الأكل المختار
+createButton(bringTab, "Bring Food", function()
+    if not selectedFoodItem then
+        warn("الرجاء اختيار نوع الطعام من الـ Dropdown أولاً!")
+        return
+    end
+
+    if selectedFoodItem == "Morsel" then
+        bringItems(function(name)
+            return name:match("morsel")
+        end)
+    elseif selectedFoodItem == "Steak" then
+        bringItems(function(name)
+            return name:match("steak") or name:match("meat")
+        end)
+    elseif selectedFoodItem == "All" then
+        bringItems(function(name)
+            return name:match("morsel") or name:match("steak") or name:match("meat")
+        end)
+    end
+
+    print("✅ تم إحضار: " .. selectedFoodItem)
+end)
+-- متغير لتخزين الاختيار من الـ Dropdown
+local selectedFuelItem = nil
+
+-- Dropdown للاختيار بين Fuel و Coal و Oil Barrel و Chair و All
+createDropdown(bringTab, {"Fuel", "Coal", "Oil Barrel", "Chair", "All"}, 1, function(opt)
+    selectedFuelItem = opt
+end)
+
+-- دالة تجيب جميع البارتات داخل أي موديل/مجلد
+local function getAllParts(obj, parts)
+    parts = parts or {}
+    if obj:IsA("BasePart") then
+        table.insert(parts, obj)
+    else
+        for _, child in pairs(obj:GetChildren()) do
+            getAllParts(child, parts)
+        end
+    end
+    return parts
+end
+
+-- دالة سحب العناصر
+local function bringItems(filter)
+    local player = game.Players.LocalPlayer
+    local char = player.Character or player.CharacterAdded:Wait()
+    local hrp = char:FindFirstChild("HumanoidRootPart")
+    if not hrp then return end
+
+    local radius = 6
+    local angleStep = math.rad(25)
+    local currentAngle = 0
+
+    for _, obj in pairs(workspace:GetDescendants()) do
+        local name = obj.Name:lower()
+        if filter(name) then
+            local parts = getAllParts(obj)
+            for _, part in pairs(parts) do
+                if part:IsA("BasePart") then
+                    part.Anchored = false
+                    part.CanCollide = true
+                    if not part.Parent or part.Parent == nil then
+                        part.Parent = workspace
+                    end
+                    -- توزيع حول اللاعب
+                    local x = math.cos(currentAngle) * radius
+                    local z = math.sin(currentAngle) * radius
+                    part.CFrame = hrp.CFrame * CFrame.new(x, 0, z)
+                    currentAngle = currentAngle + angleStep
+                end
+            end
+        end
+    end
+end
+
+-- زر لجلب الوقود المختار
+createButton(bringTab, "Bring Fuel", function()
+    if not selectedFuelItem then
+        warn("الرجاء اختيار نوع الوقود من الـ Dropdown أولاً!")
+        return
+    end
+
+    if selectedFuelItem == "Fuel" then
+        bringItems(function(name)
+            return name:match("fuel")
+        end)
+    elseif selectedFuelItem == "Coal" then
+        bringItems(function(name)
+            return name:match("coal")
+        end)
+    elseif selectedFuelItem == "Oil Barrel" then
+        bringItems(function(name)
+            return name:match("oil barrel")
+        end)
+    elseif selectedFuelItem == "Chair" then
+        bringItems(function(name)
+            return name:match("chair")
+        end)
+    elseif selectedFuelItem == "All" then
+        bringItems(function(name)
+            return name:match("fuel") or name:match("coal") or name:match("oil barrel") or name:match("chair")
+        end)
+    end
+
+    print("✅ تم إحضار: " .. selectedFuelItem)
+end)
+
+-- متغير لتخزين الاختيار من الـ Dropdown
+local selectedItem = nil
+
+-- Dropdown للاختيار بين Woods و Carrot و All
+createDropdown(bringTab, {"Woods", "Carrot", "All"}, 1, function(opt)
+    selectedItem = opt
+end)
+
+-- دالة تجيب جميع البارتات داخل أي موديل/مجلد
+local function getAllParts(obj, parts)
+    parts = parts or {}
+    if obj:IsA("BasePart") then
+        table.insert(parts, obj)
+    else
+        for _, child in pairs(obj:GetChildren()) do
+            getAllParts(child, parts)
+        end
+    end
+    return parts
+end
+
+-- دالة سحب العناصر حول اللاعب
+local function bringItems(filter)
+    local player = game.Players.LocalPlayer
+    local char = player.Character or player.CharacterAdded:Wait()
+    local hrp = char:FindFirstChild("HumanoidRootPart")
+    if not hrp then return end
+
+    local radius = 8
+    local angleStep = math.rad(25)
+    local currentAngle = 0
+
+    for _, obj in pairs(workspace:GetDescendants()) do
+        local name = obj.Name:lower()
+        if filter(name) then
+            local parts = getAllParts(obj)
+            for _, part in pairs(parts) do
+                if part:IsA("BasePart") then
+                    part.Anchored = false
+                    part.CanCollide = true
+                    part.Parent = workspace
+
+                    local x = math.cos(currentAngle) * radius
+                    local z = math.sin(currentAngle) * radius
+                    part.CFrame = hrp.CFrame * CFrame.new(x, 0, z)
+                    currentAngle = currentAngle + angleStep
+                end
+            end
+        end
+    end
+end
+
+-- زر لجلب الشيء المختار
+createButton(bringTab, "Bring Item", function()
+    if not selectedItem then
+        warn("الرجاء اختيار نوع الشيء من الـ Dropdown أولاً!")
+        return
+    end
+
+    if selectedItem == "Woods" then
+        bringItems(function(name)
+            return name:match("wood") or name:match("log")
+        end)
+    elseif selectedItem == "Carrot" then
+        bringItems(function(name)
+            return name:match("carrot")
+        end)
+    elseif selectedItem == "All" then
+        bringItems(function(name)
+            return name:match("wood") or name:match("log") or name:match("carrot")
+        end)
+    end
+
+    print("✅ تم إحضار: " .. selectedItem)
+end)
+
+local espTab       = createTab("ESP", "XN")
+createSection(espTab, "Esp All In Map")
+-- جدول تخزين الـ ESPs
+local ESP_OBJECTS = {}
+
+-- دالة عمل ESP
+local function makeESP(obj, typ)
+    local adornee = obj:FindFirstChild("HumanoidRootPart") or obj:FindFirstChildWhichIsA("BasePart")
+    if not adornee then return end
+
+    local highlight = Instance.new("Highlight")
+    highlight.FillTransparency = 1
+    highlight.OutlineColor = Color3.new(1, 0, 0)
+    highlight.Adornee = obj
+    highlight.Parent = obj
+
+    local billboard = Instance.new("BillboardGui", obj)
+    billboard.Adornee = adornee
+    billboard.Size = UDim2.new(0, 100, 0, 50)
+    billboard.AlwaysOnTop = true
+
+    local textLabel = Instance.new("TextLabel", billboard)
+    textLabel.Size = UDim2.new(1, 0, 0, 20)
+    textLabel.BackgroundTransparency = 1
+    textLabel.Font = Enum.Font.SourceSansBold
+    textLabel.TextSize = 14
+    textLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+    textLabel.Text = typ
+
+    local healthLabel
+    if typ ~= "Kids" then
+        healthLabel = Instance.new("TextLabel", billboard)
+        healthLabel.Size = UDim2.new(1, 0, 0, 20)
+        healthLabel.Position = UDim2.new(0, 0, 0, 20)
+        healthLabel.BackgroundTransparency = 1
+        healthLabel.Font = Enum.Font.SourceSansBold
+        healthLabel.TextSize = 14
+        healthLabel.TextColor3 = Color3.fromRGB(0, 255, 0)
+        healthLabel.Text = "HP"
+    end
+
+    ESP_OBJECTS[obj] = {highlight = highlight, label = textLabel, health = healthLabel, obj = obj}
+
+    task.spawn(function()
+        while ESP_OBJECTS[obj] do
+            for i = 0, 255 do
+                if highlight then highlight.OutlineColor = Color3.fromHSV(i / 255, 1, 1) end
+                if textLabel then textLabel.TextColor3 = Color3.fromHSV(i / 255, 1, 1) end
+                if healthLabel then
+                    healthLabel.TextColor3 = Color3.fromHSV(i / 255, 1, 1)
+                    local hum = obj:FindFirstChildOfClass("Humanoid")
+                    if hum then
+                        healthLabel.Text = "HP: " .. math.floor(hum.Health) .. "/" .. math.floor(hum.MaxHealth)
+                    end
+                end
+                task.wait(0.03)
+            end
+        end
+    end)
+end
+
+-- دالة مسح الـ ESP
+local function clearESP()
+    for obj, parts in pairs(ESP_OBJECTS) do
+        if parts.highlight then parts.highlight:Destroy() end
+        if parts.label and parts.label.Parent then parts.label.Parent:Destroy() end
+    end
+    ESP_OBJECTS = {}
+end
+
+-- Toggles جديدة
+createToggle(espTab, "ESP Bunny", false, function(state)
+    clearESP()
+    if state then
+        for _, obj in pairs(workspace:GetDescendants()) do
+            if obj.Name:lower():match("bunny") then makeESP(obj, "Bunny") end
+        end
+    end
+end)
+
+createToggle(espTab, "ESP Wolf", false, function(state)
+    clearESP()
+    if state then
+        for _, obj in pairs(workspace:GetDescendants()) do
+            if obj.Name:lower() == "wolf" then makeESP(obj, "Wolf") end
+        end
+    end
+end)
+
+createToggle(espTab, "ESP Alpha Wolf", false, function(state)
+    clearESP()
+    if state then
+        for _, obj in pairs(workspace:GetDescendants()) do
+            if obj.Name:lower() == "alpha wolf" then makeESP(obj, "Alpha Wolf") end
+        end
+    end
+end)
+
+createToggle(espTab, "ESP Bear", false, function(state)
+    clearESP()
+    if state then
+        for _, obj in pairs(workspace:GetDescendants()) do
+            if obj.Name:lower() == "bear" then makeESP(obj, "Bear") end
+        end
+    end
+end)
+
+createToggle(espTab, "ESP Kids", false, function(state)
+    clearESP()
+    if state then
+        for _, obj in pairs(workspace:GetDescendants()) do
+            if obj.Name:lower():match("kid") or obj.Name:lower():match("child") then
+                makeESP(obj, "Kids")
+            end
+        end
+    end
+end)
