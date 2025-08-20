@@ -1,0 +1,180 @@
+             -- Click event untuk memilih item (TIDAK langsung bring)
+            itemButton.MouseButton1Click:Connect(
+                function()
+                    print("ðŸ” Item dipilih:", itemName)
+
+                    -- Reset warna semua tombol di parent yang sama
+                    for _, btn in pairs(scrollFrame:GetChildren()) do
+                        if btn:IsA("TextButton") then
+                            btn.BackgroundColor3 = Color3.fromRGB(70, 70, 70)
+                        end
+                    end
+
+                    -- Highlight tombol yang dipilih
+                    itemButton.BackgroundColor3 = Color3.fromRGB(0, 100, 200)
+
+                    -- Simpan referensi item yang dipilih
+                    _G.selectedItemName = itemName
+                    _G.selectedItemButton = itemButton
+                end
+            )
+        end
+        -- Update canvas size
+        scrollFrame.CanvasSize = UDim2.new(0, 0, 0, #items * 27)
+        -- Button container untuk Bring dan Stop
+        local buttonContainer = Instance.new("Frame")
+        buttonContainer.Name = "ButtonContainer"
+        buttonContainer.Size = UDim2.new(1, -10, 0, 35)
+        buttonContainer.Position = UDim2.new(0, 5, 1, -45)
+        buttonContainer.BackgroundTransparency = 1
+        buttonContainer.Parent = frame
+        -- Layout untuk buttons
+        local buttonLayout = Instance.new("UIListLayout")
+        buttonLayout.FillDirection = Enum.FillDirection.Horizontal
+        buttonLayout.Padding = UDim.new(0, 5)
+        buttonLayout.Parent = buttonContainer
+        -- Tombol BRING
+        local bringButton = Instance.new("TextButton")
+        bringButton.Name = "BringButton"
+        bringButton.Size = UDim2.new(0.48, 0, 1, 0)
+        bringButton.BackgroundColor3 = Color3.fromRGB(0, 150, 0)
+        bringButton.Text = "BRING"
+        bringButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+        bringButton.Font = Enum.Font.GothamBold
+        bringButton.TextSize = 16
+        bringButton.Parent = buttonContainer
+        local bringCorner = Instance.new("UICorner")
+        bringCorner.CornerRadius = UDim.new(0, 6)
+        bringCorner.Parent = bringButton
+        -- Tombol STOP
+        local stopButton = Instance.new("TextButton")
+        stopButton.Name = "StopButton"
+        stopButton.Size = UDim2.new(0.48, 0, 1, 0)
+        stopButton.BackgroundColor3 = Color3.fromRGB(150, 0, 0)
+        stopButton.Text = "STOP"
+        stopButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+        stopButton.Font = Enum.Font.GothamBold
+        stopButton.TextSize = 16
+        stopButton.Parent = buttonContainer
+        local stopCorner = Instance.new("UICorner")
+        stopCorner.CornerRadius = UDim.new(0, 6)
+        stopCorner.Parent = stopButton
+        bringButton.MouseButton1Click:Connect(
+            function()
+                if not _G.selectedItemName then
+                    warn("âš ï¸ Pilih item terlebih dahulu!")
+                    showNotification("Pilih item terlebih dahulu!", 2)
+                    return
+                end
+
+                isBringingItems = true
+
+                local itemName = _G.selectedItemName
+                showNotification("Mulai bring " .. itemName .. "...", 2)
+
+                spawn(
+                    function()
+                        local success = bringAllItems(itemName)
+
+                        if success then
+                            if _G.selectedItemButton then
+                                _G.selectedItemButton.BackgroundColor3 = Color3.fromRGB(0, 200, 0)
+                                wait(0.1)
+                                _G.selectedItemButton.BackgroundColor3 = Color3.fromRGB(0, 100, 200)
+                            end
+                            if onItemClick then
+                                onItemClick(itemName .. " brought successfully!", 2)
+                            end
+                        else
+                            if _G.selectedItemButton then
+                                _G.selectedItemButton.BackgroundColor3 = Color3.fromRGB(200, 0, 0)
+                                wait(0.5)
+                                _G.selectedItemButton.BackgroundColor3 = Color3.fromRGB(0, 100, 200)
+                            end
+                            if onItemClick then
+                                onItemClick("Failed to bring " .. itemName, 2)
+                            end
+                        end
+
+                        isBringingItems = false
+                    end
+                )
+            end
+        )
+        stopButton.MouseButton1Click:Connect(
+            function()
+                isBringingItems = false
+                showNotification("Stopped bringing items", 2)
+            end
+        )
+        return frame
+    end
+    -- Food Items
+    local foodItems = {"Berry", "Carrot", "Cooked Morsel", "Cooked Steak", "Morsel", "Steak"}
+    createClickableListbox(
+        page,
+        "Food Items",
+        UDim2.new(0.05, 0, 0.05, 0),
+        UDim2.new(0.25, 0, 0.4, 0),
+        foodItems,
+        showNotification
+    )
+
+    -- Weapons
+    local weaponItems = {
+        "Revolver",
+        "Revolver Ammo",
+        "Rifle",
+        "Rifle Ammo",
+        "Spear",
+        "Strong Axe",
+        "Good Axe",
+        "Strong Flashlight",
+        "Screw",
+        "Iron Body",
+        "Leather Body",
+        "Wolf Pelt",
+        "Alpha Wolf Pelt",
+        "Bear Pelt"
+    }
+    createClickableListbox(
+        page,
+        "Weapons",
+        UDim2.new(0.35, 0, 0.05, 0),
+        UDim2.new(0.25, 0, 0.4, 0),
+        weaponItems,
+        showNotification
+    )
+
+    -- Resources
+    local resourceItems = {
+        "Coal",
+        "Fuel Canister",
+        "Oil Barrel",
+        "Log",
+        "Log Chair",
+        "Bandage",
+        "Biofuel",
+        "Broken Fan",
+        "Broken Microwave",
+        "Bunny Foot",
+        "Giant Sack",
+        "Good Sack",
+        "Metal Sheet",
+        "Old Flashlight",
+        "Old Radio",
+        "Tyre",
+        "Washing Machine",
+        "MedKit"
+    }
+    createClickableListbox(
+        page,
+        "Resources",
+        UDim2.new(0.65, 0, 0.05, 0),
+        UDim2.new(0.25, 0, 0.4, 0),
+        resourceItems,
+        showNotification
+    )
+
+    return page
+end 
