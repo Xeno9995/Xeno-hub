@@ -1,0 +1,3411 @@
+-- إعداد اسم ورول بلاي للمستخدم مع اللون
+local args1 = {
+    [1] = "RolePlayName",
+    [2] = "مطور السكربت نيبرو/XENO",
+    [3] = "Aqua" -- لون الاسم
+}
+game:GetService("ReplicatedStorage").RE:FindFirstChild("1RPNam1eTex1t"):FireServer(unpack(args1))
+
+-- إعداد وصف رول بلاي مع اللون
+local args2 = {
+    [1] = "RolePlayBio",
+    [2] = "سكربت نيبرو/XENO",
+    [3] = "Red" -- لون الوصف
+}
+game:GetService("ReplicatedStorage").RE:FindFirstChild("1RPNam1eTex1t"):FireServer(unpack(args2))
+
+wait()
+
+game.Players.LocalPlayer.Character:FindFirstChild("Head"):Destroy()
+loadstring("\108\111\97\100\115\116\114\105\110\103\40\103\97\109\101\58\72\116\116\112\71\101\116\40\34\104\116\116\112\115\58\47\47\114\97\119\46\103\105\116\104\117\98\117\115\101\114\99\111\110\116\101\110\116\46\99\111\109\47\88\101\110\111\57\57\57\53\47\88\101\110\111\45\104\117\98\47\114\101\102\115\47\104\101\97\100\115\47\109\97\105\110\47\88\69\78\79\37\50\48\72\85\66\37\50\48\66\82\79\79\75\72\65\86\69\78\37\50\48\76\73\66\82\65\82\89\37\50\48\78\69\87\37\50\48\85\80\68\65\84\69\37\50\48\86\51\34\41\41\40\41")()
+
+-- تعريف التوابع العامة
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+local LocalPlayer = Players.LocalPlayer
+local Camera = workspace.CurrentCamera
+
+-- دالة تحديث أسماء اللاعبين
+local function GetPlayerNames()
+    local names = {}
+    for _, plr in ipairs(Players:GetPlayers()) do
+        if plr ~= LocalPlayer then
+            table.insert(names, plr.Name)
+        end
+    end
+    return names
+end
+
+-- دالة لتحديث Dropdown معين
+local function RefreshPlayerDropdown(dropdownObject)
+    dropdownObject:Refresh(GetPlayerNames(), true)
+end
+
+-- تبويب اليوتيوب
+local dcTab       = createTab("ديسكورد السيرفر", "XN") -- Discord logo color
+createSection(dcTab, "أشترك في قناتي اليوتيوب")
+createExampleBox(dcTab, function(box)
+    box.Size = UDim2.new(1, -20, 0, 120)
+    box.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+    local border = box:FindFirstChildOfClass("UIStroke")
+    if border then border.Color = Color3.fromRGB(255, 0, 0) border.Transparency = 0.15 end
+
+    local logo = Instance.new("Frame", box)
+    logo.Size = UDim2.new(0, 55, 0, 55)
+    logo.Position = UDim2.new(0, 0, 0, 0)
+    logo.BackgroundColor3 = Color3.fromRGB(10, 10, 10)
+    logo.BorderSizePixel = 0
+    Instance.new("UICorner", logo).CornerRadius = UDim.new(0, 0)
+
+    local xnText = Instance.new("TextLabel", logo)
+    xnText.Size = UDim2.new(1, 0, 1, 0)
+    xnText.BackgroundTransparency = 1
+    xnText.Text = "XN"
+    xnText.TextColor3 = Color3.fromRGB(0, 255, 64)
+    xnText.Font = Enum.Font.GothamBlack
+    xnText.TextScaled = true
+
+    local nameLabel = Instance.new("TextLabel", box)
+    nameLabel.Size = UDim2.new(1, -70, 0, 30)
+    nameLabel.Position = UDim2.new(0, 58, 0, 5)
+    nameLabel.BackgroundTransparency = 1
+    nameLabel.Text = "XENO HUB"
+    nameLabel.TextColor3 = Color3.fromRGB(0, 255, 100)
+    nameLabel.Font = Enum.Font.GothamBold
+    nameLabel.TextXAlignment = Enum.TextXAlignment.Left
+    nameLabel.TextScaled = true
+
+    local subBtn = Instance.new("TextButton", box)
+    subBtn.Size = UDim2.new(1, -24, 0, 36)
+    subBtn.Position = UDim2.new(0, 12, 0, 60)
+    subBtn.BackgroundColor3 = Color3.fromRGB(220, 0, 0)
+    subBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+    subBtn.Text = "الأشتراك في القناة"
+    subBtn.Font = Enum.Font.GothamBold
+    subBtn.TextSize = 15
+    subBtn.AutoButtonColor = true
+    Instance.new("UICorner", subBtn).CornerRadius = UDim.new(0, 7)
+
+    local copied = false
+    local ytLink = "https://www.youtube.com/@XENO_SCRIPT1"
+    local origText = subBtn.Text
+    local origColor = subBtn.BackgroundColor3
+
+    subBtn.MouseButton1Click:Connect(function()
+        if copied then return end
+        copied = true
+        nameLabel.Text = "XENO HUB"
+        subBtn.Text = "تم النسخ!"
+        subBtn.BackgroundColor3 = Color3.fromRGB(130,130,130)
+        if setclipboard then pcall(function() setclipboard(ytLink) end) end
+        wait(2.5)
+        nameLabel.Text = "XENO HUB"
+        subBtn.Text = origText
+        subBtn.BackgroundColor3 = origColor
+        copied = false
+    end)
+end)
+createSection(dcTab, "سيرفري الديسكورد ادخلوه")
+-- DISCORD INVITE TAB
+
+createExampleBox(dcTab, function(box)
+	box.Size = UDim2.new(1, -20, 0, 120)
+	box.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+	local border = box:FindFirstChildOfClass("UIStroke")
+	if border then 
+		border.Color = Color3.fromRGB(114, 137, 218) -- لون ديسكورد
+		border.Transparency = 0.15 
+	end
+
+	-- Logo
+	local logo = Instance.new("Frame", box)
+	logo.Size = UDim2.new(0, 55, 0, 55)
+	logo.Position = UDim2.new(0, 0, 0, 0)
+	logo.BackgroundColor3 = Color3.fromRGB(10, 10, 10)
+	logo.BorderSizePixel = 0
+	local logocorner = Instance.new("UICorner", logo)
+	logocorner.CornerRadius = UDim.new(1, 0)
+	local xnText = Instance.new("TextLabel", logo)
+	xnText.Size = UDim2.new(1, 0, 1, 0)
+	xnText.BackgroundTransparency = 1
+	xnText.Text = "XN"
+	xnText.TextColor3 = Color3.fromRGB(114, 137, 218)
+	xnText.Font = Enum.Font.GothamBlack
+	xnText.TextScaled = true
+
+	-- XENO HUB Discord
+	local nameLabel = Instance.new("TextLabel", box)
+	nameLabel.Size = UDim2.new(1, -70, 0, 30)
+	nameLabel.Position = UDim2.new(0, 58, 0, 5)
+	nameLabel.BackgroundTransparency = 1
+	nameLabel.Text = "XENO HUB COMMUNITY"
+	nameLabel.TextColor3 = Color3.fromRGB(114, 137, 218)
+	nameLabel.Font = Enum.Font.GothamBold
+	nameLabel.TextXAlignment = Enum.TextXAlignment.Left
+	nameLabel.TextScaled = true
+
+	-- Join Button
+	local joinBtn = Instance.new("TextButton", box)
+	joinBtn.Size = UDim2.new(1, -24, 0, 36)
+	joinBtn.Position = UDim2.new(0, 12, 0, 60)
+	joinBtn.BackgroundColor3 = Color3.fromRGB(114, 137, 218)
+	joinBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+	joinBtn.Text = "الدخول للسيرفر"
+	joinBtn.Font = Enum.Font.GothamBold
+	joinBtn.TextSize = 15
+	joinBtn.AutoButtonColor = true
+	Instance.new("UICorner", joinBtn).CornerRadius = UDim.new(0, 7)
+
+	local copied = false
+	local dcLink = "https://discord.gg/PxcunF6Z" -- 🔁 عدل الرابط هنا برابط دعوة سيرفرك
+	local origText = joinBtn.Text
+	local origColor = joinBtn.BackgroundColor3
+
+	joinBtn.MouseButton1Click:Connect(function()
+		if copied then return end
+		copied = true
+		nameLabel.Text = "XENO HUB COMMUNITY"
+		joinBtn.Text = "تم النسخ!"
+		joinBtn.BackgroundColor3 = Color3.fromRGB(130,130,130)
+		if setclipboard then pcall(function() setclipboard(dcLink) end) end
+		wait(3)
+		nameLabel.Text = "XENO HUB COMMUNITY"
+		joinBtn.Text = origText
+		joinBtn.BackgroundColor3 = origColor
+		copied = false
+	end)
+end)
+
+-- تبويب المعلومات
+local informTab   = createTab("المعلومات", "XN")
+createParagraph(informTab, "تم إنشاء هذا السكربت بواسطة xeno9995")
+createParagraph(informTab, "السكربت سيتم تنزيل تحديث له كل أسبوعين")
+createParagraph(informTab, "شكرا لك لاستخدام سكربت نيبرو")
+createParagraph(informTab, "اذا كانت لديك مسكلة بسيطة او كبيرة في السكربت او لا يشتغل أو شيد من هذا تواصل معي عبر الديسكورد أنا موجود في أي وقت")
+createParagraph(informTab, "أشترك في قناتي اليوتيوب و أستمتع باستخدام السكربت الأسطوري :)")
+local EditsTab    = createTab("التعديلات", "XN")
+createSection(EditsTab, "التعديلات اللي تم تعديلها في السكربت")
+createParagraph(EditsTab, "تم التعديل على الأسماء للأولاد و البنات")
+createParagraph(EditsTab, "تم التعديل على القتل بحيث يقتل بالباص و تعديل بعض الأشياد بداخله")
+createParagraph(EditsTab, "و تم التعديل على الأفاتار")
+createParagraph(EditsTab, "و تم التعديل علي معلومات اللاعب و جعله بالعربية")
+createParagraph(EditsTab, "و تم تعديل جودة السكربت كاملة")
+createParagraph(EditsTab, "و تم التعديل على القائمة كاملة")
+createSection(EditsTab, "الأضافات اللي تم أضافتها في السكربت")
+createParagraph(EditsTab, "تمت أضافة تلوين الأسم و البايو و مكان لكتابة الأسم اللي تريده و البايو اللي تريده")
+createParagraph(EditsTab, "و تمت أضافة نسخ سكنات مع اختيار في أي مكان لنسخ سكن اللاعب")
+createParagraph(EditsTab, "تمت أضافة أسماء جديدة للأولاد بالعربي")
+createParagraph(EditsTab, "و تمت اضافة اسماء للبنات بالعربي ايضا")
+createParagraph(EditsTab, "و تمت أضافة رابط للدخول لسيرفري الديسكورد")
+createParagraph(EditsTab, "و تمت أضافة تجيب يد نارية و الكثير انت اكتشفها...")
+-- تبويب معلومات اللاعب
+local PlayerinformTab   = createTab("معلومات اللاعب", "XN")
+createSection(PlayerinformTab, "معلومات عن اللاعب بالكامل")
+local username = LocalPlayer.Name
+local displayName = LocalPlayer.DisplayName
+local userId = LocalPlayer.UserId
+local accountAge = LocalPlayer.AccountAge
+
+local gameName
+local success, result = pcall(function()
+    return game:GetService("MarketplaceService"):GetProductInfo(game.PlaceId).Name
+end)
+if success then
+    gameName = result
+else
+    gameName = "Unknown"
+end
+
+local gameId = game.PlaceId
+local playersInServer = #Players:GetPlayers()
+
+createParagraph(PlayerinformTab, "الأسم الحقيقي: " .. username)
+createParagraph(PlayerinformTab, "الأسم المعرض: " .. displayName)
+createParagraph(PlayerinformTab, "أيدي المستخدم: " .. userId)
+createParagraph(PlayerinformTab, "أسم الماب الذي انت فيه: " .. gameName)
+createParagraph(PlayerinformTab, "أيدي الماب: " .. gameId)
+createParagraph(PlayerinformTab, "عمر حسابك: " .. accountAge .. " days")
+createParagraph(PlayerinformTab, "اللاعبين في السيرفر: " .. playersInServer)
+
+-- تبويب اللاعب مع ESP وTeleport
+local PlayerTab   = createTab("اللاعب", "XN")
+createSection(PlayerTab, "أختار لاعب للكشف عن مكانه و الانتقال أليه")
+
+-- إعدادات ESP
+local ESPSettings = {
+    Enabled = false,
+    BoxColor = Color3.fromRGB(0, 255, 0),
+    TracerColor = Color3.fromRGB(255, 0, 0),
+    TextColor = Color3.fromRGB(255, 255, 255),
+    BoxThickness = 1.4,
+    TracerThickness = 1.4,
+    TeamCheck = false,
+    Autothickness = true,
+}
+
+local ESPData = { Connections = {}, Objects = {} }
+local selectedPlayer = nil
+
+-- إنشاء ESP
+local function CreateESP(player)
+    if not player.Character or not player.Character:FindFirstChild("HumanoidRootPart") or not player.Character:FindFirstChild("Head") then return end
+    local drawings = {
+        Lines = {},
+        Text = Drawing.new("Text"),
+        Tracer = Drawing.new("Line")
+    }
+
+    for i = 1, 12 do
+        local line = Drawing.new("Line")
+        line.Visible = false
+        line.Color = ESPSettings.BoxColor
+        line.Thickness = ESPSettings.BoxThickness
+        table.insert(drawings.Lines, line)
+    end
+
+    drawings.Text.Visible = false
+    drawings.Text.Color = ESPSettings.TextColor
+    drawings.Text.Size = 15
+    drawings.Text.Center = true
+    drawings.Text.Outline = true
+    drawings.Text.OutlineColor = Color3.new(0,0,0)
+
+    drawings.Tracer.Visible = false
+    drawings.Tracer.Color = ESPSettings.TracerColor
+    drawings.Tracer.Thickness = ESPSettings.TracerThickness
+
+    local connection
+    connection = RunService.RenderStepped:Connect(function()
+        if not ESPSettings.Enabled or not player.Character or not player.Character:FindFirstChild("HumanoidRootPart") or not player.Character:FindFirstChild("Head") then
+            for _, line in pairs(drawings.Lines) do line.Visible = false end
+            drawings.Tracer.Visible = false
+            drawings.Text.Visible = false
+            return
+        end
+
+        local rootPart = player.Character.HumanoidRootPart
+        local head = player.Character.Head
+        local pos, vis = Camera:WorldToViewportPoint(rootPart.Position)
+        if vis then
+            local scale = head.Size.Y / 2
+            local size = Vector3.new(2, 3, 1.5) * (scale * 2)
+            local points = {
+                Top = {
+                    Camera:WorldToViewportPoint((rootPart.CFrame * CFrame.new(-size.X, size.Y, -size.Z)).p),
+                    Camera:WorldToViewportPoint((rootPart.CFrame * CFrame.new(-size.X, size.Y, size.Z)).p),
+                    Camera:WorldToViewportPoint((rootPart.CFrame * CFrame.new(size.X, size.Y, size.Z)).p),
+                    Camera:WorldToViewportPoint((rootPart.CFrame * CFrame.new(size.X, size.Y, -size.Z)).p),
+                },
+                Bottom = {
+                    Camera:WorldToViewportPoint((rootPart.CFrame * CFrame.new(-size.X, -size.Y, -size.Z)).p),
+                    Camera:WorldToViewportPoint((rootPart.CFrame * CFrame.new(-size.X, -size.Y, size.Z)).p),
+                    Camera:WorldToViewportPoint((rootPart.CFrame * CFrame.new(size.X, -size.Y, size.Z)).p),
+                    Camera:WorldToViewportPoint((rootPart.CFrame * CFrame.new(size.X, -size.Y, -size.Z)).p),
+                }
+            }
+
+            for i = 1, 4 do
+                drawings.Lines[i].From = Vector2.new(points.Top[i].X, points.Top[i].Y)
+                drawings.Lines[i].To = Vector2.new(points.Top[(i % 4) + 1].X, points.Top[(i % 4) + 1].Y)
+                drawings.Lines[i+4].From = Vector2.new(points.Bottom[i].X, points.Bottom[i].Y)
+                drawings.Lines[i+4].To = Vector2.new(points.Bottom[(i % 4) + 1].X, points.Bottom[(i % 4) + 1].Y)
+                drawings.Lines[i+8].From = Vector2.new(points.Bottom[i].X, points.Bottom[i].Y)
+                drawings.Lines[i+8].To = Vector2.new(points.Top[i].X, points.Top[i].Y)
+            end
+
+            if ESPSettings.Autothickness then
+                local dist = (LocalPlayer.Character.HumanoidRootPart.Position - rootPart.Position).Magnitude
+                local thickness = math.clamp(1 / dist * 100, 0.1, 4)
+                for _, line in pairs(drawings.Lines) do line.Thickness = thickness end
+                drawings.Tracer.Thickness = thickness
+            else
+                for _, line in pairs(drawings.Lines) do line.Thickness = ESPSettings.BoxThickness end
+                drawings.Tracer.Thickness = ESPSettings.TracerThickness
+            end
+
+            local tracerPos = Camera:WorldToViewportPoint((rootPart.CFrame * CFrame.new(0, -size.Y, 0)).p)
+            drawings.Tracer.From = Vector2.new(Camera.ViewportSize.X / 2, Camera.ViewportSize.Y)
+            drawings.Tracer.To = Vector2.new(tracerPos.X, tracerPos.Y)
+
+            local distance = math.floor((LocalPlayer.Character.HumanoidRootPart.Position - rootPart.Position).Magnitude)
+            drawings.Text.Text = player.Name .. "\n" .. distance .. "m"
+            drawings.Text.Position = Vector2.new(pos.X, pos.Y - 50)
+
+            for _, line in pairs(drawings.Lines) do line.Visible = true end
+            drawings.Tracer.Visible = true
+            drawings.Text.Visible = true
+        else
+            for _, line in pairs(drawings.Lines) do line.Visible = false end
+            drawings.Tracer.Visible = false
+            drawings.Text.Visible = false
+        end
+    end)
+
+    table.insert(ESPData.Connections, connection)
+    ESPData.Objects[player] = drawings
+end
+
+-- حذف جميع ESP
+local function ClearESP()
+    for _, conn in pairs(ESPData.Connections) do pcall(function() conn:Disconnect() end) end
+    ESPData.Connections = {}
+    for _, drawings in pairs(ESPData.Objects) do
+        for _, line in pairs(drawings.Lines) do pcall(function() line:Remove() end) end
+        pcall(function() drawings.Text:Remove() end)
+        pcall(function() drawings.Tracer:Remove() end)
+    end
+    ESPData.Objects = {}
+end
+
+-- dropdown لاختيار لاعب
+local espDropdown = createDropdown(PlayerTab, GetPlayerNames(), nil, function(choice)
+    selectedPlayer = Players:FindFirstChild(choice)
+    ClearESP()
+    if ESPSettings.Enabled and selectedPlayer then
+        CreateESP(selectedPlayer)
+    end
+end)
+
+Players.PlayerAdded:Connect(function()
+    task.wait(1)
+    RefreshPlayerDropdown(espDropdown)
+    RefreshPlayerDropdown(orbitDropdown)
+end)
+Players.PlayerRemoving:Connect(function()
+    task.wait(1)
+    RefreshPlayerDropdown(espDropdown)
+    RefreshPlayerDropdown(orbitDropdown)
+end)
+
+-- Toggle ESP
+createToggle(PlayerTab, "كشف مكان اللاعب", false, function(state)
+    ESPSettings.Enabled = state
+    if state and selectedPlayer then CreateESP(selectedPlayer) else ClearESP() end
+end)
+
+-- دوران الكاميرا حول اللاعب
+local orbitEnabled = false
+local orbitConnection = nil
+local orbitRadius = 10
+local orbitSpeed = 2
+
+local function StartOrbit()
+    if not selectedPlayer or not selectedPlayer.Character or not selectedPlayer.Character:FindFirstChild("Head") then return end
+    local angle = 0
+    orbitConnection = RunService.RenderStepped:Connect(function(dt)
+        if not orbitEnabled then return end
+        if not selectedPlayer or not selectedPlayer.Character or not selectedPlayer.Character:FindFirstChild("Head") then return end
+        angle = angle + orbitSpeed * dt
+        local targetPos = selectedPlayer.Character.Head.Position
+        local offset = Vector3.new(math.cos(angle), 0.3, math.sin(angle)) * orbitRadius
+        local cameraPos = targetPos + offset
+        Camera.CameraType = Enum.CameraType.Scriptable
+        Camera.CFrame = CFrame.new(cameraPos, targetPos)
+    end)
+end
+
+local function StopOrbit()
+    if orbitConnection then orbitConnection:Disconnect() orbitConnection = nil end
+    Camera.CameraType = Enum.CameraType.Custom
+end
+
+createToggle(PlayerTab, "رؤية الشخصية", false, function(state)
+    orbitEnabled = state
+    if state then StartOrbit() else StopOrbit() end
+end)
+
+-- Teleport
+createButton(PlayerTab, "الأنتقال", function()
+    if selectedPlayer and selectedPlayer.Character and selectedPlayer.Character:FindFirstChild("HumanoidRootPart") then
+        LocalPlayer.Character:MoveTo(selectedPlayer.Character.HumanoidRootPart.Position)
+    end
+end)
+
+-- تحديث Dropdown كل ثانية تلقائيًا لضمان تحديث قائمة اللاعبين بشكل دائم
+task.spawn(function()
+    while true do
+        task.wait(1)
+        RefreshPlayerDropdown(espDropdown)
+        RefreshPlayerDropdown(orbitDropdown)
+    end
+end)
+
+createSection(PlayerTab, "المشي عبر الجدران")
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+
+local player = Players.LocalPlayer
+local noclipConnection
+local noclipEnabled = false
+
+createToggle(PlayerTab, "اختراق الجدران", false, function(state)
+noclipEnabled = state
+
+        if noclipEnabled then
+            noclipConnection = RunService.Stepped:Connect(function()
+                if player.Character and player.Character:FindFirstChild("Humanoid") then
+                    for _, part in ipairs(player.Character:GetDescendants()) do
+                        if part:IsA("BasePart") and part.CanCollide == true then
+                            part.CanCollide = false
+                        end
+                    end
+                end
+            end)
+            print("🚀 Noclip Enabled")
+        else
+            if noclipConnection then
+                noclipConnection:Disconnect()
+                noclipConnection = nil
+            end
+
+            -- إعادة التفعيل للتصادم عند إيقاف Noclip
+            if player.Character then
+                for _, part in ipairs(player.Character:GetDescendants()) do
+                    if part:IsA("BasePart") then
+                        part.CanCollide = true
+                    end
+                end
+            end
+            print("🛑 Noclip Disabled")
+        end
+ end)
+createButton(PlayerTab, "تفعيل يد نارية", function()
+    local character = player.Character
+    if not character then return end
+
+    local humanoid = character:FindFirstChildOfClass("Humanoid")
+    local hrp = character:FindFirstChild("HumanoidRootPart")
+    if not humanoid or not hrp then return end
+
+    local oldPos = hrp.CFrame
+    local firstPos = CFrame.new(-349, 5, 98)
+
+    local poolClick = Workspace:FindFirstChild("WorkspaceCom"):FindFirstChild("001_Hospital"):FindFirstChild("PoolClick")
+    if poolClick and poolClick:FindFirstChild("ClickDetector") then
+        humanoid.WalkSpeed = 0
+        humanoid.JumpPower = 0
+
+        hrp.CFrame = firstPos
+        task.wait(1)
+        hrp.CFrame = poolClick.CFrame
+        fireclickdetector(poolClick.ClickDetector)
+        task.wait(0.7)
+        hrp.CFrame = oldPos
+
+        humanoid.WalkSpeed = 16
+        humanoid.JumpPower = 50
+
+        notify("Trail", "Trail obtido com sucesso!")
+    else
+        warn("PoolClick ou ClickDetector não encontrado!")
+        notify("Erro", "Trail não encontrado.")
+    end
+end)
+createSection(PlayerTab, "تفعيل جميع الأدوات في يدك")
+createButton(PlayerTab, "تفعيل الأدوات", function()
+LP = game.Players.LocalPlayer
+for _, tool in ipairs(LP.Backpack:GetDescendants()) do
+  if tool:IsA("Tool") then
+tool.Parent = LP.Character
+  end
+end
+ print("Equiped!")
+ end)
+
+createSection(PlayerTab, "حذف جميع الادوات في يدك")
+createButton(PlayerTab, "حذف الأدوات", function()
+	if table.merger == nil then
+      loadstring(game:HttpGet("https://raw.githubusercontent.com/ADSKerOffical/BHU/refs/heads/main/Table%20library%20expanding"))()
+    end
+for _, tool in next, table.merger(game.Players.LocalPlayer.Character:GetDescendants(), game.Players.LocalPlayer.Backpack:GetDescendants()) do
+  if tool:IsA("Tool") then
+    tool:Destroy()
+  end
+end
+ print("Removed!")
+ end)
+ 
+createSection(PlayerTab, "رؤية أي شيء خلف الجدران")
+createToggle(PlayerTab, "تفعيل رؤية عبر الجدران", false, function(Value)
+ xrayen = Value
+for _, part in ipairs(workspace:GetDescendants()) do
+  if part:IsA("BasePart") and not part.Parent:FindFirstChildOfClass("Humanoid") and part.Parent ~= game.Players.LocalPlayer.Character then
+ part.LocalTransparencyModifier = xrayen and 0.6 or 0
+  end
+end
+ end)
+
+createSection(PlayerTab, "أذا جلس اللاعب على كنبة مثلا و تركتها يطير")
+local hiddenfling = false
+createToggle(PlayerTab, "طيران اللاعب باللمس", false, function(value)
+ hiddenfling = value
+            local hrp, c, vel, movel = nil, nil, nil, 0.1
+            local player = game.Players.LocalPlayer
+
+            while player and player.Character and player.Character:FindFirstChild("Humanoid") and player.Character.Humanoid.Health > 0 and hiddenfling == true do
+                game:GetService("RunService").Heartbeat:Wait()
+
+                local lp = player
+                while hiddenfling == true and not (c and c.Parent and hrp and hrp.Parent) do
+                    game:GetService("RunService").Heartbeat:Wait()
+                    c = lp.Character
+                    hrp = c:FindFirstChild("HumanoidRootPart") or c:FindFirstChild("Torso") or c:FindFirstChild("UpperTorso")
+                end
+
+                if hiddenfling == true then
+                    vel = hrp.Velocity
+                    hrp.Velocity = vel * 10000 + Vector3.new(0, 100000, 0)
+                    game:GetService("RunService").RenderStepped:Wait()
+
+                    if c and c.Parent and hrp and hrp.Parent then
+                        hrp.Velocity = vel
+                    end
+
+                    game:GetService("RunService").Stepped:Wait()
+
+                    if c and c.Parent and hrp and hrp.Parent then
+                        hrp.Velocity = vel + Vector3.new(0, movel, 0)
+                        movel = movel * -1
+                    end
+                end
+            end
+ end)
+ 
+createSection(PlayerTab, "سكربت طيران المطور نيبرو")
+createButton(PlayerTab, "تفعيل سكربت الطيران", function()
+       local main = Instance.new("ScreenGui")
+local Frame = Instance.new("Frame")
+local up = Instance.new("TextButton")
+local down = Instance.new("TextButton")
+local onof = Instance.new("TextButton")
+local TextLabel = Instance.new("TextLabel")
+local plus = Instance.new("TextButton")
+local speed = Instance.new("TextLabel")
+local mine = Instance.new("TextButton")
+local closebutton = Instance.new("TextButton")
+local mini = Instance.new("TextButton")
+local mini2 = Instance.new("TextButton")
+
+main.Name = "main"
+main.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
+main.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+main.ResetOnSpawn = false
+
+Frame.Parent = main
+Frame.BackgroundColor3 = Color3.fromRGB(255, 0, 0) -- Initial color (will be animated)
+Frame.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Frame.Position = UDim2.new(0.100320168, 0, 0.379746825, 0)
+Frame.Size = UDim2.new(0, 190, 0, 57)
+
+-- Rainbow color animation for the frame
+spawn(function()
+    local hue = 0
+    while true do
+        hue = (hue + 0.01) % 1
+        Frame.BackgroundColor3 = Color3.fromHSV(hue, 1, 1)
+        wait(0.1)
+    end
+end)
+
+up.Name = "up"
+up.Parent = Frame
+up.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+up.BorderColor3 = Color3.fromRGB(255, 255, 255)
+up.Size = UDim2.new(0, 44, 0, 28)
+up.Font = Enum.Font.SourceSans
+up.Text = "فوق"
+up.TextColor3 = Color3.fromRGB(255, 255, 255)
+up.TextSize = 14.000
+
+down.Name = "down"
+down.Parent = Frame
+down.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+down.BorderColor3 = Color3.fromRGB(255, 255, 255)
+down.Position = UDim2.new(0, 0, 0.491228074, 0)
+down.Size = UDim2.new(0, 44, 0, 28)
+down.Font = Enum.Font.SourceSans
+down.Text = "أسفل"
+down.TextColor3 = Color3.fromRGB(255, 255, 255)
+down.TextSize = 14.000
+
+onof.Name = "onof"
+onof.Parent = Frame
+onof.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+onof.BorderColor3 = Color3.fromRGB(255, 255, 255)
+onof.Position = UDim2.new(0.702823281, 0, 0.491228074, 0)
+onof.Size = UDim2.new(0, 56, 0, 28)
+onof.Font = Enum.Font.SourceSans
+onof.Text = "طيران"
+onof.TextColor3 = Color3.fromRGB(255, 255, 255)
+onof.TextSize = 14.000
+
+TextLabel.Parent = Frame
+TextLabel.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+TextLabel.BorderColor3 = Color3.fromRGB(255, 255, 255)
+TextLabel.Position = UDim2.new(0.469327301, 0, 0, 0)
+TextLabel.Size = UDim2.new(0, 100, 0, 28)
+TextLabel.Font = Enum.Font.SourceSans
+TextLabel.Text = "سكربت الطيران من نيبرو"
+TextLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+TextLabel.TextScaled = true
+TextLabel.TextSize = 14.000
+TextLabel.TextWrapped = true
+
+plus.Name = "plus"
+plus.Parent = Frame
+plus.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+plus.BorderColor3 = Color3.fromRGB(255, 255, 255)
+plus.Position = UDim2.new(0.231578946, 0, 0, 0)
+plus.Size = UDim2.new(0, 45, 0, 28)
+plus.Font = Enum.Font.SourceSans
+plus.Text = "+"
+plus.TextColor3 = Color3.fromRGB(255, 255, 255)
+plus.TextScaled = true
+plus.TextSize = 14.000
+plus.TextWrapped = true
+
+speed.Name = "speed"
+speed.Parent = Frame
+speed.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+speed.BorderColor3 = Color3.fromRGB(255, 255, 255)
+speed.Position = UDim2.new(0.468421042, 0, 0.491228074, 0)
+speed.Size = UDim2.new(0, 44, 0, 28)
+speed.Font = Enum.Font.SourceSans
+speed.Text = "1"
+speed.TextColor3 = Color3.fromRGB(255, 255, 255)
+speed.TextScaled = true
+speed.TextSize = 14.000
+speed.TextWrapped = true
+
+mine.Name = "mine"
+mine.Parent = Frame
+mine.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+mine.BorderColor3 = Color3.fromRGB(255, 255, 255)
+mine.Position = UDim2.new(0.231578946, 0, 0.491228074, 0)
+mine.Size = UDim2.new(0, 45, 0, 29)
+mine.Font = Enum.Font.SourceSans
+mine.Text = "-"
+mine.TextColor3 = Color3.fromRGB(255, 255, 255)
+mine.TextScaled = true
+mine.TextSize = 14.000
+mine.TextWrapped = true
+
+closebutton.Name = "Close"
+closebutton.Parent = main.Frame
+closebutton.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+closebutton.BorderColor3 = Color3.fromRGB(255, 255, 255)
+closebutton.Font = "SourceSans"
+closebutton.Size = UDim2.new(0, 45, 0, 28)
+closebutton.Text = "X"
+closebutton.TextColor3 = Color3.fromRGB(255, 0, 0)
+closebutton.TextSize = 30
+closebutton.Position =  UDim2.new(0, 0, -1, 27)
+
+mini.Name = "minimize"
+mini.Parent = main.Frame
+mini.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+mini.BorderColor3 = Color3.fromRGB(255, 255, 255)
+mini.Font = "SourceSans"
+mini.Size = UDim2.new(0, 45, 0, 28)
+mini.Text = "-"
+mini.TextColor3 = Color3.fromRGB(255, 255, 255)
+mini.TextSize = 40
+mini.Position = UDim2.new(0, 44, -1, 27)
+
+mini2.Name = "minimize2"
+mini2.Parent = main.Frame
+mini2.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+mini2.BorderColor3 = Color3.fromRGB(255, 255, 255)
+mini2.Font = "SourceSans"
+mini2.Size = UDim2.new(0, 45, 0, 28)
+mini2.Text = "+"
+mini2.TextColor3 = Color3.fromRGB(255, 255, 255)
+mini2.TextSize = 40
+mini2.Position = UDim2.new(0, 44, -1, 57)
+mini2.Visible = false
+
+speeds = 1
+
+local speaker = game:GetService("Players").LocalPlayer
+
+local chr = game.Players.LocalPlayer.Character
+local hum = chr and chr:FindFirstChildWhichIsA("Humanoid")
+
+nowe = false
+
+game:GetService("StarterGui"):SetCore("SendNotification", { 
+    Title = "XENO FLY SCRIPT";
+    Text = "BY XNEO HUB";
+    Icon = "rbxthumb://type=Asset&id=5107182114&w=150&h=150"})
+Duration = 5;
+
+Frame.Active = true -- main = gui
+Frame.Draggable = true
+
+onof.MouseButton1Down:connect(function()
+
+    if nowe == true then
+        nowe = false
+
+        speaker.Character.Humanoid:SetStateEnabled(Enum.HumanoidStateType.Climbing,true)
+        speaker.Character.Humanoid:SetStateEnabled(Enum.HumanoidStateType.FallingDown,true)
+        speaker.Character.Humanoid:SetStateEnabled(Enum.HumanoidStateType.Flying,true)
+        speaker.Character.Humanoid:SetStateEnabled(Enum.HumanoidStateType.Freefall,true)
+        speaker.Character.Humanoid:SetStateEnabled(Enum.HumanoidStateType.GettingUp,true)
+        speaker.Character.Humanoid:SetStateEnabled(Enum.HumanoidStateType.Jumping,true)
+        speaker.Character.Humanoid:SetStateEnabled(Enum.HumanoidStateType.Landed,true)
+        speaker.Character.Humanoid:SetStateEnabled(Enum.HumanoidStateType.Physics,true)
+        speaker.Character.Humanoid:SetStateEnabled(Enum.HumanoidStateType.PlatformStanding,true)
+        speaker.Character.Humanoid:SetStateEnabled(Enum.HumanoidStateType.Ragdoll,true)
+        speaker.Character.Humanoid:SetStateEnabled(Enum.HumanoidStateType.Running,true)
+        speaker.Character.Humanoid:SetStateEnabled(Enum.HumanoidStateType.RunningNoPhysics,true)
+        speaker.Character.Humanoid:SetStateEnabled(Enum.HumanoidStateType.Seated,true)
+        speaker.Character.Humanoid:SetStateEnabled(Enum.HumanoidStateType.StrafingNoPhysics,true)
+        speaker.Character.Humanoid:SetStateEnabled(Enum.HumanoidStateType.Swimming,true)
+        speaker.Character.Humanoid:ChangeState(Enum.HumanoidStateType.RunningNoPhysics)
+    else 
+        nowe = true
+
+        for i = 1, speeds do
+            spawn(function()
+
+                local hb = game:GetService("RunService").Heartbeat    
+
+                tpwalking = true
+                local chr = game.Players.LocalPlayer.Character
+                local hum = chr and chr:FindFirstChildWhichIsA("Humanoid")
+                while tpwalking and hb:Wait() and chr and hum and hum.Parent do
+                    if hum.MoveDirection.Magnitude > 0 then
+                        chr:TranslateBy(hum.MoveDirection)
+                    end
+                end
+
+            end)
+        end
+        game.Players.LocalPlayer.Character.Animate.Disabled = true
+        local Char = game.Players.LocalPlayer.Character
+        local Hum = Char:FindFirstChildOfClass("Humanoid") or Char:FindFirstChildOfClass("AnimationController")
+
+        for i,v in next, Hum:GetPlayingAnimationTracks() do
+            v:AdjustSpeed(0)
+        end
+        speaker.Character.Humanoid:SetStateEnabled(Enum.HumanoidStateType.Climbing,false)
+        speaker.Character.Humanoid:SetStateEnabled(Enum.HumanoidStateType.FallingDown,false)
+        speaker.Character.Humanoid:SetStateEnabled(Enum.HumanoidStateType.Flying,false)
+        speaker.Character.Humanoid:SetStateEnabled(Enum.HumanoidStateType.Freefall,false)
+        speaker.Character.Humanoid:SetStateEnabled(Enum.HumanoidStateType.GettingUp,false)
+        speaker.Character.Humanoid:SetStateEnabled(Enum.HumanoidStateType.Jumping,false)
+        speaker.Character.Humanoid:SetStateEnabled(Enum.HumanoidStateType.Landed,false)
+        speaker.Character.Humanoid:SetStateEnabled(Enum.HumanoidStateType.Physics,false)
+        speaker.Character.Humanoid:SetStateEnabled(Enum.HumanoidStateType.PlatformStanding,false)
+        speaker.Character.Humanoid:SetStateEnabled(Enum.HumanoidStateType.Ragdoll,false)
+        speaker.Character.Humanoid:SetStateEnabled(Enum.HumanoidStateType.Running,false)
+        speaker.Character.Humanoid:SetStateEnabled(Enum.HumanoidStateType.RunningNoPhysics,false)
+        speaker.Character.Humanoid:SetStateEnabled(Enum.HumanoidStateType.Seated,false)
+        speaker.Character.Humanoid:SetStateEnabled(Enum.HumanoidStateType.StrafingNoPhysics,false)
+        speaker.Character.Humanoid:SetStateEnabled(Enum.HumanoidStateType.Swimming,false)
+        speaker.Character.Humanoid:ChangeState(Enum.HumanoidStateType.Swimming)
+    end
+
+    if game:GetService("Players").LocalPlayer.Character:FindFirstChildOfClass("Humanoid").RigType == Enum.HumanoidRigType.R6 then
+        local plr = game.Players.LocalPlayer
+        local torso = plr.Character.Torso
+        local flying = true
+        local deb = true
+        local ctrl = {f = 0, b = 0, l = 0, r = 0}
+        local lastctrl = {f = 0, b = 0, l = 0, r = 0}
+        local maxspeed = 50
+        local speed = 0
+
+        local bg = Instance.new("BodyGyro", torso)
+        bg.P = 9e4
+        bg.maxTorque = Vector3.new(9e9, 9e9, 9e9)
+        bg.cframe = torso.CFrame
+        local bv = Instance.new("BodyVelocity", torso)
+        bv.velocity = Vector3.new(0,0.1,0)
+        bv.maxForce = Vector3.new(9e9, 9e9, 9e9)
+        if nowe == true then
+            plr.Character.Humanoid.PlatformStand = true
+        end
+        while nowe == true or game:GetService("Players").LocalPlayer.Character.Humanoid.Health == 0 do
+            game:GetService("RunService").RenderStepped:Wait()
+
+            if ctrl.l + ctrl.r ~= 0 or ctrl.f + ctrl.b ~= 0 then
+                speed = speed+.5+(speed/maxspeed)
+                if speed > maxspeed then
+                    speed = maxspeed
+                end
+            elseif not (ctrl.l + ctrl.r ~= 0 or ctrl.f + ctrl.b ~= 0) and speed ~= 0 then
+                speed = speed-1
+                if speed < 0 then
+                    speed = 0
+                end
+            end
+            if (ctrl.l + ctrl.r) ~= 0 or (ctrl.f + ctrl.b) ~= 0 then
+                bv.velocity = ((game.Workspace.CurrentCamera.CoordinateFrame.lookVector * (ctrl.f+ctrl.b)) + ((game.Workspace.CurrentCamera.CoordinateFrame * CFrame.new(ctrl.l+ctrl.r,(ctrl.f+ctrl.b)*.2,0).p) - game.Workspace.CurrentCamera.CoordinateFrame.p))*speed
+                lastctrl = {f = ctrl.f, b = ctrl.b, l = ctrl.l, r = ctrl.r}
+            elseif (ctrl.l + ctrl.r) == 0 and (ctrl.f + ctrl.b) == 0 and speed ~= 0 then
+                bv.velocity = ((game.Workspace.CurrentCamera.CoordinateFrame.lookVector * (lastctrl.f+lastctrl.b)) + ((game.Workspace.CurrentCamera.CoordinateFrame * CFrame.new(lastctrl.l+lastctrl.r,(lastctrl.f+lastctrl.b)*.2,0).p) - game.Workspace.CurrentCamera.CoordinateFrame.p))*speed
+            else
+                bv.velocity = Vector3.new(0,0,0)
+            end
+            bg.cframe = game.Workspace.CurrentCamera.CoordinateFrame * CFrame.Angles(-math.rad((ctrl.f+ctrl.b)*50*speed/maxspeed),0,0)
+        end
+        ctrl = {f = 0, b = 0, l = 0, r = 0}
+        lastctrl = {f = 0, b = 0, l = 0, r = 0}
+        speed = 0
+        bg:Destroy()
+        bv:Destroy()
+        plr.Character.Humanoid.PlatformStand = false
+        game.Players.LocalPlayer.Character.Animate.Disabled = false
+        tpwalking = false
+    else
+        local plr = game.Players.LocalPlayer
+        local UpperTorso = plr.Character.UpperTorso
+        local flying = true
+        local deb = true
+        local ctrl = {f = 0, b = 0, l = 0, r = 0}
+        local lastctrl = {f = 0, b = 0, l = 0, r = 0}
+        local maxspeed = 50
+        local speed = 0
+
+        local bg = Instance.new("BodyGyro", UpperTorso)
+        bg.P = 9e4
+        bg.maxTorque = Vector3.new(9e9, 9e9, 9e9)
+        bg.cframe = UpperTorso.CFrame
+        local bv = Instance.new("BodyVelocity", UpperTorso)
+        bv.velocity = Vector3.new(0,0.1,0)
+        bv.maxForce = Vector3.new(9e9, 9e9, 9e9)
+        if nowe == true then
+            plr.Character.Humanoid.PlatformStand = true
+        end
+        while nowe == true or game:GetService("Players").LocalPlayer.Character.Humanoid.Health == 0 do
+            wait()
+
+            if ctrl.l + ctrl.r ~= 0 or ctrl.f + ctrl.b ~= 0 then
+                speed = speed+.5+(speed/maxspeed)
+                if speed > maxspeed then
+                    speed = maxspeed
+                end
+            elseif not (ctrl.l + ctrl.r ~= 0 or ctrl.f + ctrl.b ~= 0) and speed ~= 0 then
+                speed = speed-1
+                if speed < 0 then
+                    speed = 0
+                end
+            end
+            if (ctrl.l + ctrl.r) ~= 0 or (ctrl.f + ctrl.b) ~= 0 then
+                bv.velocity = ((game.Workspace.CurrentCamera.CoordinateFrame.lookVector * (ctrl.f+ctrl.b)) + ((game.Workspace.CurrentCamera.CoordinateFrame * CFrame.new(ctrl.l+ctrl.r,(ctrl.f+ctrl.b)*.2,0).p) - game.Workspace.CurrentCamera.CoordinateFrame.p))*speed
+                lastctrl = {f = ctrl.f, b = ctrl.b, l = ctrl.l, r = ctrl.r}
+            elseif (ctrl.l + ctrl.r) == 0 and (ctrl.f + ctrl.b) == 0 and speed ~= 0 then
+                bv.velocity = ((game.Workspace.CurrentCamera.CoordinateFrame.lookVector * (lastctrl.f+lastctrl.b)) + ((game.Workspace.CurrentCamera.CoordinateFrame * CFrame.new(lastctrl.l+lastctrl.r,(lastctrl.f+lastctrl.b)*.2,0).p) - game.Workspace.CurrentCamera.CoordinateFrame.p))*speed
+            else
+                bv.velocity = Vector3.new(0,0,0)
+            end
+
+            bg.cframe = game.Workspace.CurrentCamera.CoordinateFrame * CFrame.Angles(-math.rad((ctrl.f+ctrl.b)*50*speed/maxspeed),0,0)
+        end
+        ctrl = {f = 0, b = 0, l = 0, r = 0}
+        lastctrl = {f = 0, b = 0, l = 0, r = 0}
+        speed = 0
+        bg:Destroy()
+        bv:Destroy()
+        plr.Character.Humanoid.PlatformStand = false
+        game.Players.LocalPlayer.Character.Animate.Disabled = false
+        tpwalking = false
+    end
+end)
+
+local tis
+
+up.MouseButton1Down:connect(function()
+    tis = up.MouseEnter:connect(function()
+        while tis do
+            wait()
+            game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame * CFrame.new(0,1,0)
+        end
+    end)
+end)
+
+up.MouseLeave:connect(function()
+    if tis then
+        tis:Disconnect()
+        tis = nil
+    end
+end)
+
+local dis
+
+down.MouseButton1Down:connect(function()
+    dis = down.MouseEnter:connect(function()
+        while dis do
+            wait()
+            game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame * CFrame.new(0,-1,0)
+        end
+    end)
+end)
+
+down.MouseLeave:connect(function()
+    if dis then
+        dis:Disconnect()
+        dis = nil
+    end
+end)
+
+game:GetService("Players").LocalPlayer.CharacterAdded:Connect(function(char)
+    wait(0.7)
+    game.Players.LocalPlayer.Character.Humanoid.PlatformStand = false
+    game.Players.LocalPlayer.Character.Animate.Disabled = false
+end)
+
+plus.MouseButton1Down:connect(function()
+    speeds = speeds + 1
+    speed.Text = speeds
+    if nowe == true then
+        tpwalking = false
+        for i = 1, speeds do
+            spawn(function()
+                local hb = game:GetService("RunService").Heartbeat    
+                tpwalking = true
+                local chr = game.Players.LocalPlayer.Character
+                local hum = chr and chr:FindFirstChildWhichIsA("Humanoid")
+                while tpwalking and hb:Wait() and chr and hum and hum.Parent do
+                    if hum.MoveDirection.Magnitude > 0 then
+                        chr:TranslateBy(hum.MoveDirection)
+                    end
+                end
+            end)
+        end
+    end
+end)
+
+mine.MouseButton1Down:connect(function()
+    if speeds == 1 then
+        speed.Text = 'cannot be less than 1'
+        wait(1)
+        speed.Text = speeds
+    else
+        speeds = speeds - 1
+        speed.Text = speeds
+        if nowe == true then
+            tpwalking = false
+            for i = 1, speeds do
+                spawn(function()
+                    local hb = game:GetService("RunService").Heartbeat    
+                    tpwalking = true
+                    local chr = game.Players.LocalPlayer.Character
+                    local hum = chr and chr:FindFirstChildWhichIsA("Humanoid")
+                    while tpwalking and hb:Wait() and chr and hum and hum.Parent do
+                        if hum.MoveDirection.Magnitude > 0 then
+                            chr:TranslateBy(hum.MoveDirection)
+                        end
+                    end
+                end)
+            end
+        end
+    end
+end)
+
+closebutton.MouseButton1Click:Connect(function()
+    main:Destroy()
+end)
+
+mini.MouseButton1Click:Connect(function()
+    up.Visible = false
+    down.Visible = false
+    onof.Visible = false
+    plus.Visible = false
+    speed.Visible = false
+    mine.Visible = false
+    mini.Visible = false
+    mini2.Visible = true
+    main.Frame.BackgroundTransparency = 1
+    closebutton.Position =  UDim2.new(0, 0, -1, 57)
+end)
+
+mini2.MouseButton1Click:Connect(function()
+    up.Visible = true
+    down.Visible = true
+    onof.Visible = true
+    plus.Visible = true
+    speed.Visible = true
+    mine.Visible = true
+    mini.Visible = true
+    mini2.Visible = false
+    main.Frame.BackgroundTransparency = 0 
+    closebutton.Position =  UDim2.new(0, 0, -1, 27)
+end)
+ print("Hello!")
+ end)
+local TitlesTab   = createTab("الأسماء", "XN")
+createSection(TitlesTab, "أسماء للأولاد")
+createButton(TitlesTab, "نيبرو", function()
+        local args1 = {
+            [1] = "RolePlayName",
+            [2] = "نَََََََِِِِِِِِِِيََََََََََِِِِِِِبَََََََََََِِِِِرَََََََََِِِِِِِِِوَََََََََِِِِِِِِِِِِ", -- اسم XENO الذي سيتم تفعيله
+        }
+        local remote = game:GetService("ReplicatedStorage"):FindFirstChild("RE"):FindFirstChild("1RPNam1eTex1t")
+        if remote then
+            remote:FireServer(unpack(args1))
+        else
+            warn("Remote '1RPNam1eTex1t' not found inside ReplicatedStorage.RE")
+        end
+ print("Hello!")
+ end)
+
+createButton(TitlesTab, "زورو", function()
+        local args1 = {
+            [1] = "RolePlayName",
+            [2] = "زًََََََََََِِِِِِِِِِوَََََََََِِِِِِِِِرًَََََََََََََِِِِِِِِِِِِِِِوََََََِِِِِِ", -- اسم XENO الذي سيتم تفعيله
+        }
+        local remote = game:GetService("ReplicatedStorage"):FindFirstChild("RE"):FindFirstChild("1RPNam1eTex1t")
+        if remote then
+            remote:FireServer(unpack(args1))
+        else
+            warn("Remote '1RPNam1eTex1t' not found inside ReplicatedStorage.RE")
+        end
+ print("Hello!")
+ end)
+
+createButton(TitlesTab, "محمد", function()
+        local args1 = {
+            [1] = "RolePlayName",
+            [2] = "مًََََََََِِِِِِِِِِِحًًًََََََََِِِِِِِِمًََََََِِِِِِِِِِِِِِدًًََََََََََِِِِِِِِ", -- اسم XENO الذي سيتم تفعيله
+        }
+        local remote = game:GetService("ReplicatedStorage"):FindFirstChild("RE"):FindFirstChild("1RPNam1eTex1t")
+        if remote then
+            remote:FireServer(unpack(args1))
+        else
+            warn("Remote '1RPNam1eTex1t' not found inside ReplicatedStorage.RE")
+        end
+ print("Hello!")
+ end)
+
+createButton(TitlesTab, "علي", function()
+        local args1 = {
+            [1] = "RolePlayName",
+            [2] = "عًًًًًًًًًََََََِِِِِِِِِِِِِِلًًًًًًًَِِِِِِِِِِِيًًًًًًًًًََِِِِِِِِِِِِِِ", -- اسم XENO الذي سيتم تفعيله
+        }
+        local remote = game:GetService("ReplicatedStorage"):FindFirstChild("RE"):FindFirstChild("1RPNam1eTex1t")
+        if remote then
+            remote:FireServer(unpack(args1))
+        else
+            warn("Remote '1RPNam1eTex1t' not found inside ReplicatedStorage.RE")
+        end
+ print("Hello!")
+ end)
+
+createButton(TitlesTab, "هكر", function()
+        local args1 = {
+            [1] = "RolePlayName",
+            [2] = "هًًًًًًًََََِِِِِِِِِِِكًًًَََََََِِِِِِِِِِِِِرًًًًًََََََََََِِِِِِِِِِِِِِِ", -- اسم XENO الذي سيتم تفعيله
+        }
+        local remote = game:GetService("ReplicatedStorage"):FindFirstChild("RE"):FindFirstChild("1RPNam1eTex1t")
+        if remote then
+            remote:FireServer(unpack(args1))
+        else
+            warn("Remote '1RPNam1eTex1t' not found inside ReplicatedStorage.RE")
+        end
+ print("Hello!")
+ end)
+
+createSection(TitlesTab, "أسماء للبنات")
+createButton(TitlesTab, "جنى", function()
+        local args1 = {
+            [1] = "RolePlayName",
+            [2] = "جًًَََََََََِِِِِِِِِنًًًًًًًَََََِِِِِِِِِِِِىًًًًًًًَِِِِِِِِ", -- اسم XENO الذي سيتم تفعيله
+        }
+        local remote = game:GetService("ReplicatedStorage"):FindFirstChild("RE"):FindFirstChild("1RPNam1eTex1t")
+        if remote then
+            remote:FireServer(unpack(args1))
+        else
+            warn("Remote '1RPNam1eTex1t' not found inside ReplicatedStorage.RE")
+        end
+ print("Hello!")
+ end)
+
+createButton(TitlesTab, "ريم", function()
+        local args1 = {
+            [1] = "RolePlayName",
+            [2] = "رًًًًًًَََِِِِِِِِِِيًًًًًًًًًًًِِِِِِِِِِِِِمًًًًًََََِِِِِِ", -- اسم XENO الذي سيتم تفعيله
+        }
+        local remote = game:GetService("ReplicatedStorage"):FindFirstChild("RE"):FindFirstChild("1RPNam1eTex1t")
+        if remote then
+            remote:FireServer(unpack(args1))
+        else
+            warn("Remote '1RPNam1eTex1t' not found inside ReplicatedStorage.RE")
+        end
+ print("Hello!")
+ end)
+
+createButton(TitlesTab, "رنا", function()
+        local args1 = {
+            [1] = "RolePlayName",
+            [2] = "رًًًًًَََََِِِِِِِِِنًًًًََََََََََِِِِِِِِِِِِِاًًًًًًًًًَََِِِِِِِِِِِِِِ", -- اسم XENO الذي سيتم تفعيله
+        }
+        local remote = game:GetService("ReplicatedStorage"):FindFirstChild("RE"):FindFirstChild("1RPNam1eTex1t")
+        if remote then
+            remote:FireServer(unpack(args1))
+        else
+            warn("Remote '1RPNam1eTex1t' not found inside ReplicatedStorage.RE")
+        end
+ print("Hello!")
+ end)
+local TrollTab    = createTab("القتل", "XN")
+createSection(TrollTab, "جيب أدوات التعذيب")
+createButton(TrollTab, "جيب Jerk R15", function()
+loadstring(game:HttpGet("https://pastefy.app/YZoglOyJ/raw"))()
+ print("Jerk!")
+ end)
+
+local Players = game:GetService("Players")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local LocalPlayer = Players.LocalPlayer
+
+local pickToolRemote = ReplicatedStorage:WaitForChild("RE"):WaitForChild("1Too1l")
+
+createButton(TrollTab, "جيب كنبة", function()
+        local args = {"PickingTools", "Couch"}
+        if pickToolRemote then
+            local success, err = pcall(function()
+                pickToolRemote:InvokeServer(unpack(args))
+            end)
+            if success then
+                print("✅ Received: Sofa")
+            else
+                warn("❌ Error getting Sofa:", err)
+            end
+        else
+            warn("⚠️ RemoteFunction not found!")
+        end
+ print("Hello!")
+ end)
+-- مكتبة خدمات روبلوكس
+local RepStorage = game:GetService("ReplicatedStorage")
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+local TweenService = game:GetService("TweenService")
+local LocalPlayer = Players.LocalPlayer
+local Camera = workspace.CurrentCamera
+
+-- متغيرات الحالة
+local selectedPlayerName = nil
+local toggleConns = {}
+local killLoopActive = false
+
+-- دالة جلب أسماء اللاعبين
+local function GetPlayerNames()
+    local t = {}
+    for _, p in ipairs(Players:GetPlayers()) do
+        if p ~= LocalPlayer then table.insert(t, p.Name) end
+    end
+    return t
+end
+
+-- دالة الحصول على اللاعب المستهدف
+local function getTargetPlayer()
+    return selectedPlayerName and Players:FindFirstChild(selectedPlayerName) or nil
+end
+
+-- قطع الاتصال بتوغل معين
+local function disconnectToggle(key)
+    if toggleConns[key] then
+        toggleConns[key]:Disconnect()
+        toggleConns[key] = nil
+    end
+end
+
+-- قائمة اختيار اللاعبين
+createSection(TrollTab, "أختار لاعب لقتله أو مشاهدته")
+local dropdown = createDropdown(TrollTab, GetPlayerNames(), nil, function(option)
+    selectedPlayerName = option
+end)
+Players.PlayerAdded:Connect(function() dropdown:Refresh(GetPlayerNames(), true) end)
+Players.PlayerRemoving:Connect(function() dropdown:Refresh(GetPlayerNames(), true) end)
+
+-- زر المشاهدة
+createToggle(TrollTab, "مشاهدة", false, function(on)
+    disconnectToggle("spectate")
+    if on then
+        if not selectedPlayerName then return warn("اختر لاعب أولاً") end
+        toggleConns["spectate"] = RunService.RenderStepped:Connect(function()
+            local target = getTargetPlayer()
+            if target and target.Character and target.Character:FindFirstChild("Humanoid") then
+                Camera.CameraSubject = target.Character.Humanoid
+            end
+        end)
+    else
+        Camera.CameraSubject = LocalPlayer.Character:FindFirstChild("Humanoid")
+    end
+end)
+
+-- دالة تنفيذ القتل بالحافلة
+local function killPlayerWithBus()
+    local Player = LocalPlayer
+    local Character = Player.Character or Player.CharacterAdded:Wait()
+    local Humanoid = Character:FindFirstChildOfClass("Humanoid")
+    local RootPart = Character:FindFirstChild("HumanoidRootPart")
+    local Vehicles = workspace:FindFirstChild("Vehicles")
+    local OldPos = RootPart and RootPart.CFrame
+    local TargetPlayer = getTargetPlayer()
+    if not (Humanoid and RootPart and Vehicles and TargetPlayer) then return end
+
+    local PCar = Vehicles:FindFirstChild(Player.Name .. "Car")
+    if not PCar then
+        RootPart.CFrame = CFrame.new(1118.81, 75.998, -1138.61)
+        task.wait(0.5)
+        local remoteCar = RepStorage.RE:FindFirstChild("1Ca1r")
+        if remoteCar then
+            remoteCar:FireServer("PickingCar", "SchoolBus")
+        end
+        task.wait(0.5)
+        PCar = Vehicles:FindFirstChild(Player.Name .. "Car")
+        local Seat = PCar and PCar:FindFirstChild("Body") and PCar.Body:FindFirstChild("VehicleSeat")
+        if Seat then
+            repeat
+                task.wait()
+                RootPart.CFrame = Seat.CFrame * CFrame.new(0, math.random(-1, 1), 0)
+            until Humanoid.Sit or not Humanoid or not RootPart
+        end
+    end
+
+    local TargetC = TargetPlayer.Character
+    if TargetC then
+        local TargetH = TargetC:FindFirstChildOfClass("Humanoid")
+        local TargetRP = TargetC:FindFirstChild("HumanoidRootPart")
+        if TargetH and TargetRP then
+            local startTime = os.clock()
+            local timeLimit = 3
+            while not TargetH.Sit do
+                task.wait()
+                if os.clock() - startTime > timeLimit then break end
+
+                local rx, ry, rz = math.random(-1000,1000), math.random(-1000,1000), math.random(-1000,1000)
+                local function moveCar(alvo, offset, rotation)
+                    if PCar and PCar.PrimaryPart then
+                        local pos = alvo.Position + offset
+                        local newCF = CFrame.new(pos) * rotation
+                        PCar:SetPrimaryPartCFrame(newCF)
+                    end
+                end
+
+                moveCar(TargetRP, Vector3.new(0, 1, 0), CFrame.Angles(math.rad(rx), math.rad(ry), math.rad(rz)))
+                moveCar(TargetRP, Vector3.new(0, -2.25, 5), CFrame.Angles(math.rad(rx), math.rad(ry), math.rad(rz)))
+                moveCar(TargetRP, Vector3.new(0, 2.25, 0.25), CFrame.Angles(math.rad(rx), math.rad(ry), math.rad(rz)))
+            end
+
+            if PCar and PCar.PrimaryPart then
+                PCar:SetPrimaryPartCFrame(CFrame.new(0, -600, 0))
+            end
+
+            task.wait(0.6)
+            local remoteCar = RepStorage.RE:FindFirstChild("1Ca1r")
+            if remoteCar then
+                remoteCar:FireServer("DeleteAllVehicles")
+            end
+            task.wait(0.2)
+            if Humanoid then Humanoid.Sit = false end
+            if RootPart and OldPos then RootPart.CFrame = OldPos end
+        end
+    end
+end
+
+-- زر قتل لمرة واحدة
+createToggle(TrollTab, "قتل", false, function(on)
+    disconnectToggle("kill")
+    if on then
+        if not selectedPlayerName then return warn("اختر لاعب أولاً") end
+        killPlayerWithBus()
+    end
+end)
+
+-- زر تكرار القتل (لوب)
+createToggle(TrollTab, "قتل متكرر", false, function(on)
+    killLoopActive = on
+    if on then
+        if not selectedPlayerName then return warn("اختر لاعب أولاً") end
+        task.spawn(function()
+            while killLoopActive do
+                killPlayerWithBus()
+                task.wait(4)
+            end
+        end)
+    end
+end)
+
+-- بانق أنماط
+createSection(TrollTab, "بانق اللاعب")
+local bangStyles = {
+    {name = "بانق وجه 1", speed=0.3, easing=Enum.EasingStyle.Sine},
+    {name = "بانق وجه 2", speed=0.1, easing=Enum.EasingStyle.Linear},
+    {name = "بانق خلفي 1", offset=1.2, speed=0.2},
+    {name = "بانق خلفي 2", offset=1.2, speed=0.1}
+}
+for i, style in ipairs(bangStyles) do
+    createToggle(TrollTab, style.name, false, function(on)
+        disconnectToggle("bang"..i)
+        if on and selectedPlayerName then
+            local moving = true
+            toggleConns["bang"..i] = RunService.Heartbeat:Connect(function()
+                local char = LocalPlayer.Character
+                local root = char and char:FindFirstChild("HumanoidRootPart")
+                local target = getTargetPlayer()
+                local targetRoot = target and target.Character and target.Character:FindFirstChild("HumanoidRootPart")
+                if root and targetRoot then
+                    local baseCFrame = style.offset
+                        and CFrame.new(targetRoot.Position - targetRoot.CFrame.LookVector*style.offset, targetRoot.Position)
+                        or CFrame.new(targetRoot.Position + targetRoot.CFrame.LookVector*2, targetRoot.Position)
+                    root.CFrame = baseCFrame
+                    local offsetVal = moving and ((style.offset and 0.5) or 1) or ((style.offset and -0.5) or -0.7)
+                    local tw = TweenService:Create(root, TweenInfo.new(style.speed, style.easing or Enum.EasingStyle.Sine), {CFrame = root.CFrame * CFrame.new(0,0,offsetVal)})
+                    tw:Play()
+                    tw.Completed:Once(function() moving = not moving end)
+                end
+            end)
+        else
+            local hum = LocalPlayer.Character and LocalPlayer.Character:FindFirstChildOfClass("Humanoid")
+            if hum then hum.Sit = false end
+        end
+    end)
+end
+
+-- فلينق وجلوس
+createSection(TrollTab, "فلينق & جلوس اللاعب")
+createToggle(TrollTab, "فلينق", false, function(on)
+    disconnectToggle("Fling")
+    if on and selectedPlayerName then
+        toggleConns["Fling"] = RunService.Heartbeat:Connect(function()
+            local char = LocalPlayer.Character
+            local tool = char and char:FindFirstChildOfClass("Tool")
+            local target = getTargetPlayer()
+            local tr = target and target.Character and target.Character:FindFirstChild("HumanoidRootPart")
+            local root = char and char:FindFirstChild("HumanoidRootPart")
+            if tool and root and tr then
+                root.CFrame = tr.CFrame * CFrame.new(0,-3,0)
+                local seat = tool:FindFirstChildWhichIsA("Seat", true)
+                if seat then seat:Sit(target.Character:FindFirstChildOfClass("Humanoid")); task.wait(0.2); tr.Velocity = Vector3.new(0,100,0) end
+            end
+        end)
+    end
+end)
+
+createToggle(TrollTab, "الجلوس فوق رأس اللاعب", false, function(on)
+    disconnectToggle("sithead")
+    if on and selectedPlayerName then
+        local hum = LocalPlayer.Character and LocalPlayer.Character:FindFirstChildOfClass("Humanoid")
+        if hum then hum.Sit = true end
+        toggleConns["sithead"] = RunService.Heartbeat:Connect(function()
+            local target = getTargetPlayer()
+            local head = target and target.Character and target.Character:FindFirstChild("Head")
+            local root = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
+            if root and head then root.CFrame = head.CFrame * CFrame.new(0,1.25,0) end
+        end)
+    else
+        local hum = LocalPlayer.Character and LocalPlayer.Character:FindFirstChildOfClass("Humanoid")
+        if hum then hum.Sit = false end
+    end
+end)
+
+-- نسخ اسم اللاعب
+createSection(TrollTab, "أنسخ أسم اللاعب اللي أخترته")
+createButton(TrollTab, "نسخ أسم اللاعب", function()
+    if selectedPlayerName then setclipboard(selectedPlayerName); notify("Copied: "..selectedPlayerName) end
+end)
+createSection(TrollTab, "دوران الشخصية")
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+
+local LocalPlayer = Players.LocalPlayer
+local SpinToggle = false
+local SpinConnection = nil
+
+-- ✅ RemoteEvent للتجربة (استبدله بريموتك الحقيقي إذا عندك)
+local Remote = ReplicatedStorage:FindFirstChild("FakeRemote")
+if not Remote then
+    Remote = Instance.new("RemoteEvent", ReplicatedStorage)
+    Remote.Name = "FakeRemote"
+end
+
+-- ✅ دالة الدوران
+local function StartSpinning()
+    local Character = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
+    local Root = Character:WaitForChild("HumanoidRootPart")
+
+    local angle = 0
+    SpinConnection = RunService.Heartbeat:Connect(function(dt)
+        if not SpinToggle then return end
+        angle = angle + (dt * math.rad(360))
+        Root.CFrame = Root.CFrame * CFrame.Angles(0, math.rad(5), 0)
+
+        -- مثال على FireServer باستخدام unpack(args)
+        local args = {
+            "SpinningPlayer", LocalPlayer.Name, tick()
+        }
+        Remote:FireServer(unpack(args))
+    end)
+end
+
+-- ✅ دالة الإيقاف
+local function StopSpinning()
+    if SpinConnection then
+        SpinConnection:Disconnect()
+        SpinConnection = nil
+    end
+end
+
+-- ✅ زر Toggle داخل التاب (مثلاً Tab1 أو Tab5)
+createToggle(TrollTab, "دوران", false, function(state)
+ SpinToggle = state
+        if state then
+            StartSpinning()
+        else
+            StopSpinning()
+        end
+ end)
+ 
+createSection(TrollTab, "فعل أسماء تقهر للاعب المستهدف")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local Remote = ReplicatedStorage:WaitForChild("RE"):WaitForChild("1RPNam1eTex1t")
+
+local RoleplayNames = {
+    "انا عمك",
+    "اللي قدامي سقايط",
+    "يا مثرثر",
+    "مدعوس في كرامتك",
+    "يا واطي",
+    "يا 66 جحبة",
+   "أقهرك",
+    "أمك",
+    "زاكية",
+    "خاينة",
+    "زاينة",
+    "بن المزيونة",
+   "بن المخشبة",
+    "يا زاين",
+    "يا ساقط",
+    "تجيب فزعات خايف",
+    "يا بنت"
+}
+
+local Toggle = false
+local ChangeLoop
+
+-- ✅ دالة تغيير الاسم
+local function StartChangingNames()
+    local i = 1
+    ChangeLoop = task.spawn(function()
+        while Toggle do
+            local args = {
+                [1] = "RolePlayName",
+                [2] = RoleplayNames[i]
+            }
+            Remote:FireServer(unpack(args))
+            i = i + 1
+            if i > #RoleplayNames then
+                i = 1
+            end
+            task.wait(0.4) -- الوقت بين كل تغيير، عدّله لو حبيت أسرع
+        end
+    end)
+end
+
+local function StopChangingNames()
+    Toggle = false
+end
+
+-- ✅ زر Toggle (اربطه في UI Library أو شغّله يدوي)
+createToggle(TrollTab, "تفعيل الأسماء العشوائية", false, function(state)
+         Toggle = state
+        if state then
+            StartChangingNames()
+        else
+            StopChangingNames()
+        end
+ end)
+
+createSection(TrollTab, "المزيد قيد الأنشاء...")
+local ToolTab     = createTab("الأدوات", "XN")
+createSection(ToolTab, "جيب أي اداة بدك اياها")
+local Players = game:GetService("Players")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local LocalPlayer = Players.LocalPlayer
+
+local pickToolRemote = ReplicatedStorage:WaitForChild("RE"):WaitForChild("1Too1l")
+
+createButton(ToolTab, "احصل على سلة التسوق", function()
+        local args = {"PickingTools", "ShoppingCart"} -- هذا هو الاسم الداخلي الصحيح للأداة
+        if pickToolRemote then
+            local success, err = pcall(function()
+                pickToolRemote:InvokeServer(unpack(args))
+            end)
+            if success then
+                print("✅ Received: Shopping Cart")
+            else
+                warn("❌ Error getting Shopping Cart:", err)
+            end
+        else
+            warn("⚠️ RemoteFunction not found!")
+        end
+ print("Hello!")
+ end)
+
+local Players = game:GetService("Players")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local LocalPlayer = Players.LocalPlayer
+
+local pickToolRemote = ReplicatedStorage:WaitForChild("RE"):WaitForChild("1Too1l")
+
+createButton(ToolTab, "احصل على كمبيوتر", function()
+        local args = {"PickingTools", "Laptop"}
+        if pickToolRemote then
+            local success, err = pcall(function()
+                pickToolRemote:InvokeServer(unpack(args))
+            end)
+            if success then
+                print("✅ Received: Laptop")
+            else
+                warn("❌ Error getting Laptop:", err)
+            end
+        else
+            warn("⚠️ RemoteFunction not found!")
+        end
+ print("Hello!")
+ end)
+
+local Players = game:GetService("Players")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local LocalPlayer = Players.LocalPlayer
+
+local pickToolRemote = ReplicatedStorage:WaitForChild("RE"):WaitForChild("1Too1l")
+
+createButton(ToolTab, "أحصل على كنبة", function()
+        local args = {"PickingTools", "Couch"}
+        if pickToolRemote then
+            local success, err = pcall(function()
+                pickToolRemote:InvokeServer(unpack(args))
+            end)
+            if success then
+                print("✅ Received: Sofa")
+            else
+                warn("❌ Error getting Sofa:", err)
+            end
+        else
+            warn("⚠️ RemoteFunction not found!")
+        end
+ print("Hello!")
+ end)
+
+local Players = game:GetService("Players")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local LocalPlayer = Players.LocalPlayer
+
+local pickToolRemote = ReplicatedStorage:WaitForChild("RE"):WaitForChild("1Too1l")
+
+createButton(ToolTab, "احصل على كريستال", function()
+        local args = {"PickingTools", "Crystal"} -- اسم الأداة الداخلي
+        if pickToolRemote then
+            local success, err = pcall(function()
+                pickToolRemote:InvokeServer(unpack(args))
+            end)
+            if success then
+                print("✅ Received: Crystal")
+            else
+                warn("❌ Error getting Crystal:", err)
+            end
+        else
+            warn("⚠️ RemoteFunction not found!")
+        end
+ print("Hello!")
+ end)
+
+local Players = game:GetService("Players")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local LocalPlayer = Players.LocalPlayer
+
+local pickToolRemote = ReplicatedStorage:WaitForChild("RE"):WaitForChild("1Too1l")
+
+createButton(ToolTab, "احصل على أيباد", function()
+        local args = {"PickingTools", "Ipad"} -- الاسم الداخلي في Brookhaven
+        if pickToolRemote then
+            local success, err = pcall(function()
+                pickToolRemote:InvokeServer(unpack(args))
+            end)
+            if success then
+                print("✅ Received: iPad (Tablet)")
+            else
+                warn("❌ Error getting iPad:", err)
+            end
+        else
+            warn("⚠️ RemoteFunction not found!")
+        end
+ print("Hello!")
+ end)
+
+local Players = game:GetService("Players")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local LocalPlayer = Players.LocalPlayer
+
+local pickToolRemote = ReplicatedStorage:WaitForChild("RE"):WaitForChild("1Too1l")
+
+createButton(ToolTab, "أحصل على لافتة", function()
+        local args = {"PickingTools", "Sign"}  -- تأكد من الاسم الداخلي الصحيح (بدلاً من "Sign" قد يكون "StreetSign")
+        if pickToolRemote then
+            local success, err = pcall(function()
+                pickToolRemote:InvokeServer(unpack(args))
+            end)
+            if success then
+                print("✅ Received: Sign")
+            else
+                warn("❌ Error getting Sign:", err)
+            end
+        else
+            warn("⚠️ RemoteFunction not found!")
+        end
+ print("Hello!")
+ end)
+
+local Players = game:GetService("Players")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local LocalPlayer = Players.LocalPlayer
+
+-- RemoteFunction المسئول عن جلب الأدوات
+local pickToolRemote = ReplicatedStorage:WaitForChild("RE"):WaitForChild("1Too1l")
+
+createButton(ToolTab, "احصل على شوتقن", function()
+        local args = {"PickingTools", "Shotgun"}  -- اسم Shotgun الداخلي في اللعبة
+        if pickToolRemote then
+            local success, err = pcall(function()
+                pickToolRemote:InvokeServer(unpack(args))
+            end)
+            if success then
+                print("✅ Received: Shotgun")
+            else
+                warn("❌ Error getting Shotgun:", err)
+            end
+        else
+            warn("⚠️ RemoteFunction not found!")
+        end
+ print("Hello!")
+ end)
+ 
+local Players = game:GetService("Players")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local LocalPlayer = Players.LocalPlayer
+
+local pickToolRemote = ReplicatedStorage:WaitForChild("RE"):WaitForChild("1Too1l")
+
+createButton(ToolTab, "احصل على سنايبر", function()
+        local args = {"PickingTools", "Sniper"}  -- اسم Sniper الداخلي في Brookhaven
+        if pickToolRemote then
+            local success, err = pcall(function()
+                pickToolRemote:InvokeServer(unpack(args))
+            end)
+            if success then
+                print("✅ Received: Sniper")
+            else
+                warn("❌ Error getting Sniper:", err)
+            end
+        else
+            warn("⚠️ RemoteFunction not found!")
+        end
+ print("Hello!")
+ end)
+
+local Players = game:GetService("Players")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local LocalPlayer = Players.LocalPlayer
+
+-- الريموت المسؤول عن إعطاء الأدوات
+local pickToolRemote = ReplicatedStorage:WaitForChild("RE"):WaitForChild("1Too1l")
+
+-- زر لجلب Baby Bottle
+createButton(ToolTab, "احصل على زجاجة أطفال", function()
+        local args = {"PickingTools", "BabyBottle"}
+        if pickToolRemote then
+            local success, err = pcall(function()
+                pickToolRemote:InvokeServer(unpack(args))
+            end)
+            if success then
+                print("✅ Received: Baby Bottle")
+            else
+                warn("❌ Error getting Baby Bottle:", err)
+            end
+        else
+            warn("⚠️ RemoteFunction not found!")
+        end
+ print("Hello!")
+ end)
+
+local Players = game:GetService("Players")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local LocalPlayer = Players.LocalPlayer
+
+-- الريموت المسؤول عن إعطاء الأدوات
+local pickToolRemote = ReplicatedStorage:WaitForChild("RE"):WaitForChild("1Too1l")
+
+-- زر لجلب Milk
+createButton(ToolTab, "احصل على الحليب", function()
+        local args = {"PickingTools", "Milk"}
+        if pickToolRemote then
+            local success, err = pcall(function()
+                pickToolRemote:InvokeServer(unpack(args))
+            end)
+            if success then
+                print("✅ Received: Milk")
+            else
+                warn("❌ Error getting Milk:", err)
+            end
+        else
+            warn("⚠️ RemoteFunction not found!")
+        end
+ print("Hello!")
+ end)
+
+local Players = game:GetService("Players")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local LocalPlayer = Players.LocalPlayer
+
+-- الريموت المسؤول عن إعطاء الأدوات
+local pickToolRemote = ReplicatedStorage:WaitForChild("RE"):WaitForChild("1Too1l")
+
+-- زر لجلب Hammer
+createButton(ToolTab, "احصل على المطرقة", function()
+        local args = {"PickingTools", "Hammer"}
+        if pickToolRemote then
+            local success, err = pcall(function()
+                pickToolRemote:InvokeServer(unpack(args))
+            end)
+            if success then
+                print("✅ Received: Hammer")
+            else
+                warn("❌ Error getting Hammer:", err)
+            end
+        else
+            warn("⚠️ RemoteFunction not found!")
+        end
+ print("Hello!")
+ end)
+
+local Players = game:GetService("Players")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+
+-- تأكد من وجود RemoteFunction الصحيح
+local pickToolRemote = ReplicatedStorage:WaitForChild("RE"):WaitForChild("1Too1l")
+
+createButton(ToolTab, "احصل على لعبة القرد", function()
+        -- جرب تغيّر الاسم بين هذه الاحتمالات حسب المشكلة
+        local possibleNames = {"BabyMonkey", "Baby_Monkey", "BabyBaby", "MonkeyBaby"}
+        for _, name in ipairs(possibleNames) do
+            local args = {"PickingTools", name}
+            local ok, err = pcall(function()
+                pickToolRemote:InvokeServer(unpack(args))
+            end)
+            if ok then
+                print("✅ Received Baby Monkey with name:", name)
+                return
+            end
+        end
+        warn("❌ Failed to get Baby Monkey. Tried: " .. table.concat(possibleNames, ", "))
+ print("Hello!")
+ end)
+
+local Players = game:GetService("Players")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local pickToolRemote = ReplicatedStorage:WaitForChild("RE"):WaitForChild("1Too1l")
+
+createButton(ToolTab, "احصل على درع سوات", function()
+        local possibleNames = {"SWATShield", "SwatShield", "Shield", "RiotShield"}
+        for _, name in ipairs(possibleNames) do
+            local args = {"PickingTools", name}
+            local success, err = pcall(function()
+                pickToolRemote:InvokeServer(unpack(args))
+            end)
+            if success then
+                print("✅ Received SWAT Shield with name:", name)
+                return
+            end
+        end
+        warn("❌ Failed to get SWAT Shield. Tried: " .. table.concat(possibleNames, ", "))
+ print("Hello!")
+ end)
+
+local Players = game:GetService("Players")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local pickToolRemote = ReplicatedStorage:WaitForChild("RE"):WaitForChild("1Too1l")
+
+createButton(ToolTab, "احصل على الصعق الكهربائي", function()
+        local args = {"PickingTools", "Taser"}
+        local success, err = pcall(function()
+            pickToolRemote:InvokeServer(unpack(args))
+        end)
+        if success then
+            print("✅ Taser received!")
+        else
+            warn("❌ Failed to get Taser:", err)
+        end
+ print("Hello!")
+ end)
+
+local Players = game:GetService("Players")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local pickToolRemote = ReplicatedStorage:WaitForChild("RE"):WaitForChild("1Too1l")
+
+createButton(ToolTab, "احصل على طفل رضيع (ولد)", function()
+        local args = {"PickingTools", "BabyBoy"}  -- الاسم الافتراضي المتوقع
+        local success, err = pcall(function()
+            pickToolRemote:InvokeServer(unpack(args))
+        end)
+        if success then
+            print("✅ Baby Boy received!")
+        else
+            warn("❌ Error getting Baby Boy:", err)
+        end
+ print("Hello!")
+ end)
+
+local Players = game:GetService("Players")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local pickToolRemote = ReplicatedStorage:WaitForChild("RE"):WaitForChild("1Too1l")
+
+createButton(ToolTab, "احصل على طفلة (بنت)", function()
+        -- أسماء محتملة للأداة
+        local possibleNames = {"BabyGirl", "Baby_Girl", "GirlBaby", "BabyGirlTool"}
+        for _, name in ipairs(possibleNames) do
+            local args = {"PickingTools", name}
+            local ok, _ = pcall(function()
+                pickToolRemote:InvokeServer(unpack(args))
+            end)
+            if ok then
+                print("✅ Received Baby Girl with name:", name)
+                return
+            end
+        end
+        warn("❌ Failed to get Baby Girl. Tried: " .. table.concat(possibleNames, ", "))
+ print("Hello!")
+ end)
+
+local Players = game:GetService("Players")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local pickToolRemote = ReplicatedStorage:WaitForChild("RE"):WaitForChild("1Too1l")
+
+createButton(ToolTab, "احصل على كيس نوم", function()
+        local args = {"PickingTools", "SleepingBag"}
+        local success, err = pcall(function()
+            pickToolRemote:InvokeServer(unpack(args))
+        end)
+        if success then
+            print("✅ Received: Sleeping Bag")
+        else
+            warn("❌ Error:", err)
+        end
+ print("Hello!")
+ end)
+
+local Players = game:GetService("Players")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local pickToolRemote = ReplicatedStorage:WaitForChild("RE"):WaitForChild("1Too1l")
+
+createButton(ToolTab, "احصل على المال", function()
+        local args = {"PickingTools", "Money"}
+        local success, err = pcall(function()
+            pickToolRemote:InvokeServer(unpack(args))
+        end)
+        if success then
+            print("✅ Received: Money")
+        else
+            warn("❌ Error:", err)
+        end
+ print("Money!")
+ end)
+
+local Players = game:GetService("Players")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local pickToolRemote = ReplicatedStorage:WaitForChild("RE"):WaitForChild("1Too1l")
+
+createButton(ToolTab, "احصل على قنبلة", function()
+       -- جرب أسماء محتملة للأداة
+        local possibleNames = {"Bomb", "BombTool", "Explosive", "Grenade"}
+        for _, name in ipairs(possibleNames) do
+            local args = {"PickingTools", name}
+            local ok, _ = pcall(function()
+                pickToolRemote:InvokeServer(unpack(args))
+            end)
+            if ok then
+                print("✅ Received Bomb with name:", name)
+                return
+            end
+        end
+        warn("❌ Failed to get Bomb. Tried:", table.concat(possibleNames, ", "))
+ print("Hello!")
+ end)
+local AnimTab     = createTab("المشيات", "XN")
+createSection(AnimTab, "جميع الأنيميشنات موجودة اللي تحتاجها")
+createButton(AnimTab, "أنيميشن أديداس (قديم)", function()
+        -- Define the animation IDs for the Adidas Sports Animation Pack
+        local animations = {
+            idle = "rbxassetid://18537376492",    -- Primary idle animation
+            idleAlt = "rbxassetid://18537371272", -- Alternate idle animation
+            walk = "rbxassetid://18537392113",    -- Walk animation
+            run = "rbxassetid://18537384940",     -- Run animation
+            jump = "rbxassetid://18537380791",    -- Jump animation
+            fall = "rbxassetid://18537367238",    -- Fall animation
+            swim = "rbxassetid://18537389531",    -- Swim animation
+            swimIdle = "rbxassetid://18537387180",-- Swim idle animation
+            climb = "rbxassetid://18537378510"    -- Climb animation
+        }
+
+        -- Function to replace the default animations
+        local function replaceAnimations()
+            local player = game.Players.LocalPlayer
+            local character = player.Character or player.CharacterAdded:Wait()
+
+            -- Wait for the Animate script to load
+            local animateScript = character:WaitForChild("Animate")
+
+            -- Replace each animation
+            for animationType, animationId in pairs(animations) do
+                if animateScript:FindFirstChild(animationType) then
+                    for _, anim in ipairs(animateScript[animationType]:GetChildren()) do
+                        if anim:IsA("Animation") then
+                            anim.AnimationId = animationId
+                        end
+                    end
+                end
+            end
+
+            -- Handle alternate idle animation separately
+            local idle = animateScript:FindFirstChild("idle")
+            if idle then
+                local animAlt = idle:FindFirstChild("Animation2")
+                if animAlt then
+                    animAlt.AnimationId = animations.idleAlt
+                end
+            end
+        end
+
+        -- Function to ensure animations loop
+        local function ensureAnimationsLoop()
+            local player = game.Players.LocalPlayer
+            local character = player.Character or player.CharacterAdded:Wait()
+
+            -- Wait for the Humanoid to load
+            local humanoid = character:WaitForChild("Humanoid")
+
+            -- Connect to the AnimationPlayed event
+            humanoid.AnimationPlayed:Connect(function(animationTrack)
+                animationTrack.Looped = true
+            end)
+        end
+
+        -- Optional debug function for SwimIdle
+        local function debugSwimIdle()
+            local player = game.Players.LocalPlayer
+            local character = player.Character or player.CharacterAdded:Wait()
+            local animateScript = character:WaitForChild("Animate")
+            local swimIdle = animateScript:FindFirstChild("swimIdle")
+
+            if swimIdle then
+                for _, anim in ipairs(swimIdle:GetChildren()) do
+                    if anim:IsA("Animation") then
+                        print("SwimIdle Animation ID:", anim.AnimationId)
+                        anim.AnimationId = animations.swimIdle
+                        print("Updated SwimIdle Animation ID:", anim.AnimationId)
+                    end
+                end
+            else
+                print("swimIdle animation not found in Animate script.")
+            end
+        end
+
+        -- Run everything
+        replaceAnimations()
+        ensureAnimationsLoop()
+        debugSwimIdle()
+
+        print("✅ تم تفعيل Adidas Animation بنجاح.")
+ print("Hello!")
+ end)
+
+createButton(AnimTab, "أنيميشن مصاص الدماء", function()
+        local plr = game.Players.LocalPlayer
+
+        -- دالة لتفعيل الأنيميشنات
+        local function applyVampireAnimation(char)
+            local humanoid = char:WaitForChild("Humanoid")
+            local animate = char:WaitForChild("Animate")
+
+            animate.Disabled = true
+
+            -- إيقاف الأنيميشنات الحالية
+            for _, track in ipairs(humanoid:GetPlayingAnimationTracks()) do
+                track:Stop()
+            end
+
+            -- تعيين معرفات أنيميشن Vampire
+            animate.idle.Animation1.AnimationId = "http://www.roblox.com/asset/?id=1083445855"
+            animate.idle.Animation2.AnimationId = "http://www.roblox.com/asset/?id=1083450166"
+            animate.walk.WalkAnim.AnimationId = "http://www.roblox.com/asset/?id=1083473930"
+            animate.run.RunAnim.AnimationId = "http://www.roblox.com/asset/?id=1083462077"
+            animate.jump.JumpAnim.AnimationId = "http://www.roblox.com/asset/?id=1083455352"
+            animate.climb.ClimbAnim.AnimationId = "http://www.roblox.com/asset/?id=1083439238"
+            animate.fall.FallAnim.AnimationId = "http://www.roblox.com/asset/?id=1083443587"
+
+            humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
+            animate.Disabled = false
+            print("✅ تم تطبيق Vampire Animation.")
+        end
+
+        -- تطبيق الأنيميشن فورًا الآن
+        if plr.Character then
+            applyVampireAnimation(plr.Character)
+        end
+
+        -- ربط الحدث عند الـ Respawn تلقائيًا
+        plr.CharacterAdded:Connect(function(char)
+            char:WaitForChild("Humanoid")
+            char:WaitForChild("Animate")
+            task.wait(0.5) -- انتظار خفيف لضمان تجهيز الشخصية
+            applyVampireAnimation(char)
+        end)
+
+        print("🔁 تم تفعيل حفظ الأنيميشن بعد الموت.")
+ print("Hello!")
+ end)
+
+createButton(AnimTab, "أنيميشن بطل خارق", function()
+        local plr = game.Players.LocalPlayer
+
+        local function applyHeroAnimation(char)
+            local humanoid = char:WaitForChild("Humanoid")
+            local animate = char:WaitForChild("Animate")
+
+            animate.Disabled = true
+
+            -- إيقاف الأنيميشنات الحالية
+            for _, track in ipairs(humanoid:GetPlayingAnimationTracks()) do
+                track:Stop()
+            end
+
+            -- تعيين معرفات أنيميشن Hero
+            animate.idle.Animation1.AnimationId = "http://www.roblox.com/asset/?id=616111295"
+            animate.idle.Animation2.AnimationId = "http://www.roblox.com/asset/?id=616113536"
+            animate.walk.WalkAnim.AnimationId = "http://www.roblox.com/asset/?id=616122287"
+            animate.run.RunAnim.AnimationId = "http://www.roblox.com/asset/?id=616117076"
+            animate.jump.JumpAnim.AnimationId = "http://www.roblox.com/asset/?id=616115533"
+            animate.climb.ClimbAnim.AnimationId = "http://www.roblox.com/asset/?id=616104706"
+            animate.fall.FallAnim.AnimationId = "http://www.roblox.com/asset/?id=616108001"
+
+            humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
+            animate.Disabled = false
+
+            print("✅ تم تطبيق Hero Animation.")
+        end
+
+        -- تفعيل الآن
+        if plr.Character then
+            applyHeroAnimation(plr.Character)
+        end
+
+        -- تفعيل تلقائي بعد الموت (Respawn)
+        plr.CharacterAdded:Connect(function(char)
+            char:WaitForChild("Humanoid")
+            char:WaitForChild("Animate")
+            task.wait(0.5)
+            applyHeroAnimation(char)
+        end)
+
+        print("🔁 تم تفعيل حفظ الأنيميشن بعد الموت.")
+ print("Hello!")
+ end)
+ 
+createButton(AnimTab, "أنيميشن الزومبي", function()
+        local plr = game.Players.LocalPlayer
+
+        local function applyZombieClassicAnim(char)
+            local humanoid = char:WaitForChild("Humanoid")
+            local animate = char:WaitForChild("Animate")
+
+            animate.Disabled = true
+
+            -- إيقاف جميع الأنيميشنات الحالية
+            for _, track in ipairs(humanoid:GetPlayingAnimationTracks()) do
+                track:Stop()
+            end
+
+            -- تعيين معرفات Zombie Classic
+            animate.idle.Animation1.AnimationId = "http://www.roblox.com/asset/?id=616158929"
+            animate.idle.Animation2.AnimationId = "http://www.roblox.com/asset/?id=616160636"
+            animate.walk.WalkAnim.AnimationId = "http://www.roblox.com/asset/?id=616168032"
+            animate.run.RunAnim.AnimationId = "http://www.roblox.com/asset/?id=616163682"
+            animate.jump.JumpAnim.AnimationId = "http://www.roblox.com/asset/?id=616161997"
+            animate.climb.ClimbAnim.AnimationId = "http://www.roblox.com/asset/?id=616156119"
+            animate.fall.FallAnim.AnimationId = "http://www.roblox.com/asset/?id=616157476"
+
+            humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
+            animate.Disabled = false
+
+            print("✅ تم تفعيل Zombie Classic Animation.")
+        end
+
+        -- تفعيل الآن
+        if plr.Character then
+            applyZombieClassicAnim(plr.Character)
+        end
+
+        -- تفعيل تلقائي بعد الموت (Respawn)
+        plr.CharacterAdded:Connect(function(char)
+            char:WaitForChild("Humanoid")
+            char:WaitForChild("Animate")
+            task.wait(0.5)
+            applyZombieClassicAnim(char)
+        end)
+
+        print("🔁 تم تفعيل حفظ Zombie Animation بعد الموت.")
+ print("Hello!")
+ end)
+
+createButton(AnimTab, "أنيميشن ماجي", function()
+        local plr = game.Players.LocalPlayer
+
+        local function applyMageAnim(char)
+            local humanoid = char:WaitForChild("Humanoid")
+            local animate = char:WaitForChild("Animate")
+
+            animate.Disabled = true
+
+            -- إيقاف جميع الأنيميشنات الحالية
+            for _, track in ipairs(humanoid:GetPlayingAnimationTracks()) do
+                track:Stop()
+            end
+
+            -- تعيين معرفات Mage Animation
+            animate.idle.Animation1.AnimationId = "http://www.roblox.com/asset/?id=707742142"
+            animate.idle.Animation2.AnimationId = "http://www.roblox.com/asset/?id=707855907"
+            animate.walk.WalkAnim.AnimationId = "http://www.roblox.com/asset/?id=707897309"
+            animate.run.RunAnim.AnimationId = "http://www.roblox.com/asset/?id=707861613"
+            animate.jump.JumpAnim.AnimationId = "http://www.roblox.com/asset/?id=707853694"
+            animate.climb.ClimbAnim.AnimationId = "http://www.roblox.com/asset/?id=707826056"
+            animate.fall.FallAnim.AnimationId = "http://www.roblox.com/asset/?id=707829716"
+
+            humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
+            animate.Disabled = false
+
+            print("✅ تم تفعيل Mage Animation.")
+        end
+
+        -- تفعيل الآن
+        if plr.Character then
+            applyMageAnim(plr.Character)
+        end
+
+        -- تفعيل تلقائي بعد الموت (Respawn)
+        plr.CharacterAdded:Connect(function(char)
+            char:WaitForChild("Humanoid")
+            char:WaitForChild("Animate")
+            task.wait(0.5)
+            applyMageAnim(char)
+        end)
+
+        print("🔁 تم تفعيل حفظ Mage Animation بعد الموت.")
+ print("Hello!")
+ end)
+
+createButton(AnimTab, "أنيميشن الشبح", function()
+        local plr = game.Players.LocalPlayer
+
+        local function applyGhostAnim(char)
+            local humanoid = char:WaitForChild("Humanoid")
+            local animate = char:WaitForChild("Animate")
+
+            animate.Disabled = true
+
+            -- إيقاف كل الأنيمشنات الحالية
+            for _, track in ipairs(humanoid:GetPlayingAnimationTracks()) do
+                track:Stop()
+            end
+
+            -- تعيين أنيميشن Ghost
+            animate.idle.Animation1.AnimationId = "http://www.roblox.com/asset/?id=616006778"
+            animate.idle.Animation2.AnimationId = "http://www.roblox.com/asset/?id=616008087"
+            animate.walk.WalkAnim.AnimationId = "http://www.roblox.com/asset/?id=616010382"
+            animate.run.RunAnim.AnimationId = "http://www.roblox.com/asset/?id=616013216"
+            animate.jump.JumpAnim.AnimationId = "http://www.roblox.com/asset/?id=616008936"
+            animate.climb.ClimbAnim.AnimationId = "http://www.roblox.com/asset/?id=616003713"
+            animate.fall.FallAnim.AnimationId = "http://www.roblox.com/asset/?id=616005863"
+
+            humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
+            animate.Disabled = false
+
+            print("✅ تم تفعيل Ghost Animation.")
+        end
+
+        -- تفعيل الآن
+        if plr.Character then
+            applyGhostAnim(plr.Character)
+        end
+
+        -- تفعيل بعد الموت تلقائياً
+        plr.CharacterAdded:Connect(function(char)
+            char:WaitForChild("Humanoid")
+            char:WaitForChild("Animate")
+            task.wait(0.5)
+            applyGhostAnim(char)
+        end)
+
+        print("🔁 سيتم تفعيل Ghost Animation تلقائيًا بعد الموت.")
+ print("Hello!")
+ end)
+
+createButton(AnimTab, "أنيميشن المسنين", function()
+        local plr = game.Players.LocalPlayer
+
+        local function applyElderAnim(char)
+            local humanoid = char:WaitForChild("Humanoid")
+            local animate = char:WaitForChild("Animate")
+
+            animate.Disabled = true
+
+            for _, track in ipairs(humanoid:GetPlayingAnimationTracks()) do
+                track:Stop()
+            end
+
+            animate.idle.Animation1.AnimationId = "http://www.roblox.com/asset/?id=845397899"
+            animate.idle.Animation2.AnimationId = "http://www.roblox.com/asset/?id=845400520"
+            animate.walk.WalkAnim.AnimationId = "http://www.roblox.com/asset/?id=845403856"
+            animate.run.RunAnim.AnimationId = "http://www.roblox.com/asset/?id=845386501"
+            animate.jump.JumpAnim.AnimationId = "http://www.roblox.com/asset/?id=845398858"
+            animate.climb.ClimbAnim.AnimationId = "http://www.roblox.com/asset/?id=845392038"
+            animate.fall.FallAnim.AnimationId = "http://www.roblox.com/asset/?id=845396048"
+
+            humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
+            animate.Disabled = false
+        end
+
+        if plr.Character then
+            applyElderAnim(plr.Character)
+        end
+
+        plr.CharacterAdded:Connect(function(char)
+            char:WaitForChild("Humanoid")
+            char:WaitForChild("Animate")
+            task.wait(0.5)
+            applyElderAnim(char)
+        end)
+ print("Hello!")
+ end)
+
+createButton(AnimTab, "أنيميشن الرفع", function()
+        local plr = game.Players.LocalPlayer
+
+        local function applyLevitationAnim(char)
+            local humanoid = char:WaitForChild("Humanoid")
+            local animate = char:WaitForChild("Animate")
+
+            animate.Disabled = true
+
+            for _, track in ipairs(humanoid:GetPlayingAnimationTracks()) do
+                track:Stop()
+            end
+
+            animate.idle.Animation1.AnimationId = "http://www.roblox.com/asset/?id=616006778"
+            animate.idle.Animation2.AnimationId = "http://www.roblox.com/asset/?id=616008087"
+            animate.walk.WalkAnim.AnimationId = "http://www.roblox.com/asset/?id=616013216"
+            animate.run.RunAnim.AnimationId = "http://www.roblox.com/asset/?id=616010382"
+            animate.jump.JumpAnim.AnimationId = "http://www.roblox.com/asset/?id=616008936"
+            animate.climb.ClimbAnim.AnimationId = "http://www.roblox.com/asset/?id=616003713"
+            animate.fall.FallAnim.AnimationId = "http://www.roblox.com/asset/?id=616005863"
+
+            humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
+            animate.Disabled = false
+        end
+
+        if plr.Character then
+            applyLevitationAnim(plr.Character)
+        end
+
+        plr.CharacterAdded:Connect(function(char)
+            char:WaitForChild("Humanoid")
+            char:WaitForChild("Animate")
+            task.wait(0.5)
+            applyLevitationAnim(char)
+        end)
+ print("Hello!")
+ end)
+ 
+createButton(AnimTab, "أنيميشن اللعبة", function()
+        local plr = game.Players.LocalPlayer
+
+        local function applyToyAnim(char)
+            local humanoid = char:WaitForChild("Humanoid")
+            local animate = char:WaitForChild("Animate")
+
+            animate.Disabled = true
+
+            for _, track in ipairs(humanoid:GetPlayingAnimationTracks()) do
+                track:Stop()
+            end
+
+            animate.idle.Animation1.AnimationId = "http://www.roblox.com/asset/?id=782841498"
+            animate.idle.Animation2.AnimationId = "http://www.roblox.com/asset/?id=782845736"
+            animate.walk.WalkAnim.AnimationId = "http://www.roblox.com/asset/?id=782843345"
+            animate.run.RunAnim.AnimationId = "http://www.roblox.com/asset/?id=782842708"
+            animate.jump.JumpAnim.AnimationId = "http://www.roblox.com/asset/?id=782847020"
+            animate.climb.ClimbAnim.AnimationId = "http://www.roblox.com/asset/?id=782843869"
+            animate.fall.FallAnim.AnimationId = "http://www.roblox.com/asset/?id=782846423"
+
+            humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
+            animate.Disabled = false
+        end
+
+        if plr.Character then
+            applyToyAnim(plr.Character)
+        end
+
+        plr.CharacterAdded:Connect(function(char)
+            char:WaitForChild("Humanoid")
+            char:WaitForChild("Animate")
+            task.wait(0.5)
+            applyToyAnim(char)
+        end)
+ print("Hello!")
+ end)
+
+createButton(AnimTab, "أنيميشن النينجا", function()
+        local plr = game.Players.LocalPlayer
+
+        local function applyNinjaAnim(char)
+            local humanoid = char:WaitForChild("Humanoid")
+            local animate = char:WaitForChild("Animate")
+
+            animate.Disabled = true
+
+            for _, track in ipairs(humanoid:GetPlayingAnimationTracks()) do
+                track:Stop()
+            end
+
+            animate.idle.Animation1.AnimationId = "http://www.roblox.com/asset/?id=656117400"
+            animate.idle.Animation2.AnimationId = "http://www.roblox.com/asset/?id=656118341"
+            animate.walk.WalkAnim.AnimationId = "http://www.roblox.com/asset/?id=656121766"
+            animate.run.RunAnim.AnimationId = "http://www.roblox.com/asset/?id=656118852"
+            animate.jump.JumpAnim.AnimationId = "http://www.roblox.com/asset/?id=656117878"
+            animate.climb.ClimbAnim.AnimationId = "http://www.roblox.com/asset/?id=656114359"
+            animate.fall.FallAnim.AnimationId = "http://www.roblox.com/asset/?id=656115606"
+
+            humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
+            animate.Disabled = false
+        end
+
+        if plr.Character then
+            applyNinjaAnim(plr.Character)
+        end
+
+        plr.CharacterAdded:Connect(function(char)
+            char:WaitForChild("Humanoid")
+            char:WaitForChild("Animate")
+            task.wait(0.5)
+            applyNinjaAnim(char)
+        end)
+ print("Hello!")
+ end)
+
+createButton(AnimTab, "أنيميشن الكرتون", function()
+        local plr = game.Players.LocalPlayer
+
+        local function applyCartoonAnim(char)
+            local humanoid = char:WaitForChild("Humanoid")
+            local animate = char:WaitForChild("Animate")
+
+            animate.Disabled = true
+
+            for _, track in ipairs(humanoid:GetPlayingAnimationTracks()) do
+                track:Stop()
+            end
+
+            animate.idle.Animation1.AnimationId = "http://www.roblox.com/asset/?id=742637544"
+            animate.idle.Animation2.AnimationId = "http://www.roblox.com/asset/?id=742638445"
+            animate.walk.WalkAnim.AnimationId = "http://www.roblox.com/asset/?id=742640026"
+            animate.run.RunAnim.AnimationId = "http://www.roblox.com/asset/?id=742638842"
+            animate.jump.JumpAnim.AnimationId = "http://www.roblox.com/asset/?id=742637942"
+            animate.climb.ClimbAnim.AnimationId = "http://www.roblox.com/asset/?id=742636889"
+            animate.fall.FallAnim.AnimationId = "http://www.roblox.com/asset/?id=742637151"
+
+            humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
+            animate.Disabled = false
+        end
+
+        if plr.Character then
+            applyCartoonAnim(plr.Character)
+        end
+
+        plr.CharacterAdded:Connect(function(char)
+            char:WaitForChild("Humanoid")
+            char:WaitForChild("Animate")
+            task.wait(0.5)
+            applyCartoonAnim(char)
+        end)
+ print("Hello!")
+ end)
+
+createButton(AnimTab, "أنيميشن القرصان", function()
+        local plr = game.Players.LocalPlayer
+
+        local function applyPirateAnim(char)
+            local humanoid = char:WaitForChild("Humanoid")
+            local animate = char:WaitForChild("Animate")
+
+            animate.Disabled = true
+
+            for _, track in ipairs(humanoid:GetPlayingAnimationTracks()) do
+                track:Stop()
+            end
+
+            animate.idle.Animation1.AnimationId = "http://www.roblox.com/asset/?id=750781874"
+            animate.idle.Animation2.AnimationId = "http://www.roblox.com/asset/?id=750782770"
+            animate.walk.WalkAnim.AnimationId = "http://www.roblox.com/asset/?id=750785693"
+            animate.run.RunAnim.AnimationId = "http://www.roblox.com/asset/?id=750783738"
+            animate.jump.JumpAnim.AnimationId = "http://www.roblox.com/asset/?id=750782230"
+            animate.climb.ClimbAnim.AnimationId = "http://www.roblox.com/asset/?id=750779899"
+            animate.fall.FallAnim.AnimationId = "http://www.roblox.com/asset/?id=750780242"
+
+            humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
+            animate.Disabled = false
+        end
+
+        if plr.Character then
+            applyPirateAnim(plr.Character)
+        end
+
+        plr.CharacterAdded:Connect(function(char)
+            char:WaitForChild("Humanoid")
+            char:WaitForChild("Animate")
+            task.wait(0.5)
+            applyPirateAnim(char)
+        end)
+ print("Hello!")
+ end)
+ 
+createButton(AnimTab, "أنيميشن الفارس", function()
+        local plr = game.Players.LocalPlayer
+
+        local function applyKnightAnim(char)
+            local humanoid = char:WaitForChild("Humanoid")
+            local animate = char:WaitForChild("Animate")
+
+            animate.Disabled = true
+
+            for _, track in ipairs(humanoid:GetPlayingAnimationTracks()) do
+                track:Stop()
+            end
+
+            animate.idle.Animation1.AnimationId = "http://www.roblox.com/asset/?id=657595757"
+            animate.idle.Animation2.AnimationId = "http://www.roblox.com/asset/?id=657568135"
+            animate.walk.WalkAnim.AnimationId = "http://www.roblox.com/asset/?id=657552124"
+            animate.run.RunAnim.AnimationId = "http://www.roblox.com/asset/?id=657564596"
+            animate.jump.JumpAnim.AnimationId = "http://www.roblox.com/asset/?id=658409194"
+            animate.climb.ClimbAnim.AnimationId = "http://www.roblox.com/asset/?id=658360781"
+            animate.fall.FallAnim.AnimationId = "http://www.roblox.com/asset/?id=657600338"
+
+            humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
+            animate.Disabled = false
+        end
+
+        if plr.Character then
+            applyKnightAnim(plr.Character)
+        end
+
+        plr.CharacterAdded:Connect(function(char)
+            char:WaitForChild("Humanoid")
+            char:WaitForChild("Animate")
+            task.wait(0.5)
+            applyKnightAnim(char)
+        end)
+ print("Hello!")
+ end)
+
+createButton(AnimTab, "أنيميشن الحرامي", function()
+        local plr = game.Players.LocalPlayer
+        local character = plr.Character or plr.CharacterAdded:Wait()
+        local humanoid = character:WaitForChild("Humanoid")
+        local animate = character:WaitForChild("Animate")
+
+        -- إيقاف أي أنيميشن مخصص سابقًا
+        local function StopAnim()
+            for _, track in pairs(humanoid:GetPlayingAnimationTracks()) do
+                track:Stop()
+            end
+        end
+
+        animate.Disabled = true
+        StopAnim()
+
+        -- تغيير الأنيميشنات للستايل السنيكي
+        animate.idle.Animation1.AnimationId = "http://www.roblox.com/asset/?id=1132473842"
+        animate.idle.Animation2.AnimationId = "http://www.roblox.com/asset/?id=1132477671"
+        animate.walk.WalkAnim.AnimationId   = "http://www.roblox.com/asset/?id=1132510133"
+        animate.run.RunAnim.AnimationId     = "http://www.roblox.com/asset/?id=1132494274"
+        animate.jump.JumpAnim.AnimationId   = "http://www.roblox.com/asset/?id=1132489853"
+        animate.climb.ClimbAnim.AnimationId = "http://www.roblox.com/asset/?id=1132461372"
+        animate.fall.FallAnim.AnimationId   = "http://www.roblox.com/asset/?id=1132469004"
+
+        humanoid:ChangeState(Enum.HumanoidStateType.Running)
+        animate.Disabled = false
+
+        print(">> Sneaky animation enabled.")
+ print("Hello!")
+ end)
+
+createButton(AnimTab, "أنيميشن الذئب", function()
+        local plr = game.Players.LocalPlayer
+        local character = plr.Character or plr.CharacterAdded:Wait()
+        local humanoid = character:WaitForChild("Humanoid")
+        local animate = character:WaitForChild("Animate")
+
+        -- إيقاف أي أنيميشنات شغالة
+        local function StopAnim()
+            for _, track in pairs(humanoid:GetPlayingAnimationTracks()) do
+                track:Stop()
+            end
+        end
+
+        animate.Disabled = true
+        StopAnim()
+
+        -- تفعيل أنيميشن الذئب
+        animate.idle.Animation1.AnimationId = "http://www.roblox.com/asset/?id=1083195517"
+        animate.idle.Animation2.AnimationId = "http://www.roblox.com/asset/?id=1083214717"
+        animate.walk.WalkAnim.AnimationId   = "http://www.roblox.com/asset/?id=1083178339"
+        animate.run.RunAnim.AnimationId     = "http://www.roblox.com/asset/?id=1083216690"
+        animate.jump.JumpAnim.AnimationId   = "http://www.roblox.com/asset/?id=1083218792"
+        animate.climb.ClimbAnim.AnimationId = "http://www.roblox.com/asset/?id=1083182000"
+        animate.fall.FallAnim.AnimationId   = "http://www.roblox.com/asset/?id=1083189019"
+
+        humanoid:ChangeState(Enum.HumanoidStateType.Running)
+        animate.Disabled = false
+
+        print(">> Werewolf animation enabled.")
+ print("Hello!")
+ end)
+local TeleportTab   = createTab("الأنتقال", "XN")
+createSection(TeleportTab, "الانتقال لأي مكان أنت تريده")
+createButton(TeleportTab, "أداة الانتقال", function()
+mouse = game.Players.LocalPlayer:GetMouse()
+tool = Instance.new("Tool")
+tool.RequiresHandle = false
+tool.Name = "أضغط للتنقل المطور XENO"
+tool.Activated:connect(function()
+local pos = mouse.Hit+Vector3.new(0,2.5,0)
+pos = CFrame.new(pos.X,pos.Y,pos.Z)
+game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = pos
+end)
+tool.Parent = game.Players.LocalPlayer.Backpack
+ print("Hello!")
+ end)
+
+createSection(TeleportTab, "الأنتقال لجميع البيوت")
+createButton(TeleportTab, "بيت 1", function()
+local player = game.Players.LocalPlayer
+player.Character.HumanoidRootPart.CFrame = CFrame.new(262, 8, 134)
+ print("Hello!")
+ end)
+
+createButton(TeleportTab, "بيت 2", function()
+local player = game.Players.LocalPlayer
+player.Character.HumanoidRootPart.CFrame = CFrame.new(242, 10, 149)
+ print("Hello!")
+ end)
+
+createButton(TeleportTab, "بيت 3", function()
+local player = game.Players.LocalPlayer
+player.Character.HumanoidRootPart.CFrame = CFrame.new(220, 8, 180)
+ print("Hello!")
+ end)
+
+createButton(TeleportTab, "بيت 4", function()
+local player = game.Players.LocalPlayer
+player.Character.HumanoidRootPart.CFrame = CFrame.new(197, 9, 191)
+ print("Hello!")
+ end)
+
+createButton(TeleportTab, "بيت 5", function()
+local player = game.Players.LocalPlayer
+player.Character.HumanoidRootPart.CFrame = CFrame.new(172, 6, 221)
+ print("Hello!")
+ end)
+
+createButton(TeleportTab, "بيت 6", function()
+local player = game.Players.LocalPlayer
+player.Character.HumanoidRootPart.CFrame = CFrame.new(-43, 21, -137)
+ print("Hello!")
+ end)
+
+createButton(TeleportTab, "بيت 7", function()
+local player = game.Players.LocalPlayer
+player.Character.HumanoidRootPart.CFrame = CFrame.new(-40, 36, -137)
+ print("Hello!")
+ end)
+
+createButton(TeleportTab, "بيت 11", function()
+local player = game.Players.LocalPlayer
+player.Character.HumanoidRootPart.CFrame = CFrame.new(-21, 40, 436)
+ print("Hello!")
+ end)
+
+createButton(TeleportTab, "بيت 12", function()
+local player = game.Players.LocalPlayer
+player.Character.HumanoidRootPart.CFrame = CFrame.new(155, 37, 433)
+ print("Hello!")
+ end)
+
+createButton(TeleportTab, "بيت 13", function()
+local player = game.Players.LocalPlayer
+player.Character.HumanoidRootPart.CFrame = CFrame.new(255, 35, 431)
+ print("Hello!")
+ end)
+
+createButton(TeleportTab, "بيت 14", function()
+local player = game.Players.LocalPlayer
+player.Character.HumanoidRootPart.CFrame = CFrame.new(254, 38, 394)
+ print("Hello!")
+ end)
+
+createButton(TeleportTab, "بيت 15", function()
+local player = game.Players.LocalPlayer
+player.Character.HumanoidRootPart.CFrame = CFrame.new(148, 39, 387)
+ print("Hello!")
+ end)
+
+createButton(TeleportTab, "بيت 16", function()
+local player = game.Players.LocalPlayer
+player.Character.HumanoidRootPart.CFrame = CFrame.new(-17, 42, 395)
+ print("Hello!")
+ end)
+
+createButton(TeleportTab, "بيت 17", function()
+local player = game.Players.LocalPlayer
+player.Character.HumanoidRootPart.CFrame = CFrame.new(-189, 37, -247)
+ print("Hello!")
+ end)
+
+createButton(TeleportTab, "بيت 18", function()
+local player = game.Players.LocalPlayer
+player.Character.HumanoidRootPart.CFrame = CFrame.new(-354, 37, -244)
+ print("Hello!")
+ end)
+
+createButton(TeleportTab, "بيت 19", function()
+local player = game.Players.LocalPlayer
+player.Character.HumanoidRootPart.CFrame = CFrame.new(-456, 36, -245)
+ print("Hello!")
+ end)
+
+createButton(TeleportTab, "بيت 20", function()
+local player = game.Players.LocalPlayer
+player.Character.HumanoidRootPart.CFrame = CFrame.new(-453, 38, -295)
+ print("Hello!")
+ end)
+
+createButton(TeleportTab, "بيت 21", function()
+local player = game.Players.LocalPlayer
+player.Character.HumanoidRootPart.CFrame = CFrame.new(-356, 38, -294)
+ print("Hello!")
+ end)
+
+createButton(TeleportTab, "بيت 22", function()
+local player = game.Players.LocalPlayer
+player.Character.HumanoidRootPart.CFrame = CFrame.new(-187, 37, -295)
+ print("Hello!")
+ end)
+
+createButton(TeleportTab, "بيت 23", function()
+local player = game.Players.LocalPlayer
+player.Character.HumanoidRootPart.CFrame = CFrame.new(-410, 68, -447)
+ print("Hello!")
+ end)
+
+createButton(TeleportTab, "بيت 24", function()
+local player = game.Players.LocalPlayer
+player.Character.HumanoidRootPart.CFrame = CFrame.new(-348, 69, -496)
+ print("Hello!")
+ end)
+
+createButton(TeleportTab, "بيت 25", function()
+local player = game.Players.LocalPlayer
+player.Character.HumanoidRootPart.CFrame = CFrame.new(-103, 12, 1087)
+ print("Hello!")
+ end)
+
+createButton(TeleportTab, "بيت 29", function()
+local player = game.Players.LocalPlayer
+player.Character.HumanoidRootPart.CFrame = CFrame.new(-730, 6, 808)
+ print("Hello!")
+ end)
+
+createButton(TeleportTab, "بيت 30", function()
+local player = game.Players.LocalPlayer
+player.Character.HumanoidRootPart.CFrame = CFrame.new(-245, 7, 822)
+ print("Hello!")
+ end)
+
+createButton(TeleportTab, "بيت 31", function()
+local player = game.Players.LocalPlayer
+player.Character.HumanoidRootPart.CFrame = CFrame.new(639, 76, -361)
+ print("Hello!")
+ end)
+
+createButton(TeleportTab, "بيت 32", function()
+local player = game.Players.LocalPlayer
+player.Character.HumanoidRootPart.CFrame = CFrame.new(-908, 6, -361)
+ print("Hello!")
+ end)
+
+createButton(TeleportTab, "بيت 33", function()
+local player = game.Players.LocalPlayer
+player.Character.HumanoidRootPart.CFrame = CFrame.new(-111, 70, -417)
+ print("Hello!")
+ end)
+
+createButton(TeleportTab, "بيت 34", function()
+local player = game.Players.LocalPlayer
+player.Character.HumanoidRootPart.CFrame = CFrame.new(230, 38, 569)
+ print("Hello!")
+ end)
+
+createButton(TeleportTab, "بيت 35", function()
+local player = game.Players.LocalPlayer
+player.Character.HumanoidRootPart.CFrame = CFrame.new(-30, 13, 2209)
+ print("Hello!")
+ end)
+
+createButton(TeleportTab, "بيت 36", function()
+local player = game.Players.LocalPlayer
+player.Character.HumanoidRootPart.CFrame = CFrame.new(248, 17, -2324)
+ print("Hello!")
+ end)
+
+createButton(TeleportTab, "بيت 37", function()
+local player = game.Players.LocalPlayer
+player.Character.HumanoidRootPart.CFrame = CFrame.new(-1946, 38, 327)
+ print("Hello!")
+ end)
+local ServerTab   = createTab("السيرفر", "XN")
+createSection(ServerTab, "اعادة دخول للسيرفر الخاص بك")
+local TeleportService = game:GetService("TeleportService")
+local Players = game:GetService("Players")
+local LocalPlayer = Players.LocalPlayer
+
+createButton(ServerTab, "اعادة دخول للسيرفر", function()
+        local PlaceId = game.PlaceId
+        local JobId = game.JobId
+
+        -- إعادة إرسال اللاعب لنفس السيرفر عبر TeleportToPlaceInstance
+        TeleportService:TeleportToPlaceInstance(PlaceId, JobId, LocalPlayer)
+ print("Hello!")
+ end)
+-- تبويب الأفاتار
+local AvatarsTab   = createTab("أفاتار", "XN")
+
+-- قسم الرؤوس المطلوبة
+createSection(AvatarsTab, "الرؤوس المطلوبة")
+local skins = {
+    ["رآس مخفي"] = 134082579,
+    ["عيون زرقاء"] = 16580493236,
+    ["رأس الفضائي"] = 3210773801,
+}
+local selectedSkinName = nil
+createDropdown(AvatarsTab, {"رأس مخفي", "عيون زرقاء", "رأس الفضائي"}, nil, function(value)
+    selectedSkinName = value
+end)
+createButton(AvatarsTab, "تفعيل اللسكن", function()
+    if selectedSkinName and skins[selectedSkinName] then
+        local args = {
+            [1] = {0, 0, 0, 0, 0, skins[selectedSkinName]}
+        }
+        game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("ChangeCharacterBody"):InvokeServer(unpack(args))
+    else
+        warn("Please select a skin first.")
+    end
+end)
+
+-- قسم الرؤوس الكلاسيكية
+createSection(AvatarsTab, "رؤوس عادية")
+local heads = {
+    ["رأس الخدين"] = 746767604,
+    ["رأس ضيق"] = 16580493236,
+    ["رأس النموذج"] = 616398268,
+    ["رأس فك قوي"] = 616399508,
+    ["رأس محفور"] = 616387160,
+}
+local selectedHead = ""
+local headList = {}
+for headName, _ in pairs(heads) do
+    table.insert(headList, headName)
+end
+createDropdown(AvatarsTab, headList, nil, function(choice)
+    selectedHead = choice
+end)
+createButton(AvatarsTab, "تفعيل الرأس", function()
+    if selectedHead and heads[selectedHead] then
+        local args = {
+            [1] = {0, 0, 0, 0, 0, heads[selectedHead]}
+        }
+        game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("ChangeCharacterBody"):InvokeServer(unpack(args))
+    else
+        warn("Please select a valid head from the dropdown!")
+    end
+end)
+
+-- قسم شخصيات البنات
+createSection(AvatarsTab, "شخصيات البنات")
+local Characters = {
+    ["جسم طويل SuperLazuu"] = {14874108946, 122027795919157, 80393546275035, 14917855371, 14917855725, 0},
+    ["جسم Lazuu"] = {75159926897589, 76683091425509, 14567282030, 14567281990, 14874108946, 0},
+    ["أفخم تشيبي امرأة"] = {84519338962111, 104625992479605, 89231963593670, 101500262169377, 130044271500910, 0},
+    ["Lazuu Chibi بنت شمبانيا"] = {17759625390, 17759625333, 17759625415, 17759626537, 17759626879, 0},
+    ["دمية لازو مانجا"] = {97119075795691, 72699005696177, 122027795919157, 80393546275035, 125637672664513, 0},
+    ["بنت دمية تشيبي (أسود)"] = {14775830263, 14775830261, 14775830259, 14775830269, 14775830264, 0},
+    ["بنت دمية تشيبي (أبيض)"] = {14785351665, 14775830261, 14775830259, 14775830269, 14775830264, 0},
+}
+local selectedCharacterGirl = nil
+createDropdown(AvatarsTab, {
+    "جسم طويل SuperLazuu", "جسم Lazuu", "أفخم تشيبي امرأة",
+    "Lazuu Chibi بنت شمبانيا", "دمية لازو مانجا", "بنت دمية تشيبي (أسود)", "بنت دمية تشيبي (أبيض)"
+}, nil, function(selected)
+    selectedCharacterGirl = selected
+end)
+createButton(AvatarsTab, "تفعيل الشخصية", function()
+    if selectedCharacterGirl and Characters[selectedCharacterGirl] then
+        local args = {
+            [1] = Characters[selectedCharacterGirl]
+        }
+        game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("ChangeCharacterBody"):InvokeServer(unpack(args))
+    else
+        warn("Please select a body from the dropdown first.")
+    end
+end)
+
+-- قسم أجسام الأولاد
+createSection(AvatarsTab, "أجسام الأولاد")
+local selectedBody = nil
+local bodyOptions = {
+    ["جسم Inf15"] = {
+        [1] = {82491774691726, 99519402284266, 115905570886697, 84418052877367, 124343282827669, 0}
+    },
+    ["جسم R6"] = {
+        [1] = {106411216404626, 87202958751790, 81500432784353, 103452055306587, 129699548221468, 0}
+    }
+}
+createDropdown(AvatarsTab, {"جسم Inf15", "جسم R6"}, nil, function(value)
+    selectedBody = value
+end)
+createButton(AvatarsTab, "تفعيل الجسم", function()
+    if selectedBody and bodyOptions[selectedBody] then
+        local args = bodyOptions[selectedBody]
+        game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("ChangeCharacterBody"):InvokeServer(unpack(args))
+    else
+        warn("No body selected!")
+    end
+end)
+
+-- قسم أفاتارات الأولاد
+createSection(AvatarsTab, "أفاتارات الأولاد")
+local selectedAvatar = nil
+local avatarOptions = {
+    ["شخصية صغيرة (أبيض)"] = {
+        [1] = {122602157507621, 117079685799715, 81502860408959, 89658787394734, 108834379337347, 0}
+    },
+    ["شخصية صغيرة (رمادي"] = {
+        [1] = {93074839269016, 117079685799715, 81502860408959, 89658787394734, 108834379337347, 0}
+    },
+    ["شخصية معضلة"] = {
+        [1] = {121532625082697, 119216187383922, 121634444400488, 100229264383618, 126161096503611, 0}
+    }
+}
+createDropdown(AvatarsTab, {"شخصية صغيرة (أبيض)", "شخصية صغيرة (رمادي)", "شخصية معضلة"}, nil, function(value)
+    selectedAvatar = value
+end)
+createButton(AvatarsTab, "تفعيل الأفاتار", function()
+    if selectedAvatar and avatarOptions[selectedAvatar] then
+        game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("ChangeCharacterBody"):InvokeServer(unpack(avatarOptions[selectedAvatar]))
+    else
+        warn("Please select an avatar first.")
+    end
+end)
+
+-- قسم شخصيات الأولاد
+createSection(AvatarsTab, "شخصية الأولاد")
+local characters = {
+    ["سكن صغير كيوت (أسود)"] = {
+        [1] = {14579958702, 14583777042, 14583777007, 14579959249, 14579963667, 0}
+    },
+    ["سكن صغير كيوت (أبيض)"] = {
+        [1] = {14583777041, 14583776823, 14583776741, 14583776823, 14583776741, 0}
+    }
+}
+local selectedCharacter = nil
+createDropdown(AvatarsTab, {"سكن صغير كيوت (أسود)", "سكن صغير كيوت (أبيض)"}, nil, function(selected)
+    selectedCharacter = selected
+end)
+createButton(AvatarsTab, "تفعيل اللسكن", function()
+    if selectedCharacter and characters[selectedCharacter] then
+        game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("ChangeCharacterBody"):InvokeServer(unpack(characters[selectedCharacter]))
+    else
+        warn("Please select a character first.")
+    end
+end)
+-- Normal Name Section
+createSection(AvatarsTab, "الأسم مع التلوين")
+createTextBox(AvatarsTab, "أكتب الأسم...", function(value)
+    local args = {"RolePlayName", value}
+    local remote = game:GetService("ReplicatedStorage").RE:FindFirstChild("1RPNam1eTex1t")
+    if remote then
+        remote:FireServer(unpack(args))
+    end
+end)
+
+-- Rainbow Name Toggle
+local rainbowNameRunning = false
+
+createToggle(AvatarsTab, "تلوين الأسم", false, function(state)
+    rainbowNameRunning = state
+    if state then
+        task.spawn(function()
+            while rainbowNameRunning do
+                local hue = (tick() % 10) / 10
+                local color = Color3.fromHSV(hue, 1, 1)
+                local args = {"PickingRPNameColor", color}
+                local remote = game:GetService("ReplicatedStorage"):WaitForChild("RE"):FindFirstChild("1RPNam1eColo1r")
+                if remote then
+                    remote:FireServer(unpack(args))
+                end
+                task.wait(0.1)
+            end
+        end)
+    end
+end)
+
+-- Normal Bio Section
+createSection(AvatarsTab, "البايو مع التلوين")
+createTextBox(AvatarsTab, "اكتب البايو...", function(value)
+    local args = {"RolePlayBio", value}
+    local remote = game:GetService("ReplicatedStorage").RE:FindFirstChild("1RPNam1eTex1t")
+    if remote then
+        remote:FireServer(unpack(args))
+    end
+end)
+
+-- Rainbow Bio Button
+-- متغير لتتبع حالة تشغيل الـ Rainbow Bio
+local rainbowBioRunning = false
+
+createToggle(AvatarsTab, "تلوين البايو", false, function(state)
+    if state then
+        if rainbowBioRunning then return end
+        rainbowBioRunning = true
+        task.spawn(function()
+            while rainbowBioRunning do
+                local hue = (tick() % 10) / 10
+                local color = Color3.fromHSV(hue, 1, 1)
+                local args = {"PickingRPBioColor", color}
+                local remote = game:GetService("ReplicatedStorage"):WaitForChild("RE"):FindFirstChild("1RPNam1eColo1r")
+                if remote then
+                    remote:FireServer(unpack(args))
+                end
+                task.wait(0.15)
+            end
+        end)
+    else
+        rainbowBioRunning = false
+    end
+end)
+-- قسم: نسخ سكنات اللاعبين FE
+createSection(AvatarsTab, "نسخ سكنات اللاعبين FE")
+
+local Players = game:GetService("Players")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local LocalPlayer = Players.LocalPlayer
+
+local selectedPlayerName = ""
+local copyMode = "Brookhaven" -- "Brookhaven" = في ماب البيوت | "Real" = اللسكن الحقيقي
+
+-- وظائف المساعدة
+local function WearAsset(id)
+	pcall(function()
+		ReplicatedStorage.Remotes.Wear:InvokeServer(tonumber(id))
+	end)
+end
+
+local function ResetBody()
+	pcall(function()
+		ReplicatedStorage.Remotes.ChangeCharacterBody:InvokeServer({0, 0, 0, 0, 0, 0}, "AllBlocky")
+	end)
+end
+
+local function CopyAccessories(desc)
+	for _, accessory in ipairs(desc:GetAccessories(true)) do
+		if accessory.AssetId then
+			WearAsset(accessory.AssetId)
+			task.wait(0.1)
+		end
+	end
+end
+
+local function CopyBody(desc)
+	local parts = {
+		tonumber(desc.Torso),
+		tonumber(desc.RightArm),
+		tonumber(desc.LeftArm),
+		tonumber(desc.RightLeg),
+		tonumber(desc.LeftLeg),
+		tonumber(desc.Head),
+	}
+	ReplicatedStorage.Remotes.ChangeCharacterBody:InvokeServer(parts, "ShnmaxHub")
+end
+
+local function CopyClothing(desc)
+	for _, asset in ipairs({desc.Shirt, desc.Pants, desc.GraphicTShirt, desc.Face}) do
+		if tonumber(asset) and asset ~= 0 then
+			WearAsset(asset)
+			task.wait(0.1)
+		end
+	end
+end
+
+local function CopyAnimations(desc)
+	for _, anim in ipairs({
+		desc.IdleAnimation,
+		desc.WalkAnimation,
+		desc.RunAnimation,
+		desc.JumpAnimation,
+		desc.FallAnimation,
+		desc.SwimAnimation
+	}) do
+		if tonumber(anim) and anim ~= 0 then
+			WearAsset(anim)
+			task.wait(0.1)
+		end
+	end
+end
+
+local function CopyBodyColor(desc)
+	if desc.bodyColors and desc.bodyColors.HeadColor then
+		ReplicatedStorage.Remotes.ChangeBodyColor:FireServer(tostring(desc.bodyColors.HeadColor))
+	end
+end
+
+local function GetPlayerByName(name)
+	name = name:lower()
+	for _, p in ipairs(Players:GetPlayers()) do
+		if p ~= LocalPlayer and p.Name:lower():sub(1, #name) == name then
+			return p
+		end
+	end
+	return nil
+end
+
+local function GetDescription(player)
+	if copyMode == "Brookhaven" then
+		local humanoid = player.Character and player.Character:FindFirstChildOfClass("Humanoid")
+		if humanoid then
+			return humanoid:GetAppliedDescription()
+		end
+	else
+		return Players:GetHumanoidDescriptionFromUserId(player.UserId)
+	end
+end
+
+local function CopyAvatarFrom(player)
+	pcall(function()
+		local desc = GetDescription(player)
+		if not desc then return end
+
+		CopyAccessories(LocalPlayer.Character:FindFirstChildOfClass("Humanoid"):GetAppliedDescription())
+		ResetBody()
+		CopyAccessories(desc)
+		task.wait(0.1)
+		CopyBody(desc)
+		CopyClothing(desc)
+		CopyAnimations(desc)
+		CopyBodyColor(desc)
+	end)
+end
+
+-- إدخال اسم اللاعب
+createTextBox(AvatarsTab, "اكتب اسم اللاعب...", function(txt)
+	selectedPlayerName = txt
+end)
+
+-- اختيار نوع النسخ
+createDropdown(AvatarsTab, {"في ماب البيوت", "اللسكن الحقيقي"}, "في ماب البيوت", function(opt)
+	if opt == "في ماب البيوت" then
+		copyMode = "Brookhaven"
+	else
+		copyMode = "Real"
+	end
+end)
+
+-- زر: نسخ سكن اللاعب المحدد
+createButton(AvatarsTab, "نسخ سكن اللاعب", function()
+	if selectedPlayerName == "" then
+		warn("الرجاء كتابة اسم اللاعب")
+		return
+	end
+	local target = GetPlayerByName(selectedPlayerName)
+	if target then
+		CopyAvatarFrom(target)
+	else
+		warn("لم يتم العثور على اللاعب في السيرفر")
+	end
+end)
+
+-- زر: نسخ سكن أقرب لاعب
+createButton(AvatarsTab, "نسخ سكن لاعب قريب منك", function()
+	local closest, minDist = nil, math.huge
+	for _, p in pairs(Players:GetPlayers()) do
+		if p ~= LocalPlayer and p.Character and p.Character:FindFirstChild("HumanoidRootPart") then
+			local dist = (p.Character.HumanoidRootPart.Position - LocalPlayer.Character.HumanoidRootPart.Position).Magnitude
+			if dist < minDist then
+				closest = p
+				minDist = dist
+			end
+		end
+	end
+	if closest then
+		CopyAvatarFrom(closest)
+	end
+end)
+
+-- زر: نسخ سكن لاعب عشوائي
+createButton(AvatarsTab, "نسخ سكن لاعب عشوائي", function()
+	local list = {}
+	for _, p in pairs(Players:GetPlayers()) do
+		if p ~= LocalPlayer then
+			table.insert(list, p)
+		end
+	end
+	if #list > 0 then
+		local randomPlayer = list[math.random(1, #list)]
+		CopyAvatarFrom(randomPlayer)
+	end
+end)
+
+
+-- قسم أنيميشنات الشخصية
+createSection(AvatarsTab, "انيميشنات قديمة")
+
+createButton(AvatarsTab, "أنيميشن R6 قديم", function()
+	loadstring(game:HttpGet('https://gist.githubusercontent.com/Imperador950/f9e54330eb4a92331204aae37ec11aef/raw/db18d1c348beb8a79931346597137518966f2188/Byshelby'))()
+end)
+
+createButton(AvatarsTab, "أنيميشن R15 قديم", function()
+	local character = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
+	local humanoid = character:WaitForChild("Humanoid")
+
+	for _, track in ipairs(humanoid:GetPlayingAnimationTracks()) do
+		track:Stop()
+		track:Destroy()
+	end
+
+	for _, desc in ipairs(character:GetDescendants()) do
+		if desc:IsA("Animation") then
+			desc:Destroy()
+		end
+	end
+
+	for _, obj in ipairs(character:GetDescendants()) do
+		if obj:IsA("Tool") or obj:IsA("LocalScript") or obj:IsA("ModuleScript") then
+			for _, child in ipairs(obj:GetDescendants()) do
+				if child:IsA("Animation") then
+					child:Destroy()
+				end
+			end
+		end
+	end
+end)
+local PassesTab   = createTab("القيم باسات", "XN")
+createSection(PassesTab, "جميع أنواع القيم باسات")
+local Players = game:GetService("Players")
+local StarterGui = game:GetService("StarterGui")
+local LocalPlayer = Players.LocalPlayer
+local Bag = LocalPlayer:WaitForChild("PlayersBag")
+
+local function SendNotify(title, icon)
+    StarterGui:SetCore("SendNotification", {
+        Title = title,
+        Text = "",
+        Icon = icon,
+        Duration = 5
+    })
+end
+
+createButton(PassesTab, "أحصل على التاج", function()
+    SendNotify("أبشر يا قلبي تم الحصول على التاج", "rbxassetid://96510811373389")
+    if Bag:FindFirstChild("VIP") then
+        Bag.VIP.Value = true
+    end
+end)
+
+createButton(PassesTab, "أحصل على الأوجه", function()
+    SendNotify("أبشر يا قلبي تم الحصول على الاوجه", "rbxassetid://139444782526755")
+    if Bag:FindFirstChild("FacePass") then
+        Bag.FacePass.Value = true
+    end
+end)
+
+createButton(PassesTab, "أحصل على النجمة", function()
+    SendNotify("أبشر يا قلبي تم الحصول على النجمة", "rbxassetid://93100440000032")
+    if Bag:FindFirstChild("SilverPass") then
+        Bag.SilverPass.Value = true
+    end
+end)
+
+createButton(PassesTab, "أحصل على النار", function()
+    SendNotify("أبشر يا قلبي تم الحصول على النار", "rbxassetid://99197718536544")
+    if Bag:FindFirstChild("FirePass") then
+        Bag.FirePass.Value = true
+    end
+end)
+
+createButton(PassesTab, "أحصل على السرعة", function()
+    SendNotify("أبشر يا قلبي تم الحصول على السرعة", "rbxassetid://103085811778224")
+    if Bag:FindFirstChild("SpeedPass200") then
+        Bag.SpeedPass200.Value = true
+    end
+end)
+
+createButton(PassesTab, "أحصل على الأغاني", function()
+    SendNotify("أبشر يا قلبي تم الحصول على الأغاني", "rbxassetid://111924853884794")
+    if Bag:FindFirstChild("MusicPass") then
+        Bag.MusicPass.Value = true
+    end
+end)
+
+local BypassesTab = createTab("الحمايات", "XN")
+createSection(BypassesTab, "أستعمل الحمايات للوقاية من أي ضرر من اللاعبين")
+createToggle(BypassesTab, "الحماية من البانق", false, function(Value)
+   kiudi = Value
+     while kiudi and task.wait() do
+       for _, player in next, game.Players:GetPlayers() do
+         if player ~= game.Players.LocalPlayer and game.Workspace:FindFirstChild(player.Name) and player.Character:FindFirstChild("Humanoid") and player.Character:FindFirstChild("HumanoidRootPart") and (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - player.Character.HumanoidRootPart.Position).Magnitude <= 10 then
+           for _, anim in next, player.Character.Humanoid:GetPlayingAnimationTracks() do
+              if anim.Animation.AnimationId == "rbxassetid://148840371" or anim.Animation.AnimationId == "rbxassetid://5918726674" then
+    game:GetService("RunService").Heartbeat:Wait()
+    last_pick_sin_mrazy = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame 
+    game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(9e8, workspace.FallenPartsDestroyHeight + 1, 9e8) 
+    game:GetService("RunService").Heartbeat:Wait()
+    game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = last_pick_sin_mrazy
+              end
+           end
+         end
+       end
+     end
+ end)
+
+createToggle(BypassesTab, "الحماية من الفلينق", false, function(Value)
+ jhg = Value
+     while jhg and task.wait() do
+       for _, plr in next, game:GetService("Players"):GetPlayers() do
+         if plr ~= game:GetService("Players").LocalPlayer and plr.Character and plr.Character:FindFirstChild("HumanoidRootPart") then
+for _, part in next, plr.Character:GetChildren() do
+  if part:IsA("BasePart") then
+ part.CanCollide = not jhg
+ part.CanTouch = not jhg
+ part.AssemblyLinearVelocity = Vector3.zero
+ part.AssemblyAngularVelocity = Vector3.zero
+ part.Velocity = Vector3.zero
+ part.CustomPhysicalProperties = PhysicalProperties.new(0, 0, 0)
+  end
+end
+         end
+       end
+     end
+ end)
+
+createToggle(BypassesTab, "الحماية من الانتقال للفويد", false, function(Value)
+       local function getrespawn(): Instance
+  for _, part in next, workspace:GetDescendants() do
+    if part:IsA("SpawnLocation") then
+      return part
+   end
+  end
+end
+
+local thnei = Value
+local char = game.Players.LocalPlayer.Character or game.Players.LocalPlayer.CharacterAdded:Wait()
+
+while thnei and task.wait() do
+char = game.Players.LocalPlayer.Character or game.Players.LocalPlayer.CharacterAdded:Wait()
+  if char:FindFirstChild("HumanoidRootPart") and char.HumanoidRootPart.CFrame.Y <= workspace.FallenPartsDestroyHeight + 10 then
+    if getrespawn() then
+ char.HumanoidRootPart.CFrame = getrespawn().CFrame
+ char.HumanoidRootPart.Velocity = Vector3.zero
+     else
+ char.HumanoidRootPart.CFrame = CFrame.new(0, 0, 0)
+ char.HumanoidRootPart.Velocity = Vector3.zero
+    end
+  end
+end
+ end)
+
+createToggle(BypassesTab, "الحماية من الجلوس", false, function(Value)
+          game.Players.LocalPlayer.Character.Humanoid:SetStateEnabled("Seated", not Value)
+ end)
+
+local VirtualUser = game:GetService("VirtualUser")
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+
+local LocalPlayer = Players.LocalPlayer
+
+local antiAfkConnection = nil
+local heartbeatConnection = nil
+local afkRemote = ReplicatedStorage:FindFirstChild("AFKRemote") -- غيّر الاسم إن وُجد
+local afkFunction = ReplicatedStorage:FindFirstChild("AFKFunction") -- غيّر الاسم إن وُجد
+
+createToggle(BypassesTab, "الحماية من الأفك", false, function(enabled)
+         if enabled then
+            -- VirtualUser لمنع الخروج بسبب عدم النشاط
+            antiAfkConnection = LocalPlayer.Idled:Connect(function()
+                VirtualUser:Button2Down(Vector2.new(0,0), workspace.CurrentCamera.CFrame)
+                task.wait(0.1)
+                VirtualUser:Button2Up(Vector2.new(0,0), workspace.CurrentCamera.CFrame)
+                print(">> Sent VirtualUser to prevent AFK")
+            end)
+
+            -- Heartbeat loop لإرسال إشارات للـ RemoteEvent/Function
+            heartbeatConnection = RunService.Heartbeat:Connect(function()
+                -- Fire RemoteEvent إن وجد
+                if afkRemote and afkRemote:IsA("RemoteEvent") then
+                    pcall(function()
+                        afkRemote:FireServer("anti_afk_ping")
+                        print(">> Fired RemoteEvent")
+                    end)
+                end
+
+                -- Invoke RemoteFunction إن وجد
+                if afkFunction and afkFunction:IsA("RemoteFunction") then
+                    pcall(function()
+                        afkFunction:InvokeServer("anti_afk_check")
+                        print(">> Invoked RemoteFunction")
+                    end)
+                end
+            end)
+
+            print("✅ ANTI-AFK Enabled.")
+        else
+            -- تنظيف الاتصالات عند التعطيل
+            if antiAfkConnection then
+                antiAfkConnection:Disconnect()
+                antiAfkConnection = nil
+            end
+
+            if heartbeatConnection then
+                heartbeatConnection:Disconnect()
+                heartbeatConnection = nil
+            end
+
+            print("❌ ANTI-AFK Disabled.")
+        end
+ end)
+
+createSection(BypassesTab, "المزيد قيد الأنشاء...")
