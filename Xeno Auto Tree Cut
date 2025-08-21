@@ -1,0 +1,330 @@
+createToggle(farmTab, "Auto Farm Woods", false, function(state)
+    autoFarmEnabled = state
+    local player = game.Players.LocalPlayer
+    local axeName = "Strong Axe" -- Options: "Old Axe", "Good Axe", "Strong Axe", "Chainsaw"
+    local campfirePos = Vector3.new(0, 0, 0) -- ضع هنا إحداثيات Camp Fire
+
+    local axeHits = {
+        ["Old Axe"] = 13,
+        ["Good Axe"] = 5,
+        ["Strong Axe"] = 1,
+        ["Chainsaw"] = 2
+    }
+
+    local treeLevels = {
+        ["smalltree"] = 1,
+        ["mediumtree"] = 2,
+        ["bigtree"] = 3,
+        ["gianttree"] = 4
+    }
+
+    local axeLevels = {
+        ["Old Axe"] = 1,
+        ["Good Axe"] = 2,
+        ["Strong Axe"] = 3,
+        ["Chainsaw"] = 4
+    }
+
+    -- الحصول على الفأس
+    local function getAxe()
+        for _, tool in ipairs(player.Backpack:GetChildren()) do
+            if tool.Name == axeName then return tool end
+        end
+        for _, tool in ipairs(player.Character:GetChildren()) do
+            if tool.Name == axeName then return tool end
+        end
+        return nil
+    end
+
+    -- الانتقال للأرض أمام الشجرة أو النقطة المحددة
+    local function teleportToGround(pos)
+        local hrp = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
+        local humanoid = player.Character and player.Character:FindFirstChild("Humanoid")
+        if hrp and humanoid then
+            -- البحث عن الأرض تحت النقطة
+            local ray = Ray.new(pos + Vector3.new(0, 50, 0), Vector3.new(0, -100, 0))
+            local hitPos = workspace:FindPartOnRayWithIgnoreList(ray, {player.Character})
+            local groundY = hitPos and hitPos.Position.Y or pos.Y
+            local direction = (pos - hrp.Position).Unit
+            local newPos = Vector3.new(pos.X, groundY, pos.Z) - direction * 3 -- تثبيت أمام الشجرة
+            hrp.CFrame = CFrame.new(newPos, Vector3.new(pos.X, groundY, pos.Z))
+            humanoid.PlatformStand = false
+            humanoid.Sit = false
+        end
+    end
+
+    -- إيجاد أقرب شجرة مناسبة
+    local function getNearestTree()
+        local closestTree, minDist = nil, math.huge
+        local playerPos = player.Character.HumanoidRootPart.Position
+        local maxTreeLevel = axeLevels[axeName] or 1
+
+        for _, obj in ipairs(workspace:GetDescendants()) do
+            if obj:IsA("Model") and obj.Name:lower():find("tree") then
+                local root = obj:FindFirstChild("HumanoidRootPart") or obj:FindFirstChildWhichIsA("BasePart")
+                if root then
+                    local treeName = obj.Name:lower()
+                    local level = treeLevels[treeName] or 1
+                    if level <= maxTreeLevel then
+                        local dist = (playerPos - root.Position).Magnitude
+                        if dist < minDist then
+                            minDist = dist
+                            closestTree = root
+                        end
+                    end
+                end
+            end
+        end
+        return closestTree
+    end
+
+    -- قطع الشجرة
+    local function chopTree(treeRoot)
+        local axe = getAxe()
+        if not axe then warn("Axe not found!") return false end
+        if axe.Parent ~= player.Character then axe.Parent = player.Character end
+
+        -- ثبات اللاعب أمام الشجرة على الأرض
+        teleportToGround(treeRoot.Position)
+
+        local hits = axeHits[axeName] or 5
+        for i = 1, hits do
+            if not autoFarmEnabled then return false end
+            firetouchinterest(axe.Handle, treeRoot, 0)
+            task.wait(0.2)
+            firetouchinterest(axe.Handle, treeRoot, 1)
+            task.wait(0.1)
+        end
+        return true
+    end
+
+    -- جمع الأخشاب
+    local function collectLogs(treeModel)
+        for _, obj in ipairs(treeModel:GetDescendants()) do
+            if obj:IsA("ProximityPrompt") then
+                obj:InputHoldBegin()
+                task.wait(0.1)
+                obj:InputHoldEnd()
+            end
+        end
+    end
+
+    -- تسليم الأخشاب للنار
+    local function deliverLogs()
+        teleportToGround(campfirePos)
+        task.wait(1)
+    end
+
+    -- تشغيل الحلقة الرئيسية للتوغل
+    if autoFarmEnabled then
+        task.spawn(function()
+            while autoFarmEnabled do
+                local tree = getNearestTree()
+                if tree then
+                    local treeModel = tree.Parent
+                    teleportToGround(tree.Position)
+                    task.wait(0.5)
+                    local done = chopTree(tree)
+                    if done then
+                        collectLogs(treeModel)
+                        deliverLogs()
+                    end
+                else
+                    task.wait(1)
+                end
+            end
+        end)
+    end
+end)
+
+createSection(farmTab, "Auto Farming And You're Still In Place")
+-- ==================== AUTO FARM ====================
+
+-- Variables
+local Player = game.Players.LocalPlayer
+local RunService = game:GetService("RunService")
+local RemoteEvents = nil
+local ProcessedTrees = {}
+local CurrentTargets = {}
+local AutoFarmEnabled = false
+local AutoFarmConnection = nil
+local TreesChopped = 0
+
+local MAX_FARM_RANGE = 1000 -- أقصى مدى لجلب الأشجار
+local MULTI_ATTACK = 3      -- عدد هجمات متتابعة لكل شجرة
+local FARM_ATTACK_DELAY = 0.5
+local ValidTrees = {}       -- ضع هنا أسماء الأشجار الخاصة إذا كانت محددة
+
+-- ==================== UI ====================
+local farmInfoLabel = createTextLabel(farmTab, "Trees: 0 | Chopped: 0")
+
+-- ==================== Helper Functions ====================
+
+-- Check if player has Axe for farming
+local function hasAxeForFarm()
+    local Inventory = Player:FindFirstChild("Inventory")
+    if Inventory then
+        for _, item in pairs(Inventory:GetChildren()) do
+            if item:IsA("Model") and (item.Name:find("Axe") or item.Name:find("axe")) then
+                return true, item
+            end
+        end
+    end
+
+    if Player.Character then
+        for _, item in pairs(Player.Character:GetChildren()) do
+            if item:IsA("Tool") and (item.Name:find("Axe") or item.Name:find("axe")) then
+                return true, item
+            end
+        end
+    end
+
+    return false, nil
+end
+
+-- Find all trees in range
+local function findAllTreesInRange()
+    local trees = {}
+    local Character = Player.Character
+    if not Character or not Character:FindFirstChild("HumanoidRootPart") then
+        return trees
+    end
+    local RootPart = Character.HumanoidRootPart
+
+    for _, obj in pairs(workspace:GetDescendants()) do
+        if obj:IsA("Model") and obj.Parent and not ProcessedTrees[obj] then
+            local name = obj.Name
+            if name:lower():find("tree") or ValidTrees[name] then
+                local trunk =
+                    obj:FindFirstChild("Trunk") or obj:FindFirstChild("Wood") or obj:FindFirstChild("Log") or
+                    obj:FindFirstChild("TreePart")
+
+                if not trunk then
+                    for _, part in pairs(obj:GetChildren()) do
+                        if part:IsA("BasePart") then
+                            trunk = part
+                            break
+                        end
+                    end
+                end
+
+                if trunk and trunk:IsA("BasePart") then
+                    local distance = (RootPart.Position - trunk.Position).Magnitude
+                    if distance <= MAX_FARM_RANGE then
+                        table.insert(
+                            trees,
+                            { model = obj, trunk = trunk, name = name, distance = distance }
+                        )
+                    end
+                end
+            end
+        end
+    end
+
+    return trees
+end
+
+-- Attack single tree async
+local function attackTreeAsync(tree, axeTool, rootPart)
+    task.spawn(function()
+        for i = 1, MULTI_ATTACK do
+            if not tree.model.Parent then break end
+            pcall(function()
+                RemoteEvents:WaitForChild("ToolDamageObject"):InvokeServer(
+                    tree.model,
+                    axeTool,
+                    "1130340392",
+                    rootPart.CFrame
+                )
+            end)
+            task.wait(0.05)
+        end
+        task.wait(0.5)
+        if not tree.model.Parent then
+            TreesChopped = TreesChopped + 1
+            ProcessedTrees[tree.model] = true
+        end
+    end)
+end
+
+-- Attack all trees simultaneously
+local function attackAllTreesSimultaneously(trees, axeTool, rootPart)
+    if #trees > 0 then
+        local centerPos = Vector3.new(0, 0, 0)
+        for _, tree in ipairs(trees) do
+            centerPos = centerPos + tree.trunk.Position
+        end
+        centerPos = centerPos / #trees
+        local lookDir = (centerPos - rootPart.Position).Unit
+        rootPart.CFrame = CFrame.lookAt(rootPart.Position, rootPart.Position + lookDir * Vector3.new(1, 0, 1))
+    end
+
+    for _, tree in ipairs(trees) do
+        attackTreeAsync(tree, axeTool, rootPart)
+    end
+end
+
+-- ==================== Auto Farm Toggle ====================
+createToggle(farmTab, "Auto Farm Wood", false, function(enabled)
+    AutoFarmEnabled = enabled
+
+    if enabled then
+        -- Initialize RemoteEvents
+        if not RemoteEvents then
+            pcall(function()
+                RemoteEvents = game:GetService("ReplicatedStorage"):WaitForChild("RemoteEvents", 5)
+            end)
+        end
+
+        if not RemoteEvents then
+            AutoFarmEnabled = false
+            return
+        end
+
+        local hasAxeItem, axeTool = hasAxeForFarm()
+        if not hasAxeItem then
+            AutoFarmEnabled = false
+            return
+        end
+
+        ProcessedTrees = {} -- Reset processed trees
+        TreesChopped = 0
+
+        AutoFarmConnection = RunService.Heartbeat:Connect(function()
+            if not AutoFarmEnabled then return end
+            local Character = Player.Character
+            if not Character then return end
+            local RootPart = Character:FindFirstChild("HumanoidRootPart")
+            if not RootPart then return end
+
+            local hasAxeItem, axeTool = hasAxeForFarm()
+            if not hasAxeItem then return end
+
+            local trees = findAllTreesInRange()
+            CurrentTargets = trees
+            if #trees == 0 then
+                ProcessedTrees = {}
+                return
+            end
+
+            attackAllTreesSimultaneously(trees, axeTool, RootPart)
+        end)
+    else
+        if AutoFarmConnection then
+            AutoFarmConnection:Disconnect()
+            AutoFarmConnection = nil
+        end
+        CurrentTargets = {}
+    end
+end)
+
+-- ==================== Update Farm Info ====================
+task.spawn(function()
+    while true do
+        task.wait(1)
+        if farmInfoLabel then
+            local treeCount = #CurrentTargets
+            farmInfoLabel.Text = string.format("🌳 Trees: %d | ✅ Chopped: %d", treeCount, TreesChopped)
+        end
+    end
+end)
